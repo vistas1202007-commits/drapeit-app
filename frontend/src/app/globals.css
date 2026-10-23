@@ -1,0 +1,224 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. Every colour, font, radius and shadow the components use lives here, so
+ * `bg-paper`, `text-wine`, `rounded-lg`, `shadow-card`, ... follow the active theme.
+ *
+ * These values are the first paint (before JavaScript): Ivory in light mode and Midnight
+ * in dark mode. They must match THEMES.light / THEMES.dark in lib/themes.ts (a test checks).
+ * A chosen theme (Settings -> Theme) sets the same variables on <html>, and a profile theme
+ * sets them on the profile page only. "static" keeps every variable in the CSS, even ones
+ * only used from plain CSS or set by JavaScript.
+ */
+@theme static {
+  --color-paper: #f9f5ee;
+  --color-surface: #fffdf8;
+  --color-sunken: #f2ece2;
+  --color-ink: #1f1a17;
+  --color-muted: #5d554e;
+  --color-faint: #6a625a;
+  --color-line: #e7ddcf;
+  --color-line-strong: #d3c6b3;
+  --color-wine: #7a1f35;
+  --color-wine-dark: #5f1729;
+  --color-wine-soft: #f5e8eb;
+  --color-on-wine: #fffdf8;
+  --color-gold: #b48a4a;
+  --color-gold-soft: #f5ead6;
+  --color-gold-ink: #71521c;
+  --color-ok: #2a6a4b;
+  --color-ok-soft: #e5f1ea;
+  --color-warn: #7f560a;
+  --color-warn-soft: #f7edd3;
+  --color-err: #a3262e;
+  --color-err-soft: #f9e5e5;
+  --color-canvas: #fffdf8;
+  --color-overlay: #120e0c;
+  --color-on-overlay: #fbf6ee;
+  /* end of light tokens */
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+
+  --radius-sm: 0.3rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.375rem;
+
+  --shadow-sm: 0 1px 2px rgb(40 22 14 / 0.06);
+  --shadow-md: 0 2px 6px -1px rgb(40 22 14 / 0.08), 0 10px 24px -14px rgb(40 22 14 / 0.18);
+  --shadow-lg: 0 4px 10px -2px rgb(40 22 14 / 0.08), 0 18px 40px -18px rgb(40 22 14 / 0.25);
+  --shadow-xl: 0 8px 18px -6px rgb(40 22 14 / 0.12), 0 32px 64px -24px rgb(40 22 14 / 0.35);
+  --shadow-card: 0 1px 2px rgb(40 22 14 / 0.04), 0 10px 28px -18px rgb(40 22 14 / 0.16);
+
+  --ease-atelier: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --animate-rise: rise 0.5s var(--ease-atelier) both;
+  --animate-fade: fade 0.3s ease-out both;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+  }
+}
+
+:root {
+  /* Fabric texture and profile cover of the active theme (none for Ivory / Midnight). */
+  --texture: none;
+  --texture-size: auto;
+  --cover: radial-gradient(120% 140% at 85% -20%, rgb(180 138 74 / 0.55), transparent 55%),
+    linear-gradient(115deg, var(--color-wine) 0%, var(--color-wine-soft) 100%);
+  color-scheme: light;
+}
+
+/* "System" theme on a device set to dark mode (no theme chosen = no data-theme). */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    /* dark tokens */
+    --color-paper: #14100e;
+    --color-surface: #1d1815;
+    --color-sunken: #27201c;
+    --color-ink: #f3ece3;
+    --color-muted: #c4b8aa;
+    --color-faint: #ab9f92;
+    --color-line: #3a312b;
+    --color-line-strong: #4f433a;
+    --color-wine: #ea9bab;
+    --color-wine-dark: #f5b7c3;
+    --color-wine-soft: #3a2027;
+    --color-on-wine: #1d1815;
+    --color-gold: #c9a56a;
+    --color-gold-soft: #352b1c;
+    --color-gold-ink: #e5c892;
+    --color-ok: #86d1a8;
+    --color-ok-soft: #1c3328;
+    --color-warn: #e7bd6a;
+    --color-warn-soft: #3a2f17;
+    --color-err: #f39297;
+    --color-err-soft: #3d1d1f;
+    --color-canvas: #f6efe4;
+    --color-overlay: #120e0c;
+    --color-on-overlay: #fbf6ee;
+    /* end of dark tokens */
+    color-scheme: dark;
+  }
+}
+
+@layer base {
+  html {
+    background-color: var(--color-paper);
+    scrollbar-color: var(--color-line-strong) transparent;
+  }
+
+  body {
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.012em;
+  }
+
+  ::selection {
+    background: var(--color-wine-soft);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-wine);
+    outline-offset: 2px;
+  }
+
+  /* Native <dialog>: soft fade in, with a dimmed and slightly blurred page behind. */
+  dialog[open] {
+    animation: var(--animate-rise);
+  }
+  dialog::backdrop {
+    background: rgb(18 14 12 / 0.4);
+    backdrop-filter: blur(2px);
+  }
+}
+
+/* The page (or a profile) in its theme: paper colour plus the fabric texture. */
+body,
+.theme-scope {
+  background-color: var(--color-paper);
+  background-image: var(--texture);
+  background-size: var(--texture-size);
+  color: var(--color-ink);
+}
+body {
+  background-attachment: fixed;
+}
+
+/* Small uppercase label above a heading, like a magazine section name. */
+@utility eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold-ink);
+}
+
+/* A thin embroidery-like divider: a gold running stitch with a small diamond in the middle. */
+.stitch-divider {
+  position: relative;
+  height: 9px;
+  border: 0;
+  background: repeating-linear-gradient(90deg, var(--color-gold) 0 6px, transparent 6px 11px) center / 100% 1px no-repeat;
+  opacity: 0.7;
+}
+.stitch-divider::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: var(--color-paper);
+  border: 1px solid var(--color-gold);
+}
+
+/* The profile cover banner (its pattern comes from the profile's theme). */
+.cover-banner {
+  background: var(--cover);
+}
+
+/* Respect "reduce motion": no animations, no smooth movement. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Printing the tailor sheet: hide the app chrome, keep only the sheet, on white paper. */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body,
+  html {
+    background: white !important;
+    color: black;
+  }
+  .print-area {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+}

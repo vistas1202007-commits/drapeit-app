@@ -1,0 +1,21 @@
+# Run Drapeit with Docker: the backend (FastAPI) and the website (Next.js) together.
+#   1. Fill in backend/.env and frontend/.env.local (copy the .env.example files; see README "Run with Docker").
+#   2. docker compose up --build
+#   3. Open http://localhost:3000
+# The database, sign-in and file storage stay on Supabase (online); these containers keep no data.
+services:
+  backend:
+    build: ./backend
+    env_file: ./backend/.env
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    env_file: ./frontend/.env.local
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped

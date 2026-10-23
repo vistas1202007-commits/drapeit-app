@@ -1,0 +1,12 @@
+# Keep installed packages and build output out of the image (they are made fresh inside Docker).
+node_modules
+.next
+out
+coverage
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+# Env files stay out, except .env.local: its NEXT_PUBLIC_ values (not secret) are needed to build the website.
+.env
+.env.*
+!.env.local

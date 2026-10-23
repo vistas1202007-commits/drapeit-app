@@ -1,0 +1,43 @@
+# Render "Blueprint" for the Croquis backend. In Render: New -> Blueprint -> pick this repository.
+# Secret values are NOT stored here (sync: false): Render asks for them when you create the service.
+# Plan: "free" sleeps after 15 minutes without visits (first visit then waits ~1 minute).
+#       Change to "starter" (about $7/month) to keep it always on. See docs/DEPLOYMENT.md.
+services:
+  - type: web
+    name: croquis-backend
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: singapore
+    healthCheckPath: /api/health
+    autoDeploy: false
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: SUPABASE_JWT_SECRET
+        sync: false
+      - key: MEDIA_TOKEN_SECRET
+        generateValue: true
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: STORAGE_BUCKET
+        value: project-assets
+      - key: MOCK_LATENCY_MS
+        value: "0"
+      - key: DAILY_BUDGET_USD
+        value: "1.0"
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: ANTHROPIC_MODEL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: YOUTUBE_API_KEY
+        sync: false

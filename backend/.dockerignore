@@ -1,0 +1,11 @@
+# Keep secrets, local data and test tools out of the image.
+.env
+.env.*
+.venv/
+.pgtest/
+data/
+tests/
+scripts/
+__pycache__/
+*.pyc
+.pytest_cache/

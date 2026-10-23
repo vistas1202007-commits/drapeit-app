@@ -1,0 +1,22 @@
+# Backend dependencies. Install with:  pip install -r requirements.txt
+# (For running the tests too:           pip install -r requirements-dev.txt)
+fastapi==0.159.1
+uvicorn[standard]==0.54.0
+pydantic==2.14.1
+python-multipart==0.0.32
+# HTTP client: Supabase Storage, sign-in keys and YouTube tutorial search.
+httpx==0.28.1
+
+# Supabase (Phase 5): Postgres driver + connection pool, and sign-in token checks.
+psycopg[binary]==3.3.6
+psycopg-pool==3.3.3
+PyJWT[crypto]==2.15.1
+
+# AI providers (Phase 2). Only used when you add the matching API key.
+anthropic==2.1.0
+google-genai==2.32.0
+openai==3.36.0
+
+# PDF export of the tailor sheet (Phase 3). Free, open-source, runs locally.
+reportlab==4.5.1
+pillow==13.0.0

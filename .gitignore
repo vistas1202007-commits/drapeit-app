@@ -1,0 +1,48 @@
+# Secrets: never commit real environment files or keys
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+secrets/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local data (old SQLite database, uploaded images)
+data/
+*.sqlite
+*.sqlite3
+*.db
+# PostgreSQL programs for the tests (python scripts/get_test_postgres.py)
+backend/.pgtest/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+build/
+dist/
+coverage/
+next-env.d.ts
+*.tsbuildinfo
+.vercel/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json

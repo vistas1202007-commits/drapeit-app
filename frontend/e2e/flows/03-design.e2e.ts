@@ -132,6 +132,31 @@ test("a job that is still running is shown as Generating…, not drawn as a resu
   await context.close();
 });
 
+test("a crash shows the app's own error page with Try again (BUG-06)", async ({ browser }) => {
+  const context = await signedIn(browser, "a");
+  const page = await context.newPage();
+  const id = loadState().project;
+  // A finished Pattern result with its fields missing makes the page throw while drawing.
+  const broken = new RegExp(`/api/projects/${id}$`);
+  await page.route(broken, async (route) => {
+    const response = await route.fetch();
+    const json = await response.json();
+    json.jobs.unshift({ ...json.jobs[0], id: "00000000-0000-4000-8000-000000000002", generator_id: "pattern",
+      status: "succeeded", output: { broken: true }, error: null, created_at: new Date().toISOString() });
+    await route.fulfill({ response, json });
+  });
+  await page.goto(`/projects/${id}`);
+  await expect(page.getByRole("heading", { name: "Something went wrong", level: 1 })).toBeVisible(LOADED);
+  await expect(page.getByRole("navigation", { name: "Main" })).toBeVisible();
+  await expect(page.getByText("This page couldn’t load")).toHaveCount(0);
+  await page.unroute(broken);
+  await page.getByRole("button", { name: "Try again" }).click();
+  await expect(page.getByRole("main").getByRole("heading", { level: 1 }).first()).toHaveText(/QA bridal lehenga|Something went wrong/, LOADED);
+  await page.goto(`/projects/${id}`);
+  await expect(page.getByRole("heading", { name: "QA bridal lehenga", level: 1 })).toBeVisible(LOADED);
+  await context.close();
+});
+
 test("design studio: draw, save, download", async ({ browser }) => {
   const context = await signedIn(browser, "a");
   const page = await context.newPage();

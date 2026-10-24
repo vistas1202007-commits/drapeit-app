@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { useT } from "@/components/i18n/LanguageProvider";
 import { Button, buttonClass } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
@@ -187,6 +187,28 @@ function OnboardingStrip() {
       .then(setState)
       .catch(() => {});
   }, []);
+
+  // The welcome steps change the state. Opening them counts as "taken there once", and leaving them loads the
+  // state again, so a finished or skipped person is not sent back and does not see an old reminder.
+  const lastPath = useRef(pathname);
+  useEffect(() => {
+    const leftWelcome = lastPath.current === "/welcome" && pathname !== "/welcome";
+    lastPath.current = pathname;
+    if (pathname === "/welcome") {
+      try {
+        sessionStorage.setItem(AUTO_OPENED_KEY, "1");
+      } catch {
+        /* storage blocked: the redirect below is skipped anyway */
+      }
+      return;
+    }
+    if (!leftWelcome) return;
+    setState(null); // hide the old reminder until the new state arrives
+    api
+      .onboarding()
+      .then(setState)
+      .catch(() => {});
+  }, [pathname]);
 
   useEffect(() => {
     if (!state?.is_new || pathname === "/welcome") return;

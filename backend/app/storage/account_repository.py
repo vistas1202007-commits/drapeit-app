@@ -8,7 +8,7 @@ in `app/services/cleanup.py` (30 days after the request).
 
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from typing import Any
 
 from app.schemas.account import (
@@ -21,6 +21,7 @@ from app.schemas.account import (
     SearchEntry,
     TimeDay,
 )
+from app.schemas.admin import Suspension, Warning
 from app.storage.database import Database
 from app.storage.repository import NotFoundError, check_id, iso
 from app.storage.social_repository import SocialError, _decode_cursor, _encode_cursor, person
@@ -54,6 +55,35 @@ class AccountRepository:
             email=self.email, has_profile=row["username"] is not None, username=row["username"],
             deactivated=row["deactivated_at"] is not None, delete_requested_at=iso(requested),
             delete_after=iso(requested + timedelta(days=GRACE_DAYS)) if requested else None,
+        )
+
+    def full_status(self) -> AccountStatus:
+        """Everything the app needs about your account in one query: status, admin, an active suspension and
+        the warnings you have not acknowledged yet (newest first)."""
+        with self._conn() as conn:
+            row = conn.execute(
+                "SELECT pr.username, s.deactivated_at, s.delete_requested_at, is_admin() AS is_admin,"
+                " (SELECT json_build_object('id', a.id, 'reason', a.reason, 'starts_at', a.starts_at, 'ends_at', a.ends_at)"
+                "    FROM account_suspensions a WHERE a.user_id = me.id AND a.lifted_at IS NULL AND a.starts_at <= now()"
+                "    AND (a.ends_at IS NULL OR a.ends_at > now()) ORDER BY a.ends_at DESC NULLS FIRST LIMIT 1) AS suspension,"
+                " COALESCE((SELECT json_agg(json_build_object('id', w.id, 'reason', w.reason, 'created_at', w.created_at)"
+                "    ORDER BY w.created_at DESC) FROM user_warnings w WHERE w.user_id = me.id AND w.acknowledged_at IS NULL),"
+                "    '[]'::json) AS warnings"
+                " FROM (SELECT %(me)s::uuid AS id) me"
+                " LEFT JOIN profiles pr ON pr.id = me.id LEFT JOIN account_status s ON s.user_id = me.id",
+                {"me": self.user_id},
+            ).fetchone()
+        requested = row["delete_requested_at"]
+        when = lambda text: iso(datetime.fromisoformat(text)) if text else None  # noqa: E731 - JSON dates are text
+        sus = row["suspension"]
+        return AccountStatus(
+            email=self.email, has_profile=row["username"] is not None, username=row["username"],
+            deactivated=row["deactivated_at"] is not None, delete_requested_at=iso(requested),
+            delete_after=iso(requested + timedelta(days=GRACE_DAYS)) if requested else None,
+            is_admin=row["is_admin"],
+            suspension=Suspension(id=sus["id"], reason=sus["reason"], starts_at=when(sus["starts_at"]) or "",
+                                  ends_at=when(sus["ends_at"]), permanent=sus["ends_at"] is None) if sus else None,
+            warnings=[Warning(id=w["id"], reason=w["reason"], created_at=when(w["created_at"]) or "") for w in row["warnings"]],
         )
 
     def _set(self, assignments: str) -> AccountStatus:

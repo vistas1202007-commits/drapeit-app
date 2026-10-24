@@ -32,7 +32,6 @@ from app.schemas.account import (
 from app.services.uploads import ALLOWED, UploadError, validate_image
 from app.storage.account_repository import AccountRepository
 from app.storage.appearance_repository import AppearanceRepository
-from app.storage.member_repository import MemberRepository
 from app.storage.repository import new_id
 from app.storage.social_repository import SocialError
 
@@ -66,9 +65,7 @@ def _bad(exc: SocialError) -> HTTPException:
 
 @router.get("/me/account", response_model=AccountStatus)
 def account_status(s: Account) -> Any:
-    member = MemberRepository(s.ctx.c.db, s.ctx.user.id)
-    return s.account.status().model_copy(update={"is_admin": member.is_admin(), "suspension": member.active_suspension(),
-                                                  "warnings": member.warnings()})
+    return s.account.full_status()
 
 
 @router.post("/me/deactivate", response_model=AccountStatus)

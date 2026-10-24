@@ -93,7 +93,7 @@ class RequestTransaction:
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] != "http" or LONG_RUNNING.match(scope["path"]):
             return await self.app(scope, receive, send)
-        with self.db.request_scope() as transaction:
+        with self.db.request_scope(savepoints=scope["method"] not in ("GET", "HEAD")) as transaction:
 
             async def send_after_commit(message: Message) -> None:
                 if message["type"] == "http.response.start":

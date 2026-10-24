@@ -15,8 +15,10 @@ used only for app-wide jobs such as adding up today's AI spending.
 
 One web request = one connection and one transaction (see `request_scope`):
 every database step of the request shares it, so the role and the user are set
-once instead of once per step. Each step still runs in its own savepoint, so a
-step that fails (and is handled) does not undo the others. Outside a request
+once instead of once per step. Each step of a request that changes things still
+runs in its own savepoint, so a step that fails (and is handled) does not undo
+the others; reading requests (GET) skip the savepoints, as no reading route
+handles a database error and carries on. Outside a request
 scope (background jobs, tests that call repositories directly) every step is
 its own transaction, as before.
 """
@@ -40,11 +42,13 @@ APP_ROLE = "croquis_app"
 class RequestScope:
     """The connection and transaction shared by every database step of one web request."""
 
-    def __init__(self) -> None:
+    def __init__(self, savepoints: bool = True) -> None:
         self.conn: Connection | None = None
         self.user_id: str | None = None
         self.transaction: Any = None
         self.depth = 0
+        # False for reading requests: every step simply uses the shared transaction.
+        self.savepoints = savepoints
 
 
 _scope: ContextVar[RequestScope | None] = ContextVar("db_request_scope", default=None)
@@ -131,7 +135,7 @@ class Database:
                 raise
             scope.conn, scope.user_id, scope.transaction = conn, user_id, transaction
         conn = scope.conn
-        if scope.depth:
+        if scope.depth or not scope.savepoints:
             # A step inside another step (e.g. the start-up summary reading several things): no extra savepoint.
             scope.depth += 1
             try:
@@ -147,10 +151,10 @@ class Database:
             scope.depth = 0
 
     @contextmanager
-    def request_scope(self) -> Iterator[RequestScope]:
+    def request_scope(self, savepoints: bool = True) -> Iterator[RequestScope]:
         """Share one connection and transaction between the database steps of one web request.
         Call `finish` when the answer is ready (before it is sent)."""
-        scope = RequestScope()
+        scope = RequestScope(savepoints)
         token = _scope.set(scope)
         try:
             yield scope

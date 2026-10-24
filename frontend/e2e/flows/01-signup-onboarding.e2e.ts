@@ -71,13 +71,9 @@ async function finishOnboarding(page: Page, name: QaName, withAvatar: boolean) {
   await finish.click();
   await page.waitForURL((url) => url.pathname === "/", { timeout: 15_000 });
   await page.waitForTimeout(2500);
-  // Known problem: the reminder strip keeps the state it loaded before onboarding and may send people back.
-  if (new URL(page.url()).pathname === "/welcome") {
-    note({ kind: "bug", who: name, url: page.url(), detail: "After 'Start designing' the app went back to /welcome" });
-    await page.goto("/");
-  } else if (await page.getByText("Finish setting up your account").isVisible()) {
-    note({ kind: "bug", who: name, url: page.url(), detail: "Banner 'Finish setting up your account' shown right after finishing" });
-  }
+  // BUG-05: not sent back to /welcome, and no "finish setting up" reminder right after finishing (no reload).
+  expect(new URL(page.url()).pathname, "stays on the dashboard after finishing").toBe("/");
+  await expect(page.getByText("Finish setting up your account")).toHaveCount(0);
 }
 
 test("people a and b finish onboarding (profile, picture, interests, tour)", async ({ browser }) => {
@@ -101,10 +97,8 @@ test("person c skips onboarding and sees the reminder banner", async ({ browser 
   await page.getByRole("button", { name: "Skip for now" }).click();
   await page.waitForURL((url) => url.pathname === "/");
   await page.waitForTimeout(2500);
-  if (new URL(page.url()).pathname === "/welcome") {
-    note({ kind: "bug", who: "c", url: page.url(), detail: "'Skip for now' went back to /welcome" });
-    await page.goto("/");
-  }
+  expect(new URL(page.url()).pathname, "Skip for now stays on the dashboard (BUG-05)").toBe("/");
+  // After skipping, the reminder is right to show (onboarding is not finished).
   await expect(page.getByText("Finish setting up your account")).toBeVisible();
   // Come back and finish (c needs a username for the social tests).
   await finishOnboarding(page, "c", false);

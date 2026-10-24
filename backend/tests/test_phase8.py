@@ -98,3 +98,29 @@ def test_export_includes_appearance(client):
     client.put("/api/me/appearance", json={"app_theme": "linen"})
     data = client.get("/api/me/export").json()
     assert data["appearance"]["app_theme"] == "linen"
+
+
+def test_two_theme_changes_at_the_same_moment_both_stay(db):
+    """BUG-12: an app theme and a profile theme saved at the same time must not undo each other."""
+    import threading
+
+    from app.schemas.appearance import AppearanceUpdate
+    from app.storage.appearance_repository import AppearanceRepository
+
+    repo = AppearanceRepository(db, USER_A)
+    for app_theme, profile_theme in [("dark", "linen"), ("cotton", "denim"), ("light", "dark"), ("denim", "cotton"), ("linen", "light")]:
+        repo.save(AppearanceUpdate(app_theme="system", profile_theme="default"))
+        start = threading.Barrier(2)
+
+        def save(update: AppearanceUpdate) -> None:
+            start.wait()
+            AppearanceRepository(db, USER_A).save(update)
+
+        threads = [threading.Thread(target=save, args=(AppearanceUpdate(app_theme=app_theme),)),
+                   threading.Thread(target=save, args=(AppearanceUpdate(profile_theme=profile_theme),))]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+        now = repo.get()
+        assert (now.app_theme, now.profile_theme) == (app_theme, profile_theme)

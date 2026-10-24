@@ -146,10 +146,13 @@ test("theme: Denim is kept after reload; Premium themes are locked; profile them
   await expect(vpage.locator('[data-profile-theme="linen"]')).toHaveCount(1, SLOW);
   await visitor.close();
 
-  // Back to defaults
+  // Back to defaults with two quick clicks: both choices must be kept (BUG-12).
   await page.getByRole("region", { name: "App theme" }).getByRole("button", { name: /^System/ }).click();
   await profile.getByRole("button", { name: /^Default/ }).click();
   await settle(page);
+  await page.reload();
+  await expect(page.getByRole("region", { name: "App theme" }).getByRole("button", { name: /^System/ })).toHaveAttribute("aria-pressed", "true", SLOW);
+  await expect(page.getByRole("region", { name: "Profile theme" }).getByRole("button", { name: /^Default/ })).toHaveAttribute("aria-pressed", "true");
   await ctx.close();
 });
 

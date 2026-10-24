@@ -119,3 +119,30 @@ def test_ai_generation_keeps_short_steps():
         assert LONG_RUNNING.match(path)
     for path in ("/api/projects/p1", "/api/projects/p1/jobs/j1/apply", "/api/me/bootstrap"):
         assert not LONG_RUNNING.match(path)
+
+
+def test_publishing_copies_real_pictures_on_the_storage_server(client, supabase):
+    from tests.test_phase6a import PNG, make_design, publish
+
+    make_profile(client, "meera.designs")
+    pid, studio_png, generated_svg, _ = make_design(client)
+    supabase.requests.clear()
+    post = publish(client, pid, [studio_png, generated_svg])
+    copies = [r for r in supabase.requests if r.url.path == "/storage/v1/object/copy"]
+    assert len(copies) == 1  # the PNG; the mock SVG is cleaned first, so it is downloaded and uploaded
+    assert len(post["images"]) == 2
+    copied = [data for key, (data, _) in supabase.files.items() if key.startswith("posts/") and key.endswith(".png")]
+    assert copied == [PNG]
+
+
+def test_failed_picture_copy_leaves_no_half_made_post(client, supabase):
+    from tests.test_phase6a import make_design
+
+    make_profile(client, "meera.designs")
+    pid, studio_png, _, _ = make_design(client)
+    supabase.fail_storage = True
+    res = client.post("/api/posts", json={"project_id": pid, "status": "published", "visibility": "public",
+                                          "caption": "x", "content": {"image_asset_ids": [studio_png]}})
+    assert res.status_code >= 500, res.text
+    supabase.fail_storage = False
+    assert client.get("/api/me/posts").json()["posts"] == []

@@ -57,6 +57,19 @@ class FakeSupabase:
         if path.startswith("/auth/v1/admin/users/") and request.method == "DELETE":
             self.deleted_users.append(path.rsplit("/", 1)[-1])
             return httpx.Response(200, json={})
+        if path == "/storage/v1/object/copy" and request.method == "POST":
+            import json
+
+            if self.fail_storage:
+                return httpx.Response(500, json={"error": "boom"})
+
+            body = json.loads(request.content)
+            if request.headers.get("apikey") != "sb_secret_test_key" or body["bucketId"] != "project-assets":
+                return httpx.Response(403, json={"error": "unauthorized"})
+            if body["sourceKey"] not in self.files:
+                return httpx.Response(404, json={"error": "not found"})
+            self.files[body["destinationKey"]] = self.files[body["sourceKey"]]
+            return httpx.Response(200, json={"Key": f"project-assets/{body['destinationKey']}"})
         prefix = "/storage/v1/object/project-assets"
         if not path.startswith(prefix):
             return httpx.Response(404, json={"error": "not found"})

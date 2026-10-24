@@ -150,6 +150,13 @@ and the same **Supabase project** as above: the database, sign-in and file stora
 After changing `frontend/.env.local`, run `docker compose up --build` again: the website's `NEXT_PUBLIC_` values
 are written into it when it is built. Render uses the same `backend/Dockerfile`; Vercel does not use Docker.
 
+## Browser tests (Playwright)
+
+`frontend/e2e/` clicks through every flow in Chrome on a desktop and a phone-sized screen with three throw-away
+accounts (made and deleted by `backend/scripts/qa_users.py`). With the backend and website running:
+`cd frontend`, then `npm run e2e`, and `npm run e2e:cleanup` to delete the accounts. Details in
+[frontend/e2e/README.md](frontend/e2e/README.md); the latest results are in [docs/AUDIT.md](docs/AUDIT.md).
+
 ### Try this first
 
 1. On the dashboard, name a design (e.g. *Wine anarkali*) and paste an idea such as

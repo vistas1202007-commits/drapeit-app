@@ -516,3 +516,14 @@
   the app is `anthropic (<model>)`.
 - Checks: `pytest` **192 passed** (1 new: a key without a model name keeps the mock); `npm run lint`,
   `npm run typecheck` clean; `npm test` **52 passed**.
+
+## 2026-10-24 · QA audit and browser tests
+
+- Playwright browser tests in `frontend/e2e/` (desktop 1280 px and phone 390 px, using the installed Chrome):
+  nine flow files (onboarding, profile, designs, publishing, social, chats and notifications, settings, admin,
+  security) and an every-page check (time to content, stuck loading, sideways scrolling, crashes, empty states,
+  dead buttons). `npm run e2e`, `npm run e2e:cleanup`.
+- `backend/scripts/qa_users.py` creates three confirmed QA accounts with the Supabase admin API (no email sent) and
+  deletes them with everything they made (Storage files, reports, chats, admin log rows). It only touches
+  `qa-drapeit-%@example.com`.
+- Findings, the feature checklist and the suggested fix order are in `docs/AUDIT.md`. No app code was changed.

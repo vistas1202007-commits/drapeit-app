@@ -154,6 +154,11 @@
 - [ ] If you customised Supabase's email templates, change "Croquis" to "Drapeit" there (needs you)
 - [ ] Later (Phase 7): payments that add `premium_members` rows
 
+## QA audit
+- [x] Playwright browser tests (`frontend/e2e/`) and QA account script (`backend/scripts/qa_users.py`)
+- [x] `docs/AUDIT.md`: checklist, bugs, fix order
+- [ ] Fix the bugs in the three groups listed in `docs/AUDIT.md` section 5
+
 ## Docker
 - [x] `frontend/Dockerfile`, `docker-compose.yml` and README "Run with Docker" (runtime files tested without Docker)
 - [ ] Run `docker compose up --build` once on a computer with Docker Desktop (needs you or whoever gets the code)

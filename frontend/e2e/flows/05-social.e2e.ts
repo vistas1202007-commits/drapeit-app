@@ -132,6 +132,29 @@ async function page_wait(page: Page) {
   await page.waitForTimeout(1500);
 }
 
+test("the ⋯ menu on a profile with posts is never covered by the page (BUG-04)", async ({ browser }) => {
+  const ctx = await signedIn(browser, "b");
+  const page = await ctx.newPage();
+  await page.goto(`/u/${users().a.username}`);
+  await page.locator('main a[href^="/p/"]').first().waitFor({ timeout: 60_000 });
+  await page.getByRole("button", { name: "More actions" }).click();
+  const items = page.getByRole("menuitem");
+  await expect(items.first()).toBeVisible();
+  // At the middle of every item, the item itself must be the top-most thing on the page.
+  const covered = await items.evaluateAll((els) =>
+    els.filter((el) => {
+      const r = el.getBoundingClientRect();
+      const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      return !top || !el.contains(top);
+    }).map((el) => el.textContent?.trim()));
+  expect(covered, "menu items covered by something else").toEqual([]);
+  // A normal click works (no tricks): Report account opens the report dialog.
+  await page.getByRole("menuitem", { name: "Report account" }).click({ timeout: 5000 });
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.getByRole("dialog").getByRole("button", { name: "Cancel" }).click();
+  await ctx.close();
+});
+
 test("report a post with a reason", async ({ browser }) => {
   const ctx = await signedIn(browser, "c");
   const page = await ctx.newPage();

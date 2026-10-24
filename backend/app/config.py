@@ -91,6 +91,8 @@ class Settings:
     # Largest request body accepted for anything that is not an upload.
     max_json_body_mb: int = 5
     db_pool_max: int = 10
+    # Connections kept open and ready (opening one takes over a second).
+    db_pool_min: int = 4
     # Phase 6D: how often posts and accounts past their 30-day grace period are removed (0 = never).
     purge_interval_hours: float = 6
 
@@ -163,6 +165,7 @@ def load_settings() -> Settings:
         social_rate_limit_per_minute=_number("SOCIAL_RATE_LIMIT_PER_MINUTE", "120"),
         max_upload_mb=_number("MAX_UPLOAD_MB", "5"),
         db_pool_max=_number("DB_POOL_MAX", "10"),
+        db_pool_min=_number("DB_POOL_MIN", "4"),
         purge_interval_hours=_number("PURGE_INTERVAL_HOURS", "6", float),
     )
     settings.check()

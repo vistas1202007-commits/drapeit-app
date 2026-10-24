@@ -15,6 +15,7 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 
+import anyio
 import httpx
 import psycopg
 from fastapi import FastAPI, Request
@@ -74,6 +75,32 @@ class Container:
 
     def generation_for(self, user_id: str) -> GenerationService:
         return GenerationService(self.repo_for(user_id), self.system, self.store, self.providers, self.settings)
+
+
+# AI generation can take a minute: these routes keep using a short transaction per step instead of holding
+# one open for the whole request.
+LONG_RUNNING = re.compile(r"^/api/projects/[^/]+/(generate/[^/]+|package|jobs/[^/]+/retry)$")
+
+
+class RequestTransaction:
+    """One database connection and transaction per request (see Database.request_scope).
+    It is committed just before the answer is sent, so the next request always sees the change;
+    an answer of 500 or more rolls it back."""
+
+    def __init__(self, app: ASGIApp, db: Database) -> None:
+        self.app, self.db = app, db
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http" or LONG_RUNNING.match(scope["path"]):
+            return await self.app(scope, receive, send)
+        with self.db.request_scope() as transaction:
+
+            async def send_after_commit(message: Message) -> None:
+                if message["type"] == "http.response.start":
+                    await anyio.to_thread.run_sync(self.db.finish, transaction, message["status"] < 500)
+                await send(message)
+
+            await self.app(scope, receive, send_after_commit)
 
 
 class RequestGuard:
@@ -152,7 +179,7 @@ def create_app(settings: Settings | None = None, *, db: Database | None = None,
                http_client: httpx.Client | None = None) -> FastAPI:
     settings = settings or load_settings()
     settings.check()
-    db = db or Database(settings.database_url, settings.db_pool_max)
+    db = db or Database(settings.database_url, settings.db_pool_max, settings.db_pool_min)
     providers = build_providers(settings)
     http = http_client or httpx.Client(timeout=60.0)
 
@@ -186,6 +213,7 @@ def create_app(settings: Settings | None = None, *, db: Database | None = None,
         upload_limiter=RateLimiter(settings.upload_rate_limit_per_minute),
         social_limiter=RateLimiter(settings.social_rate_limit_per_minute),
     )
+    app.add_middleware(RequestTransaction, db=db)
     app.add_middleware(RequestGuard, json_limit=settings.max_json_body_mb * 1024 * 1024,
                        upload_limit=(settings.max_upload_mb + 1) * 1024 * 1024, upload_limit_mb=settings.max_upload_mb)
     # Added last = outermost, so even "too large" answers carry CORS headers and the

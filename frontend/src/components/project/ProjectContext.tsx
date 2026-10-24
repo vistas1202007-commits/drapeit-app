@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { api } from "@/lib/api";
+import { splitJobs } from "@/lib/jobs";
 import type { DesignSpec, GenerationJob, GeneratorInfo, ProjectDetail } from "@/lib/types";
 
 interface ProjectContextValue {
@@ -23,16 +24,17 @@ interface ProjectContextValue {
 const ProjectContext = createContext<ProjectContextValue | null>(null);
 
 export function ProjectProvider({ projectId, children }: { projectId: string; children: ReactNode }) {
-  const [detail, setDetail] = useState<ProjectDetail | null>(null);
+  // As loaded from the API; jobs that are still running are taken out below (see splitJobs).
+  const [loaded, setLoaded] = useState<ProjectDetail | null>(null);
   const [generators, setGenerators] = useState<GeneratorInfo[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [running, setRunning] = useState<Record<string, boolean>>({});
+  const [started, setRunning] = useState<Record<string, boolean>>({});
   const [requestErrors, setRequestErrors] = useState<Record<string, string | undefined>>({});
 
   const refresh = useCallback(async () => {
     try {
       const d = await api.getProject(projectId);
-      setDetail(d);
+      setLoaded(d);
       setLoadError(null);
     } catch (e) {
       setLoadError(e instanceof Error ? e.message : "Could not load the project.");
@@ -45,7 +47,7 @@ export function ProjectProvider({ projectId, children }: { projectId: string; ch
     Promise.all([api.getProject(projectId), api.generators()])
       .then(([d, g]) => {
         if (cancelled) return;
-        setDetail(d);
+        setLoaded(d);
         setGenerators(g);
         setLoadError(null);
       })
@@ -96,6 +98,27 @@ export function ProjectProvider({ projectId, children }: { projectId: string; ch
     },
     [projectId, refresh],
   );
+
+  const { detail, serverRunning } = useMemo(() => {
+    if (!loaded) return { detail: null, serverRunning: new Set<string>() };
+    const { shown, running: busy } = splitJobs(loaded.jobs);
+    return { detail: { ...loaded, jobs: shown }, serverRunning: busy };
+  }, [loaded]);
+
+  // Generators started here, plus any the server says are still running (another tab, or the complete package).
+  const running = useMemo(() => {
+    const all: Record<string, boolean> = { ...started };
+    for (const id of serverRunning) all[id] = true;
+    return all;
+  }, [started, serverRunning]);
+
+  // Something is running that this page did not start: look again shortly, so its result appears.
+  const waitingOnServer = [...serverRunning].some((id) => !started[id]);
+  useEffect(() => {
+    if (!waitingOnServer) return;
+    const timer = setTimeout(() => void refresh(), 3000);
+    return () => clearTimeout(timer);
+  }, [waitingOnServer, loaded, refresh]);
 
   const latestJob = useCallback(
     (generatorId: string) => detail?.jobs.find((j) => j.generator_id === generatorId),

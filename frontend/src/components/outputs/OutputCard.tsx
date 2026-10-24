@@ -6,6 +6,7 @@ import { Badge, ProviderBadge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { useConfirm } from "@/components/ui/ConfirmDialog";
 import { Icon } from "@/components/ui/Icon";
+import { Spinner } from "@/components/ui/Spinner";
 import { api } from "@/lib/api";
 import { timeAgo } from "@/lib/format";
 import type { GenerationJob } from "@/lib/types";
@@ -117,6 +118,11 @@ export function OutputCard({ job, onRegenerate, regenerating }: { job: Generatio
       {job.status === "failed" ? (
         <p role="alert" className="text-sm text-err">
           {job.error}
+        </p>
+      ) : job.output == null ? (
+        // Never draw a result that is not there yet (the views expect a full output).
+        <p className="flex items-center gap-2 text-sm text-muted" role="status">
+          <Spinner /> Generating…
         </p>
       ) : (
         renderOutput(job)

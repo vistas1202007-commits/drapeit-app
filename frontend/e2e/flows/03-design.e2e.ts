@@ -110,6 +110,28 @@ test("pressing two generators quickly does not crash the notebook", async ({ bro
   await context.close();
 });
 
+test("a job that is still running is shown as Generating…, not drawn as a result (BUG-01)", async ({ browser }) => {
+  const context = await signedIn(browser, "a");
+  const page = await context.newPage();
+  const crashes: string[] = [];
+  page.on("pageerror", (e) => crashes.push(String(e)));
+  const id = loadState().project;
+  // Hand the page the exact state that used to crash it: a Pattern job saved as "running" with no output yet.
+  await page.route(new RegExp(`/api/projects/${id}$`), async (route) => {
+    const response = await route.fetch();
+    const json = await response.json();
+    const template = json.jobs[0];
+    json.jobs.unshift({ ...template, id: "00000000-0000-4000-8000-000000000001", generator_id: "pattern", status: "running",
+      output: null, error: null, created_at: new Date().toISOString(), finished_at: null });
+    await route.fulfill({ response, json });
+  });
+  await openProjectPage(page);
+  await page.waitForTimeout(1500);
+  expect(crashes, "page errors").toEqual([]);
+  await expect(page.getByRole("region", { name: "Pattern assistance" }).getByText("Generating…")).toBeVisible();
+  await context.close();
+});
+
 test("design studio: draw, save, download", async ({ browser }) => {
   const context = await signedIn(browser, "a");
   const page = await context.newPage();

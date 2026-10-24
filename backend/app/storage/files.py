@@ -62,6 +62,18 @@ class SupabaseStorage:
             raise self._fail("load", res)
         return res.content
 
+    def copy(self, source: str, destination: str) -> None:
+        """Copy a file inside the bucket on the storage server (nothing is downloaded or uploaded)."""
+        try:
+            res = self.client.post(f"{self.base}/object/copy", headers=self.headers,
+                                   json={"bucketId": self.bucket, "sourceKey": source, "destinationKey": destination})
+        except httpx.HTTPError as exc:
+            raise self._fail("copy", None, exc) from exc
+        if res.status_code == 404:
+            raise StorageError("This picture is missing from file storage.")
+        if res.status_code not in (200, 201):
+            raise self._fail("copy", res)
+
     def delete(self, paths: list[str]) -> None:
         """Best effort: a failure is logged, because the database rows are already gone."""
         if not paths:

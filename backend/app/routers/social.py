@@ -8,6 +8,7 @@ Level Security (migrations 0006 and 0007) as well as by the queries in social_re
 
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import Annotated, Any
 
@@ -22,7 +23,6 @@ from app.schemas.social import (
     PersonListItem,
     PersonSummary,
     Post,
-    PostContentChoice,
     PostCreate,
     PostPage,
     PostUpdate,
@@ -33,7 +33,7 @@ from app.schemas.social import (
     PublishOptions,
 )
 from app.services.generation import IMAGE_EXTENSIONS
-from app.services.publishing import PublishError, build_content, clean_svg_for_post, publish_options
+from app.services.publishing import PostContent, PublishError, build_content, clean_svg_for_post, publish_options
 from app.services.uploads import ALLOWED, UploadError, validate_image
 from app.storage.repository import new_id
 from app.storage.social_repository import PrivateAccount, SocialError, SocialRepository, UsernameTaken
@@ -306,28 +306,36 @@ def get_publish_options(project_id: str, s: Social) -> Any:
                           suggested_tags=tags, has_profile=s.social.my_profile() is not None)
 
 
-def _copy_images(s: SocialCtx, post_id: str, project_id: str, choice: PostContentChoice) -> Any:
-    """Copy the chosen pictures into the post's own folder, then point the post at them."""
-    content = build_content(s.ctx.repo, project_id, choice)
-    copies, written = [], []
+def _copy_images(s: SocialCtx, post_id: str, content: PostContent) -> None:
+    """Copy the chosen pictures into the post's own folder, then point the post at them.
+    The copies run at the same time, and real pictures are copied on the storage server itself."""
+    store = s.ctx.c.store
+    planned = []
+    for asset in content.images:
+        _, source = s.ctx.repo.get_asset_with_path(asset.id)
+        image_id = new_id()
+        planned.append((asset, source, image_id, s.social.image_path(post_id, image_id, IMAGE_EXTENSIONS[asset.mime_type])))
+
+    def copy(item: tuple[Any, str, str, str]) -> int:
+        asset, source, _, path = item
+        if asset.mime_type == "image/svg+xml":
+            data = clean_svg_for_post(store.get(source))  # mock pictures print the design's name; never publish it
+            store.put(path, data, asset.mime_type)
+            return len(data)
+        store.copy(source, path)
+        return asset.size_bytes
+
     try:
-        for asset in content.images:
-            _, source = s.ctx.repo.get_asset_with_path(asset.id)
-            data = s.ctx.c.store.get(source)
-            if asset.mime_type == "image/svg+xml":
-                data = clean_svg_for_post(data)  # mock pictures print the design's name; never publish it
-            image_id = new_id()
-            path = s.social.image_path(post_id, image_id, IMAGE_EXTENSIONS[asset.mime_type])
-            s.ctx.c.store.put(path, data, asset.mime_type)
-            written.append(path)
-            copies.append({"id": image_id, "kind": asset.kind, "mime_type": asset.mime_type, "size_bytes": len(data),
-                           "storage_path": path})
-        old = s.social.replace_images(post_id, copies)
+        with ThreadPoolExecutor(max_workers=4) as pool:  # storage only: no database work in these threads
+            sizes = list(pool.map(copy, planned))
+        old = s.social.replace_images(post_id, [
+            {"id": image_id, "kind": asset.kind, "mime_type": asset.mime_type, "size_bytes": size, "storage_path": path}
+            for (asset, _, image_id, path), size in zip(planned, sizes, strict=True)
+        ])
     except Exception:
-        s.ctx.c.store.delete(written)
+        store.delete([path for *_, path in planned])
         raise
-    s.ctx.c.store.delete(old)
-    return content
+    store.delete(old)
 
 
 @router.post("/posts", response_model=Post, status_code=201)
@@ -347,7 +355,7 @@ def create_post(body: PostCreate, s: Social) -> Any:
     post_id = s.social.create_post(body.project_id, body.status, body.visibility, body.caption.strip(), body.tags,
                                    content.palette, content.fabrics)
     try:
-        _copy_images(s, post_id, body.project_id, body.content)
+        _copy_images(s, post_id, content)
     except Exception:
         s.ctx.c.store.delete(s.social.delete_post(post_id))  # do not leave a half-made post behind
         raise
@@ -376,7 +384,8 @@ def update_post(post_id: str, body: PostUpdate, s: Social) -> Any:
             project_id = s.social.post_project(post_id)
             if project_id is None:
                 raise SocialError("The design this post came from was deleted, so its pictures cannot be changed.")
-            content = _copy_images(s, post_id, project_id, body.content)
+            content = build_content(s.ctx.repo, project_id, body.content)
+            _copy_images(s, post_id, content)
             changes |= {"palette": content.palette, "fabrics": content.fabrics}
         if changes.get("status") == "published" and not s.social.get_post(post_id).images:
             raise PublishError("Choose at least one picture to publish. (A draft can be saved without pictures.)")

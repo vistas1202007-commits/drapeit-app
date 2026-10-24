@@ -40,3 +40,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# browser tests (Playwright): QA accounts, sessions and results stay on this computer
+/e2e/.auth/
+/e2e/.results/
+/playwright-report/
+/test-results/

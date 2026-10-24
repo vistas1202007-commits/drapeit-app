@@ -8,7 +8,11 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "e2e": "playwright test",
+    "e2e:desktop": "playwright test --project=desktop",
+    "e2e:mobile": "playwright test --project=mobile",
+    "e2e:cleanup": "node e2e/support/cleanup.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.117.2",
@@ -17,6 +21,7 @@
     "react-dom": "19.3.0"
   },
   "devDependencies": {
+    "@playwright/test": "1.64.0",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

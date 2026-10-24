@@ -51,6 +51,12 @@ class AppearanceRepository:
 
     def save(self, update: AppearanceUpdate) -> Appearance:
         with self._conn() as conn:
+            # Make sure the row exists (plain defaults pass the Premium check), then lock it: two saves sent at
+            # the same moment (an app theme and a profile theme, say) run one after the other, and the second
+            # one reads what the first one wrote instead of putting the old value back.
+            conn.execute("INSERT INTO appearance_settings (user_id) VALUES (%s) ON CONFLICT (user_id) DO NOTHING",
+                         (self.user_id,))
+            conn.execute("SELECT 1 FROM appearance_settings WHERE user_id = %s FOR UPDATE", (self.user_id,))
             current = self._read(conn, self.user_id)
             fields: dict[str, Any] = {
                 "app_theme": update.app_theme or current.app_theme,
@@ -67,16 +73,13 @@ class AppearanceRepository:
             custom = fields["custom_theme"]
             values = {"me": self.user_id, "app": fields["app_theme"], "profile": fields["profile_theme"],
                       "custom": Jsonb(custom.model_dump()) if custom else None}
-            # UPDATE first, not INSERT ... ON CONFLICT: the database's Premium check treats an insert as
+            # An UPDATE, not INSERT ... ON CONFLICT DO UPDATE: the database's Premium check treats an insert as
             # a new choice, which would refuse a Premium theme kept from before Premium ended.
             try:
-                updated = conn.execute(
+                conn.execute(
                     "UPDATE appearance_settings SET app_theme = %(app)s, profile_theme = %(profile)s,"
-                    " custom_theme = %(custom)s WHERE user_id = %(me)s RETURNING user_id", values,
-                ).fetchone()
-                if updated is None:
-                    conn.execute("INSERT INTO appearance_settings (user_id, app_theme, profile_theme, custom_theme)"
-                                 " VALUES (%(me)s, %(app)s, %(profile)s, %(custom)s)", values)
+                    " custom_theme = %(custom)s WHERE user_id = %(me)s", values,
+                )
             except psycopg.errors.CheckViolation as exc:
                 raise PremiumRequired(PREMIUM_MESSAGE) from exc
             return self._read(conn, self.user_id)

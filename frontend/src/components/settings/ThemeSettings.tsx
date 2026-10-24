@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, type ReactNode } from "react";
+import { useMemo, useRef, useState, type ReactNode } from "react";
 import { useT } from "@/components/i18n/LanguageProvider";
 import { useMyProfile } from "@/components/social/MyProfile";
 import { LargePreview, MiniPreview, SplitPreview } from "@/components/theme/ThemePreview";
@@ -300,21 +300,33 @@ export function ThemeSettings() {
   const [status, setStatus] = useState<Status>(null);
   const [saving, setSaving] = useState(false);
 
-  async function save(change: Partial<Pick<Appearance, "app_theme" | "profile_theme" | "custom_theme">>) {
+  // Saves go to the server one at a time, and only the answer to the newest one is shown, so two quick
+  // choices (an app theme, then a profile theme) can never end with an older answer on the screen.
+  const queue = useRef<Promise<void>>(Promise.resolve());
+  const newest = useRef(0);
+
+  function save(change: Partial<Pick<Appearance, "app_theme" | "profile_theme" | "custom_theme">>) {
     const before = appearance;
+    const ticket = ++newest.current;
     setAppearance({ ...appearance, ...change }); // show it at once
     setSaving(true);
     setStatus(null);
-    try {
-      setAppearance(await api.saveAppearance(change));
-      setStatus({ tone: "ok", text: t("theme.saved") });
-    } catch (e) {
-      setAppearance(before);
-      const message = e instanceof Error ? e.message : "Could not save the theme.";
-      setStatus(message.includes("Premium") ? { tone: "premium", text: t("theme.comingSoon") } : { tone: "err", text: message });
-    } finally {
-      setSaving(false);
-    }
+    queue.current = queue.current.then(async () => {
+      try {
+        const saved = await api.saveAppearance(change);
+        if (ticket === newest.current) {
+          setAppearance(saved);
+          setStatus({ tone: "ok", text: t("theme.saved") });
+        }
+      } catch (e) {
+        if (ticket === newest.current) setAppearance(before);
+        const message = e instanceof Error ? e.message : "Could not save the theme.";
+        setStatus(message.includes("Premium") ? { tone: "premium", text: t("theme.comingSoon") } : { tone: "err", text: message });
+      } finally {
+        if (ticket === newest.current) setSaving(false);
+      }
+    });
+    return queue.current;
   }
 
   function choose(kind: Kind, id: string) {

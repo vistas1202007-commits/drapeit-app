@@ -13,6 +13,7 @@ import type {
   AllowMessages,
   Asset,
   Badges,
+  Bootstrap,
   ChatDetail,
   ChatList,
   ChatMessage,
@@ -97,6 +98,25 @@ export function configureAuth(options: { getToken: () => Promise<string | null>;
 
 export function setMediaToken(token: string) {
   mediaToken = token;
+}
+
+// ----- start-up summary -----
+// When a page opens, the first call for each of these parts is answered by one /api/me/bootstrap request
+// instead of six separate ones. Later calls (for example after saving a change) ask their own endpoint.
+let bootstrap: Promise<Bootstrap> | null = null;
+const usedFromBootstrap = new Set<keyof Bootstrap>();
+
+function firstFromBootstrap<K extends keyof Bootstrap>(part: K, alone: () => Promise<Bootstrap[K]>): Promise<Bootstrap[K]> {
+  if (usedFromBootstrap.has(part)) return alone();
+  usedFromBootstrap.add(part);
+  bootstrap ??= request<Bootstrap>("/api/me/bootstrap");
+  return bootstrap.then((b) => b[part]).catch(() => alone());
+}
+
+/** Forget the start-up summary (on sign-in and sign-out, so nobody ever sees another person's). */
+export function resetBootstrap() {
+  bootstrap = null;
+  usedFromBootstrap.clear();
 }
 
 /** Plain-words messages for when the server gives no better one. */
@@ -211,7 +231,7 @@ export const api = {
     request<void>(`/api/projects/${id}/assets/${assetId}`, { method: "DELETE" }),
   /** Address of one of your pictures, for <img> tags (carries the short-lived media token). */
   assetUrl: (assetId: string) => `${API_URL}/api/assets/${assetId}?mt=${encodeURIComponent(mediaToken)}`,
-  mediaToken: () => request<{ token: string; expires_at: string }>("/api/media-token"),
+  mediaToken: () => firstFromBootstrap("media_token", () => request<{ token: string; expires_at: string }>("/api/media-token")),
 
   generate: (id: string, generatorId: string, options: Record<string, unknown> = {}) =>
     request<GenerationJob>(`/api/projects/${id}/generate/${generatorId}`, json("POST", { options })),
@@ -226,12 +246,12 @@ export const api = {
     request<PackageResult>(`/api/projects/${id}/package`, json("POST", { generator_ids: generatorIds, options })),
 
   // ----- Phase 8: themes -----
-  appearance: () => request<Appearance>("/api/me/appearance"),
+  appearance: () => firstFromBootstrap("appearance", () => request<Appearance>("/api/me/appearance")),
   saveAppearance: (body: Partial<Pick<Appearance, "app_theme" | "profile_theme" | "custom_theme">>) =>
     request<Appearance>("/api/me/appearance", json("PUT", body)),
 
   // ----- Phase 6A: profiles, posts, feed -----
-  myProfile: () => request<Profile | null>("/api/me/profile"),
+  myProfile: () => firstFromBootstrap("profile", () => request<Profile | null>("/api/me/profile")),
   saveProfile: (body: { username: string; display_name: string; bio: string; role: Role }) =>
     request<Profile>("/api/me/profile", json("PUT", body)),
   uploadAvatar: (file: Blob, filename: string) => {
@@ -305,7 +325,7 @@ export const api = {
   search: (q: string) => request<SearchResults>(`/api/search?${new URLSearchParams({ q })}`),
 
   // ----- Phase 6C: chats and notifications -----
-  badges: () => request<Badges>("/api/me/badges"),
+  badges: () => firstFromBootstrap("badges", () => request<Badges>("/api/me/badges")),
   messagingSettings: () => request<{ allow_messages_from: AllowMessages }>("/api/me/messaging"),
   saveMessagingSettings: (value: AllowMessages) =>
     request<{ allow_messages_from: AllowMessages }>("/api/me/messaging", json("PUT", { allow_messages_from: value })),
@@ -337,7 +357,7 @@ export const api = {
     request<NotificationSettings>("/api/me/notification-settings", json("PUT", body)),
 
   // ----- Phase 6D: settings, your activity, help -----
-  account: () => request<AccountStatus>("/api/me/account"),
+  account: () => firstFromBootstrap("account", () => request<AccountStatus>("/api/me/account")),
   deactivate: () => request<AccountStatus>("/api/me/deactivate", json("POST")),
   reactivate: () => request<AccountStatus>("/api/me/reactivate", json("POST")),
   requestDelete: (confirm: string) => request<AccountStatus>("/api/me/delete", json("POST", { confirm })),
@@ -364,7 +384,7 @@ export const api = {
   },
 
   // ----- Phase 6E: onboarding, warnings, verification, admin -----
-  onboarding: () => request<Onboarding>("/api/me/onboarding"),
+  onboarding: () => firstFromBootstrap("onboarding", () => request<Onboarding>("/api/me/onboarding")),
   saveOnboarding: (body: { step?: OnboardingStep; interests?: Interests }) => request<Onboarding>("/api/me/onboarding", json("PUT", body)),
   skipOnboarding: () => request<Onboarding>("/api/me/onboarding/skip", json("POST")),
   suggestions: () => request<SuggestedPerson[]>("/api/onboarding/suggestions"),

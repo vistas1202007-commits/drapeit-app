@@ -1,7 +1,7 @@
 // TypeScript versions of the backend's data shapes (see backend/app/schemas).
 // If you change a schema in the backend, update the matching type here.
 
-import type { CustomTheme, ProfileThemeChoice } from "./themes";
+import type { Appearance, CustomTheme, ProfileThemeChoice } from "./themes";
 
 export type MeasurementUnit = "cm" | "in";
 export type SkillLevel = "beginner" | "intermediate" | "advanced" | "professional";
@@ -760,6 +760,16 @@ export interface NotificationSettings {
   mentions: boolean;
   reposts: boolean;
   messages: boolean;
+}
+
+/** GET /api/me/bootstrap: what the app frame needs when a page opens, in one answer. */
+export interface Bootstrap {
+  media_token: { token: string; expires_at: string };
+  profile: Profile | null;
+  account: AccountStatus;
+  onboarding: Onboarding;
+  appearance: Appearance;
+  badges: Badges;
 }
 
 export interface Badges {

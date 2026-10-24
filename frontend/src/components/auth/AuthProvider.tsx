@@ -8,7 +8,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { MyProfileProvider } from "@/components/social/MyProfile";
 import { ThemeSync } from "@/components/theme/ThemeProvider";
 import { Spinner } from "@/components/ui/Spinner";
-import { api, configureAuth, setMediaToken } from "@/lib/api";
+import { api, configureAuth, resetBootstrap, setMediaToken } from "@/lib/api";
 import { getSupabase, missingSupabaseSettings } from "@/lib/supabase";
 import { LoginScreen, NotConfiguredScreen } from "./LoginScreen";
 
@@ -78,6 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Pictures need a media token; get one as soon as the user is signed in, and keep it fresh.
   const userId = state.kind === "signed-in" ? state.session.user.id : null;
   useEffect(() => {
+    resetBootstrap(); // a different person (or nobody) is signed in now
     if (!userId) return;
     let cancelled = false;
     const refresh = () =>
@@ -97,6 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = useCallback(async () => {
     await getSupabase()?.auth.signOut();
     setMediaToken("");
+    resetBootstrap();
     setState({ kind: "signed-out", notice: "You are signed out." });
   }, []);
 

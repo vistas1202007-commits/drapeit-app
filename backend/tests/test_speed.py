@@ -35,7 +35,6 @@ def test_bootstrap_matches_the_separate_answers(client):
     assert data["onboarding"] == client.get("/api/me/onboarding").json()
     assert data["appearance"] == client.get("/api/me/appearance").json()
     assert data["badges"] == client.get("/api/me/badges").json()
-    assert data["media_token"]["token"] and data["media_token"]["expires_at"].endswith("Z")
     assert data["appearance"]["app_theme"] == "denim"
 
 

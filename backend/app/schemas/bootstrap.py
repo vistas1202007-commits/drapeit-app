@@ -11,13 +11,7 @@ from app.schemas.chat import Badges
 from app.schemas.social import Profile
 
 
-class MediaToken(BaseModel):
-    token: str
-    expires_at: str
-
-
 class Bootstrap(BaseModel):
-    media_token: MediaToken
     # None until the person has chosen a username.
     profile: Profile | None
     account: AccountStatus

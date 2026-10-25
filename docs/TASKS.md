@@ -157,7 +157,10 @@
 ## QA audit
 - [x] Playwright browser tests (`frontend/e2e/`) and QA account script (`backend/scripts/qa_users.py`)
 - [x] `docs/AUDIT.md`: checklist, bugs, fix order
-- [ ] Fix the bugs in the three groups listed in `docs/AUDIT.md` section 5
+- [x] Group 1: BUG-01, 02, 04, 05, 06, 12 fixed and tested (2026-10-25); also BUG-22 found and fixed
+- [ ] Speed: make opening a design faster (about 6 s from India)
+- [ ] Group 2: launch safety (BUG-03 email/SMTP, BUG-08 headers, BUG-13 rate limits, BUG-14–18, BUG-21)
+- [ ] Group 3: polish (BUG-07 translations, BUG-09, BUG-10, BUG-11, BUG-19, BUG-20)
 
 ## Docker
 - [x] `frontend/Dockerfile`, `docker-compose.yml` and README "Run with Docker" (runtime files tested without Docker)

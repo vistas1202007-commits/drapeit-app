@@ -527,3 +527,20 @@
   deletes them with everything they made (Storage files, reports, chats, admin log rows). It only touches
   `qa-drapeit-%@example.com`.
 - Findings, the feature checklist and the suggested fix order are in `docs/AUDIT.md`. No app code was changed.
+
+## 2026-10-25 · Audit fixes: crashes, menus, onboarding, error pages, themes and speed
+
+- **BUG-01** running generator jobs show "Generating…" instead of crashing the notebook (`lib/jobs.ts`).
+- **BUG-04** the ⋯ menu is drawn above the page, so every item can be clicked.
+- **BUG-05** the onboarding reminder refreshes after /welcome.
+- **BUG-06** Drapeit error pages (`app/error.tsx`, `app/global-error.tsx`).
+- **BUG-12** two theme saves at the same moment both stay (row lock, saves sent one after another).
+- **BUG-02** one database connection and transaction per request; `/me/account` in one query; pool of 4 ready
+  connections (`DB_POOL_MIN`); `GET /api/me/bootstrap` for the app frame, loaded at sign-in; post pictures copied on
+  the storage server.
+- **BUG-22** (found in the re-run) the Requests tab no longer shows the Chats list when the Chats answer is late.
+- Checks: `pytest` **204 passed**; `npm test` **62 passed**; lint and type check clean; `npm run e2e` with fresh
+  accounts **74 passed, 2 failed** (BUG-22, fixed and passing since; the like burst, BUG-13), 36.6 min. Before / after
+  timings are in `docs/AUDIT.md` section 6 (design pages 11–14 s → about 6 s, shell API calls 11 → 7). QA accounts
+  deleted afterwards.
+- Still open: opening a design takes about 6 s from India; BUG-13 rate limits; the other bugs in `docs/AUDIT.md`.

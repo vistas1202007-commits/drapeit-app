@@ -1,8 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { api, resetBootstrap } from "./api";
+import { api, prefetchBootstrap, resetBootstrap } from "./api";
 
 const BOOT = {
-  media_token: { token: "mt", expires_at: "2026-10-24T13:00:00.000Z" },
   profile: null,
   account: { email: "a@example.com", has_profile: false, deactivated: false, is_admin: false, warnings: [] },
   onboarding: { step: "profile", completed: false, is_new: true },
@@ -27,11 +26,10 @@ afterEach(() => vi.unstubAllGlobals());
 
 describe("start-up summary", () => {
   it("answers the first call of every part with one request", async () => {
-    const [token, account, onboarding, appearance, badges, profile] = await Promise.all([
-      api.mediaToken(), api.account(), api.onboarding(), api.appearance(), api.badges(), api.myProfile(),
+    const [account, onboarding, appearance, badges, profile] = await Promise.all([
+      api.account(), api.onboarding(), api.appearance(), api.badges(), api.myProfile(),
     ]);
     expect(calls).toEqual(["/api/me/bootstrap"]);
-    expect(token.token).toBe("mt");
     expect(account.email).toBe("a@example.com");
     expect(onboarding.is_new).toBe(true);
     expect(appearance.app_theme).toBe("system");
@@ -43,6 +41,18 @@ describe("start-up summary", () => {
     await api.account();
     await api.account();
     expect(calls).toEqual(["/api/me/bootstrap", "/api/me/account"]);
+  });
+
+  it("can start at sign-in, before any part asks, without a second request", async () => {
+    prefetchBootstrap();
+    await api.badges();
+    await api.account();
+    expect(calls).toEqual(["/api/me/bootstrap"]);
+  });
+
+  it("keeps the picture token on its own quick endpoint", async () => {
+    await api.mediaToken();
+    expect(calls).toEqual(["/api/media-token"]);
   });
 
   it("starts again after sign-in or sign-out", async () => {

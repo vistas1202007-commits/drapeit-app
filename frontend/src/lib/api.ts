@@ -102,7 +102,7 @@ export function setMediaToken(token: string) {
 
 // ----- start-up summary -----
 // When a page opens, the first call for each of these parts is answered by one /api/me/bootstrap request
-// instead of six separate ones. Later calls (for example after saving a change) ask their own endpoint.
+// instead of five separate ones. Later calls (for example after saving a change) ask their own endpoint.
 let bootstrap: Promise<Bootstrap> | null = null;
 const usedFromBootstrap = new Set<keyof Bootstrap>();
 
@@ -111,6 +111,12 @@ function firstFromBootstrap<K extends keyof Bootstrap>(part: K, alone: () => Pro
   usedFromBootstrap.add(part);
   bootstrap ??= request<Bootstrap>("/api/me/bootstrap");
   return bootstrap.then((b) => b[part]).catch(() => alone());
+}
+
+/** Start loading the summary now (at sign-in), so it arrives while the app frame appears. */
+export function prefetchBootstrap() {
+  bootstrap ??= request<Bootstrap>("/api/me/bootstrap");
+  bootstrap.catch(() => {}); // a failure is handled when a part asks for it
 }
 
 /** Forget the start-up summary (on sign-in and sign-out, so nobody ever sees another person's). */
@@ -231,7 +237,7 @@ export const api = {
     request<void>(`/api/projects/${id}/assets/${assetId}`, { method: "DELETE" }),
   /** Address of one of your pictures, for <img> tags (carries the short-lived media token). */
   assetUrl: (assetId: string) => `${API_URL}/api/assets/${assetId}?mt=${encodeURIComponent(mediaToken)}`,
-  mediaToken: () => firstFromBootstrap("media_token", () => request<{ token: string; expires_at: string }>("/api/media-token")),
+  mediaToken: () => request<{ token: string; expires_at: string }>("/api/media-token"),
 
   generate: (id: string, generatorId: string, options: Record<string, unknown> = {}) =>
     request<GenerationJob>(`/api/projects/${id}/generate/${generatorId}`, json("POST", { options })),

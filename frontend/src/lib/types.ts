@@ -764,7 +764,6 @@ export interface NotificationSettings {
 
 /** GET /api/me/bootstrap: what the app frame needs when a page opens, in one answer. */
 export interface Bootstrap {
-  media_token: { token: string; expires_at: string };
   profile: Profile | null;
   account: AccountStatus;
   onboarding: Onboarding;

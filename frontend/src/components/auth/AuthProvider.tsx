@@ -8,7 +8,7 @@ import { AppShell } from "@/components/layout/AppShell";
 import { MyProfileProvider } from "@/components/social/MyProfile";
 import { ThemeSync } from "@/components/theme/ThemeProvider";
 import { Spinner } from "@/components/ui/Spinner";
-import { api, configureAuth, resetBootstrap, setMediaToken } from "@/lib/api";
+import { api, configureAuth, prefetchBootstrap, resetBootstrap, setMediaToken } from "@/lib/api";
 import { getSupabase, missingSupabaseSettings } from "@/lib/supabase";
 import { LoginScreen, NotConfiguredScreen } from "./LoginScreen";
 
@@ -80,6 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     resetBootstrap(); // a different person (or nobody) is signed in now
     if (!userId) return;
+    prefetchBootstrap(); // loads while the picture token (no database) lets the app frame appear
     let cancelled = false;
     const refresh = () =>
       api

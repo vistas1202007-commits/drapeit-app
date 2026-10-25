@@ -147,3 +147,28 @@ test("notifications: list, open, mark all as read, settings", async ({ browser }
   await toggles.first().click();
   await actx.close();
 });
+
+test("a late Chats answer never replaces the Requests list", async ({ browser }) => {
+  const actx = await signedIn(browser, "a");
+  const page = await actx.newPage();
+  const other = (name: string) => ({ user_id: "00000000-0000-4000-8000-00000000000a", username: name, display_name: name,
+    has_avatar: false, avatar_version: null, verified: false });
+  const row = (id: string, name: string, status: string) => ({ id, other: other(name), status, last_message: "Hi",
+    last_message_mine: false, last_message_at: new Date().toISOString(), unread_count: 1 });
+  // Chats answers slowly, Requests at once: the Chats answer arrives after the person switched to Requests.
+  await page.route(/\/api\/chats\?folder=/, async (route) => {
+    const requests = new URL(route.request().url()).searchParams.get("folder") === "requests";
+    if (!requests) await new Promise((done) => setTimeout(done, 3000));
+    await route.fulfill({ json: requests
+      ? { chats: [row("00000000-0000-4000-8000-0000000000c1", "Late Request Person", "request")], request_count: 1 }
+      : { chats: [row("00000000-0000-4000-8000-0000000000c2", "Chat Folder Person", "accepted")], request_count: 1 } });
+  });
+  await page.goto("/messages");
+  await page.getByRole("tab", { name: /Requests/ }).click();
+  const list = page.getByRole("main").getByRole("list");
+  await expect(list.getByText("Late Request Person")).toBeVisible(SLOW);
+  await page.waitForTimeout(4000); // the slow Chats answer has arrived by now
+  await expect(list.getByText("Late Request Person")).toBeVisible();
+  await expect(list.getByText("Chat Folder Person")).toHaveCount(0);
+  await actx.close();
+});

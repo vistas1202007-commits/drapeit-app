@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Avatar } from "@/components/social/Avatar";
 import { useMyProfile } from "@/components/social/MyProfile";
 import { Button } from "@/components/ui/Button";
@@ -58,11 +58,17 @@ export function Inbox() {
   const [error, setError] = useState<string | null>(null);
   const [newChat, setNewChat] = useState(false);
 
+  // Only the newest answer is shown: an older one (for example Chats, after switching to Requests) can arrive later.
+  const latest = useRef(0);
   const load = useCallback(async () => {
+    const ticket = ++latest.current;
     try {
-      setList(await api.chats(folder));
+      const chats = await api.chats(folder);
+      if (ticket !== latest.current) return;
+      setList(chats);
       setError(null);
     } catch (e) {
+      if (ticket !== latest.current) return;
       setError(e instanceof Error ? e.message : "Could not load your messages.");
       setList((l) => l ?? { chats: [], request_count: 0 });
     }

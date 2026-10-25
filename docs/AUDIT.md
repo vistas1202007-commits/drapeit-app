@@ -42,7 +42,7 @@ Status: **Done** · **Partly done** · **Missing** · **Broken** (works, but a b
 | Forgot / reset password | Done (UI) | Email delivery depends on SMTP (BUG-03) | `app/forgot-password`, `app/reset-password` |
 | Google / Apple / phone sign-in | Missing | | – |
 | Two-factor sign-in | Missing | | – |
-| Onboarding (profile, picture, interests, people, tour), skip, resume | Broken | Works, but the reminder banner keeps old state (BUG-05) | `components/onboarding/Welcome.tsx`, `components/layout/AccountBanner.tsx` |
+| Onboarding (profile, picture, interests, people, tour), skip, resume | Done | Reminder banner fixed (BUG-05, fixed) | `components/onboarding/Welcome.tsx`, `components/layout/AccountBanner.tsx` |
 | Edit name, username, role, bio | Done | Taken usernames refused clearly; bio limit 300 enforced; HTML in bio shown as text (safe) | `components/social/ProfileForm.tsx` |
 | Profile picture upload | Done | Fake / oversized files refused with a message. No cropping | `backend/app/routers/social.py` (`/me/avatar`) |
 | Links / website on profile | Missing | No field in UI, API or database | `backend/app/schemas/social.py` (`ProfileUpdate`) |
@@ -54,7 +54,7 @@ Status: **Done** · **Partly done** · **Missing** · **Broken** (works, but a b
 
 | Feature | Status | Notes | Where |
 | --- | --- | --- | --- |
-| Publish a design (pictures, caption, tags, palette, fabric) | Done | Slow: about 40 s per post (BUG-02) | `components/social/PublishForm.tsx`, `routers/social.py` (`POST /posts`) |
+| Publish a design (pictures, caption, tags, palette, fabric) | Done | Faster: the four-post test went from 2.8 to 1.7 min (BUG-02, fixed) | `components/social/PublishForm.tsx`, `routers/social.py` (`POST /posts`) |
 | Visibility: Public / Followers / Close Friends / Private | Done | All four checked from two other accounts, by page and by API | `supabase/migrations/0006_profiles_and_posts.sql` |
 | Drafts, edit caption, archive, pin, delete + restore | Done | Edit caption checked in the browser; draft, archive, pin, delete and restore were not clicked | `components/social/PostDetail.tsx` |
 | Multiple pictures per post (carousel) | Done | | `components/social/PostCard.tsx` |
@@ -78,9 +78,9 @@ Status: **Done** · **Partly done** · **Missing** · **Broken** (works, but a b
 | Private account + follow requests (accept / decline) | Done | Request + accept checked; decline not clicked | `app/requests`, `routers/social.py` |
 | Close Friends list | Done | | `components/social/CloseFriends.tsx` |
 | Restrict (comments wait for approval) | Done | Checked: others did not see the comment until approved | `routers/community.py` |
-| Mute | Broken | Works, but "Unmute" is hidden behind the page (BUG-04) | `components/social/ProfileView.tsx`, `MoreMenu.tsx` |
-| Block / unblock | Broken | Works (blocked person gets "not found"), but the menu item can be covered (BUG-04) | same |
-| Report post / comment / account / message | Broken | Post report works (comment and message reports not clicked); "Report account" is hidden behind the posts grid on profiles with posts (BUG-04) | `components/social/ReportDialog.tsx` |
+| Mute | Done | "Unmute" is clickable now (BUG-04, fixed) | `components/social/ProfileView.tsx`, `MoreMenu.tsx` |
+| Block / unblock | Done | Works (blocked person gets "not found"); menu fixed (BUG-04, fixed) | same |
+| Report post / comment / account / message | Done | Post report works (comment and message reports not clicked); "Report account" is clickable now (BUG-04, fixed) | `components/social/ReportDialog.tsx` |
 | Hidden words, who can comment, who can mention, who can message | Done | All checked | `components/settings/PrivacyExtras.tsx`, `components/social/PrivacySettings.tsx` |
 
 ### Chats and notifications
@@ -101,12 +101,12 @@ Status: **Done** · **Partly done** · **Missing** · **Broken** (works, but a b
 | Settings home with search | Done | | `components/settings/SettingsHome.tsx` |
 | Change password | Done | Checked by signing in with the new password | `components/settings/AccountSettings.tsx` |
 | Change email | Partly done | Not tested (needs real email delivery, BUG-03) | same |
-| Download your data | Done | Slow: about 78 s (BUG-02); pictures listed, not included | `routers/account.py` (`/me/export`) |
+| Download your data | Done | Faster: the download test went from 23 to 12 s (BUG-02, fixed); pictures listed, not included | `routers/account.py` (`/me/export`) |
 | Deactivate / come back by signing in | Done | Profile hidden while deactivated (checked) | `routers/account.py` |
 | Delete with 30-day grace, cancel | Done | Banner "will be deleted on …" with Cancel deletion | `services/cleanup.py` |
 | Your activity (time, likes, comments, recently deleted, search history) | Done | | `components/settings/ActivityView.tsx` |
 | Language (English / हिन्दी / Hinglish) | Partly done | Only menu and settings are translated (BUG-07) | `lib/i18n.ts` |
-| Theme: free themes, Premium locked, custom theme locked, profile theme | Broken | Works; two quick changes can undo each other (BUG-12) | `components/settings/ThemeSettings.tsx`, `storage/appearance_repository.py` |
+| Theme: free themes, Premium locked, custom theme locked, profile theme | Done | Two quick changes both stay now (BUG-12, fixed) | `components/settings/ThemeSettings.tsx`, `storage/appearance_repository.py` |
 | Help, report a problem with screenshot, legal pages | Done | Legal pages are drafts ("needs legal review") | `components/settings/HelpView.tsx` |
 | AI providers page | Done | | `app/settings/ai-providers/page.tsx` |
 
@@ -124,12 +124,12 @@ Status: **Done** · **Partly done** · **Missing** · **Broken** (works, but a b
 | Feature | Status | Notes | Where |
 | --- | --- | --- | --- |
 | Dashboard: create project, recent, search, filter | Done | | `components/project/Dashboard.tsx` |
-| Notebook: ideas, references, 13 generators, complete package, spec editor, versions, out-of-date marks | Broken | All generators work; the page can crash (BUG-01); 12 s to open (BUG-02); very long on phones (BUG-09) | `components/notebook/*`, `components/outputs/*` |
+| Notebook: ideas, references, 13 generators, complete package, spec editor, versions, out-of-date marks | Done | All generators work; no crash (BUG-01, fixed); about 6 s to open, was 12 s (BUG-02); very long on phones (BUG-09) | `components/notebook/*`, `components/outputs/*` |
 | Design Studio: draw, layers, undo, save, PNG, project sketch | Done | | `components/studio/DesignStudio.tsx` |
 | Fabric Studio: recommend, sort, save to design | Done | | `components/project/FabricStudio.tsx` |
 | Tailor workspace: measurements, details, notes, sheet, PDF | Done | Measurement box accepts letters (BUG-17) | `components/project/TailorWorkspace.tsx` |
 | Cost estimate | Done | Checked: 3 × 850 + 10% + 2500 labour = 5,305 | `components/project/CostWorkspace.tsx` |
-| My Designs: search, duplicate, export JSON, delete | Done | Export takes about 25 s (BUG-02) | `components/project/MyDesigns.tsx` |
+| My Designs: search, duplicate, export JSON, delete | Done | Faster: the rename / duplicate / export / delete test went from 50 to 33 s (BUG-02, fixed) | `components/project/MyDesigns.tsx` |
 | Learning Library | Partly done | Without a YouTube key every quick search answers 503 (BUG-18) | `components/project/LibrarySearch.tsx` |
 
 ### Whole app
@@ -138,9 +138,9 @@ Status: **Done** · **Partly done** · **Missing** · **Broken** (works, but a b
 | --- | --- | --- | --- |
 | Works on phones (390 px) | Done | No page scrolls sideways; menu opens; notebook is very long (BUG-09) | `components/layout/AppShell.tsx` |
 | Loading and empty states | Done | Every empty page tested shows a friendly message | – |
-| Error page when something crashes | Missing | Crashes show Next.js's plain "This page couldn't load" (BUG-06) | no `app/error.tsx` / `app/global-error.tsx` |
+| Error page when something crashes | Done | Drapeit error page with Try again (BUG-06, fixed) | `app/error.tsx`, `app/global-error.tsx` |
 | Install as an app (PWA), offline | Missing | No web manifest | – |
-| Speed | Broken | See BUG-02 | – |
+| Speed | Partly done | Much faster; a design still takes about 6 s to open from India (see BUG-02 and section 6) | – |
 
 ---
 
@@ -148,7 +148,14 @@ Status: **Done** · **Partly done** · **Missing** · **Broken** (works, but a b
 
 Each bug: what happens, how to see it, why (where known), and a suggested fix.
 
+**Fixed on 2026-10-25:** BUG-01, BUG-02, BUG-04, BUG-05, BUG-06, BUG-12 and BUG-22 (found during the re-run). Each
+has a **Fixed** line below and new tests. The others are still open.
+
 ### BUG-01 · High · The notebook page crashes when generators run close together
+**Fixed:** `lib/jobs.ts` (`splitJobs`) keeps running jobs out of the outputs and marks their generator as running;
+jobs stuck for over 10 minutes show as failed; `OutputCard` shows "Generating…" when `output` is empty; the page
+checks again every 3 s while another tab's job runs. Tests: `lib/jobs.test.ts`, and the e2e test now feeds a running
+job to the page every time instead of depending on timing.
 **Steps:** open a new design → press **Generate** on Pattern Assistance, then quickly on Tools and Materials (or any
 two generators within a few seconds; the complete package plus another generator also does it).
 **Result:** the whole page is replaced by "This page couldn't load" with `TypeError: Cannot read properties of null
@@ -181,6 +188,18 @@ JSON **~25 s**, Download your data **~78 s**, one like **~2 s**.
 role/user once); fewer queries per endpoint (`/me/account` as one SQL); pool `min_size` 4–5; look at the slow
 endpoints (publish copies pictures one by one; export and download read every picture); move Supabase to Mumbai
 (ap-south-1) or keep backend and database in the same region.
+**Fixed (mostly):** one database connection and transaction per request (role and user set once; AI generation keeps
+short steps); `/me/account` is one query; pool keeps 4 connections ready (`DB_POOL_MIN`); `GET /api/me/bootstrap`
+answers profile, account, onboarding, themes and badges in one request and starts loading at sign-in; publishing
+copies pictures on the storage server, four at a time. Shell API calls per page: 11 → 7; `/me/account`: 4.8–8.9 s →
+about 1 s; design pages: 11–14 s → about 6 s. Numbers in section 6. Tests: `backend/tests/test_speed.py`,
+`frontend/src/lib/bootstrap.test.ts`.
+**Still slow:** opening a design (`GET /api/projects/{id}`) takes 5.6–6.5 s from this computer (75 KB answer), which
+is most of the 6 s on design pages; it is the next thing to speed up. The region advice above still applies.
+**Side effect:** a request now holds its database row locks until it answers, so many changes to the *same* row at
+the same moment wait for each other: 40 like/unlike calls at once by one person took up to 18 s (the burst test in
+`flows/09-security.e2e.ts` gives up after 15 s). Different people liking the same post do not wait for each other.
+Rate-limiting likes (BUG-13) stops such bursts.
 
 ### BUG-03 · Critical (launch) · Sign-up confirmation emails will not reach customers
 **Steps:** sign up with a new address. Supabase answered `Email address "…@example.com" is invalid` (example
@@ -192,6 +211,9 @@ same emails.
 the rate limit, and test sign-up with a real address.
 
 ### BUG-04 · High · Profile "⋯" menu is partly hidden: "Report account" cannot be clicked
+**Fixed:** `MoreMenu` draws its list in a portal on top of the page (fixed position, below or above the button,
+moves with scrolling, closes on Escape or a click outside), so every ⋯ menu (profile, post, chat) is fully
+clickable. Test: `flows/05-social.e2e.ts` checks that each menu item is the top element at its own spot.
 **Steps:** open someone's profile that has posts → press ⋯. The dashed divider line runs through the menu and the
 posts grid covers its bottom; "Report account" is invisible and "Unmute" / "Block" can be unclickable.
 **Why:** `.stitch-divider` has `opacity: 0.7` (`app/globals.css` line ~173), which gives it its own layer, and the
@@ -201,6 +223,9 @@ without a higher layer of its own.
 `MoreMenu` (profile, post, chat).
 
 ### BUG-05 · Medium · "Finish setting up your account" banner after finishing onboarding; Skip can bounce back
+**Fixed:** the reminder notes that /welcome was shown as soon as it opens and reloads the onboarding state when
+the person leaves /welcome. Test: `flows/01-onboarding.e2e.ts` now fails if someone is sent back or sees the old
+reminder.
 **Steps:** brand-new account → taken to /welcome → finish (or press Skip). Back on the dashboard the banner still
 says "Finish setting up your account" until a full reload. If /welcome is the first page opened in the tab, finishing
 or skipping sends the person straight back to /welcome.
@@ -212,6 +237,8 @@ when the app opens and never refreshes it; the "taken once" flag is only set whe
 ### BUG-06 · Medium · No app error page
 A crash shows Next.js's plain, unstyled "This page couldn't load" with no menu. **Fix:** add `app/error.tsx` and
 `app/global-error.tsx` in the Drapeit style with Reload / Back to dashboard and a "Report a problem" link.
+**Fixed:** both pages added ("Something went wrong", Try again, Back to dashboard, Report a problem). Test:
+`flows/03-design.e2e.ts` makes a page crash on purpose and checks the error page and Try again.
 
 ### BUG-07 · Medium · Most of the app is not translated
 In Hindi mode the dashboard, feed, explore, messages, profile and My Designs showed 0 Hindi words; only the menu,
@@ -242,10 +269,14 @@ and the profile header, with `https://` validation and `rel="nofollow noopener"`
 back to the old one. **Why:** `AppearanceRepository.save` (`storage/appearance_repository.py` lines 52–82) reads the
 row and writes all three columns back, without a lock; the second request writes the old value. **Fix:** update only
 the columns that were sent (or `SELECT … FOR UPDATE`).
+**Fixed:** `save` now locks the person's row (`SELECT … FOR UPDATE`) before reading and writing, and the theme page
+sends saves one after another and only shows the newest answer. Tests: a backend test with two saves at the same
+moment (it failed before the fix), and `flows/07-settings.e2e.ts` checks both choices after a reload.
 
 ### BUG-13 · Low · Likes (and similar actions) are not rate-limited
 40 like/unlike calls at once were all accepted. **Fix:** apply the existing `social_limiter` to likes, saves,
-follows and reposts.
+follows and reposts. Since BUG-02 such a burst also makes the calls wait for each other (up to 18 s), so this test
+now fails until the limit is in place.
 
 ### BUG-14 · Low · Expected answers show as red console errors
 Taken username (409), "post not found" (404), not-admin (404) and the Learning Library (503) print
@@ -279,6 +310,17 @@ jump to them. **Fix:** use `<h1>`.
 ### BUG-21 · Low · Development tools have security advisories
 `npm audit`: `vitest` / `tinypool` (2 critical, 1 moderate). They are only used for tests on your computer, never in
 the website. **Fix:** update `vitest` to 5.x when convenient and re-run the unit tests.
+
+### BUG-22 · Medium · Requests tab could show your Chats list (found 2026-10-25, fixed)
+**Steps:** open /messages and press **Requests** before the Chats list has loaded. The Chats answer arrived after
+the Requests answer and replaced it, so a waiting message request was not shown. It became visible once pages got
+faster. **Fixed:** `components/chat/Inbox.tsx` shows only the newest answer. Test: `flows/06-chats-notifications.e2e.ts`
+→ "a late Chats answer never replaces the Requests list" (fails on the old code).
+
+### BUG-23 · Low · A few "Database unavailable" answers after the computer wakes up
+After the laptop slept for over an hour, the first requests got 503 for about 20 seconds while the backend threw away
+connections the network had closed. On a server that never sleeps this is rare (a network blip). **Fix (later):**
+retry once with a fresh connection when a pooled connection turns out to be closed.
 
 ---
 
@@ -323,4 +365,40 @@ two-factor sign-in, push / email notifications, PWA install, and group chats.
 
 ## 6. Final run with fresh accounts
 
-FINAL_RUN_PLACEHOLDER
+Same computer and network (India → Supabase in Seoul), production build, mock AI, fresh QA accounts, `npm run e2e`.
+"Before" is the audit run of 2026-10-24; "after" is 2026-10-25, after fixing BUG-01, 02, 04, 05, 06 and 12. The QA
+accounts were deleted afterwards (`npm run e2e:cleanup`: 0 left).
+
+| | Before | After |
+| --- | --- | --- |
+| Tests | 74 | 81 (new tests for the fixes) |
+| Passed | 64 | 74 |
+| Failed | 1 (repost, a test timing issue) | 2: message request (BUG-22, fixed and passing since) and the like burst (BUG-13) |
+| Skipped / did not run | 3 / 6 | 4 / 1 |
+| Whole run | 38.4 min | 36.6 min |
+
+**Time until a page shows its content** (desktop, person a, who has the most data):
+
+| Page | Before | After |
+| --- | --- | --- |
+| Design notebook | 13.3 s | 6.2 s |
+| Studio / fabric / tailor / cost / publish | 10.8–11.8 s | 5.6–6.4 s |
+| Post page | 2.2 s | 1.7 s |
+| Own profile | 3.0 s | 2.0 s |
+| Welcome | 2.5 s | 1.5 s |
+| Average of 38 pages | 3.1 s | 2.1 s |
+
+On the phone the averages are 3.5 s → 3.0 s; two design pages (fabric 30 s, tailor 16 s) were slow once because the
+network was slow at that moment (pictures that usually take 2 s took 8–9 s); the other design pages were 6–8 s.
+
+**Until the page is completely quiet** (all requests finished, plus 0.6 s): 5.0–7.4 s before, 3.0–3.8 s after
+(settings, resources, close friends, requests, admin, help).
+
+**API calls when a page opens:** 11 → 7 (home, feed, account settings). `/me/account` 4.8–8.9 s → 1.0 s; the new
+start-up summary takes about 2 s and replaces five calls of 1.2–4.8 s.
+
+**Slow actions (whole test):** publishing four posts 2.8 → 1.7 min; download your data 23 → 12 s; rename, duplicate,
+export and delete a design 50 → 33 s; every page as person a 6.0 → 4.7 min.
+
+**Still open:** opening a design takes about 6 s from here (see BUG-02, "Still slow"); the "Loading" text check on
+the notebook still fires on desktop and phone, as in the first run.

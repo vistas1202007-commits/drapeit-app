@@ -23,7 +23,8 @@ MIGRATIONS = BACKEND.parent / "supabase" / "migrations"
 SHIM = Path(__file__).with_name("supabase_shim.sql")
 EXE = ".exe" if os.name == "nt" else ""
 
-APP_TABLES = ["projects", "provider_usage"]  # everything else cascades from projects
+# Everything else cascades from projects (and from sewing_modules for video_segments).
+APP_TABLES = ["projects", "provider_usage", "sewing_modules", "sewing_fabric_rules", "video_search_cache", "video_index_runs"]
 
 
 class NoPostgres(Exception):

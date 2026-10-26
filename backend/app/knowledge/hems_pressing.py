@@ -1,0 +1,97 @@
+"""Technique modules, part 4: hems, and the pressing and final check that finish the garment."""
+
+from app.knowledge import Module
+
+MODULES: list[Module] = [
+    Module(
+        slug="hang-and-level-hem", title="Let the skirt hang, then level the hem", phase="hem", order=5, triggers=("hem-curved",),
+        summary="A flared or circular skirt has edges cut on the bias, which stretch under their own weight. The hem is marked after the fabric has settled.",
+        steps=(
+            "Hang the finished garment on a hanger or a dress form for at least a day, so the bias edges stretch out.",
+            "Put the garment on a person or a form, wearing the shoes that will be worn with it, and mark the hem level with a chalk line or pins, measuring up from the floor at several points.",
+            "Trim the hem to the marked line, leaving the hem allowance. Cut small, even curves, not corners.",
+            "Run a line of long stitches near the cut edge and ease the edge into a smaller curve while turning it, so the hem lies flat.",
+        ),
+        tips=("Ask a helper to turn the person slowly while you mark. A hem marked by yourself on a body is never level.",),
+        keywords=("level hem", "mark hem", "hang", "circular hem", "curved hem", "flared hem", "umbrella hem"),
+        video_query="how to hem a circular or flared skirt mark an even hem curved hem tutorial",
+    ),
+    Module(
+        slug="rolled-hem", title="Sew a rolled hem", phase="hem", order=10, triggers=("hem-rolled",),
+        summary="A rolled hem is a tiny, rounded edge made by rolling the fabric twice. It suits sheer and light fabrics.",
+        steps=(
+            "Stay-stitch the hem edge, a few millimetres inside the finished fold line. Trim the allowance close to this stitching.",
+            "Fold the raw edge over once, just inside the stitching line, and press lightly.",
+            "Fold again, enclosing the stitching, and sew close to the fold with a short stitch. Or roll it by hand, using a slip stitch.",
+            "On a machine, use a rolled-hem foot, which curls the edge for you.",
+            "Press with a low heat and a cloth. Do not stretch the hem as you press.",
+        ),
+        tips=("A narrow hem on a long curved edge takes time. Sew slowly, and guide the fabric with your fingers rather than pulling.",),
+        keywords=("rolled hem", "narrow hem", "baby hem", "rolled hem foot", "chiffon hem", "hem"),
+        video_query="how to sew a rolled hem on chiffon georgette by machine and by hand",
+        fabric_notes={"chiffon": "Place tissue paper under the chiffon while you stitch. It keeps the fabric from being pulled into the machine.",
+                      "georgette": "Use a short stitch and a fine needle for a neat rolled edge on georgette."},
+    ),
+    Module(
+        slug="blind-hem", title="Sew a blind hem", phase="hem", order=11, triggers=("hem-blind",),
+        summary="A blind hem is stitched so that almost nothing shows on the right side. It is the clean choice for skirts, lehengas and formal wear.",
+        steps=(
+            "Finish the raw edge of the hem allowance, then turn it up along the marked fold line and press.",
+            "Pin or baste the hem in place, about a finger-width below the finished edge.",
+            "Fold the hem back against the garment so the finished edge shows. Take a tiny stitch in the garment, catching only one or two threads.",
+            "Take the next stitch in the hem allowance, a short distance along. Keep the thread loose. Repeat all around.",
+            "Press the hem lightly, from the wrong side, with a pressing cloth.",
+        ),
+        tips=("A machine blind-hem foot works faster, but the hand method gives the softest result on silk.",
+              "Do not pull the thread tight. A tight stitch pulls a dimple into the right side."),
+        keywords=("blind hem", "invisible hem", "slip stitch hem", "hem stitch", "hand hem", "hem"),
+        video_query="how to sew a blind hem by hand and by machine invisible hem",
+        fabric_notes={"velvet": "Hem velvet by hand, with the stitches only in the backing, and use a seam binding on the raw edge.",
+                      "silk": "Use fine silk thread, and press with a low heat. Hand-stitched hems drape best on silk."},
+    ),
+    Module(
+        slug="machine-hem", title="Sew a double-fold machine hem", phase="hem", order=12, triggers=("hem-machine",),
+        summary="A double-fold hem turns the raw edge twice and is stitched on the machine. It is quick, strong and good for everyday garments.",
+        steps=(
+            "Press the hem allowance up to the wrong side by half its width, then again by the same amount, so the raw edge is hidden inside.",
+            "Pin the hem, with pins pointing toward the edge, at close intervals. Check the depth with a seam gauge as you go.",
+            "Topstitch close to the upper fold, keeping the same distance all around. Use a slightly longer stitch.",
+            "Press the hem flat from the wrong side.",
+        ),
+        tips=("On heavy fabric such as denim, hammer the thick seam crossings flat with a mallet, before you sew over them.",),
+        keywords=("machine hem", "double fold hem", "topstitch hem", "hem", "hemming", "hem a skirt"),
+        video_query="how to hem by machine double fold hem tutorial for beginners",
+        fabric_notes={"denim": "Use a denim needle and sew slowly over the side seams. Lift the presser foot a little for the thick part.",
+                      "linen": "Press linen hems damp. Linen holds a crease well when pressed with steam."},
+    ),
+    Module(
+        slug="pressing-basics", title="Press the garment properly", phase="pressing", order=10, triggers=("base",),
+        summary="Pressing means lowering the iron onto the cloth, lifting it, and moving it. It is not ironing. It sets every seam, dart and hem.",
+        steps=(
+            "Choose the heat from the fabric card, and test it on your scrap first.",
+            "Put a pressing cloth (a thin cotton or muslin cloth) over delicate fabric. Press with the iron, lift, move, and press again.",
+            "Press each seam from the wrong side, then open it up and press it flat. Press curves over a tailor's ham or a rolled towel.",
+            "Press the garment from the wrong side first. If the right side needs it, use a cloth.",
+            "Let the fabric cool and dry before you move it. Heat and steam set the shape only while the cloth cools.",
+        ),
+        tips=("Never press over pins with plastic heads, or over zip pulls and buttons. They melt or leave marks.",),
+        keywords=("pressing", "press", "iron", "ironing", "steam", "pressing cloth", "tailor's ham"),
+        video_query="how to press seams and darts when sewing pressing vs ironing tutorial",
+        fabric_notes={"velvet": "Press velvet from the back over a needle board or a thick towel. Never put the iron on the pile.",
+                      "silk": "Press silk dry, or with a very light steam, using a cloth. Water can leave spots on some silks."},
+    ),
+    Module(
+        slug="final-inspection", title="Final check and thread trimming", phase="pressing", order=20, triggers=("base",),
+        summary="A last look at the whole garment finds the small faults that make a garment look home-made instead of tailored.",
+        steps=(
+            "Trim every loose thread inside and outside the garment.",
+            "Check that every seam is closed and every button, hook or zip works smoothly.",
+            "Try the garment on, or hang it on a form, and look for pulling, gaping, twisting or a hem that is not level.",
+            "Check the measurements that the designer gave to the tailor against the finished garment.",
+            "Make a final press and hang or fold the garment as it will be stored.",
+        ),
+        tips=("Keep the tailor sheet next to the garment. The final check is easier with the list in front of you.",),
+        keywords=("final check", "finishing", "quality check", "trim threads", "finishing touches", "inspect"),
+        video_query="how to finish a sewn garment finishing touches trimming threads final check",
+    ),
+]

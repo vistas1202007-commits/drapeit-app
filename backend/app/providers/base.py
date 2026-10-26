@@ -12,7 +12,7 @@ it in `app/providers/registry.py`. Nothing else has to change.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal, Protocol
+from typing import TYPE_CHECKING, Literal, Protocol
 
 from app.schemas.design_spec import DesignSpec
 from app.schemas.outputs import (
@@ -24,7 +24,7 @@ from app.schemas.outputs import (
     SketchStyle,
     VariationsOutput,
 )
-from app.schemas.stitching import PhotoHints
+from app.schemas.stitching import GarmentComponents, PhotoHints
 
 
 @dataclass(frozen=True)
@@ -54,6 +54,9 @@ class UsageMeter:
         self.cost_usd += cost_usd
         self.details.append(detail)
 
+
+if TYPE_CHECKING:
+    from app.knowledge import FabricRule, Module
 
 ImagePurpose = Literal["sketch", "preview"]
 
@@ -171,3 +174,23 @@ class VideoIndexProvider(Protocol):
 
     def index(self, video_id: str, duration_seconds: int, topics: list[tuple[str, str]],
               meter: UsageMeter) -> list[VideoSegment]: ...
+
+
+@dataclass
+class StepPlan:
+    """One step of the stitching guide as written for this design (the order is fixed by the builder, not by this)."""
+
+    module_slug: str
+    why: str
+    instructions: list[str]
+    tips: list[str]
+    fabric_tips: list[str]
+
+
+class StitchingGuideProvider(Protocol):
+    """The "master tailor": writes each step of the guide for this garment, from the technique modules it is given."""
+
+    info: ProviderInfo
+
+    def compose(self, garment: GarmentComponents, modules: list[Module], reasons: dict[str, str],
+                fabric: FabricRule | None, meter: UsageMeter) -> list[StepPlan]: ...

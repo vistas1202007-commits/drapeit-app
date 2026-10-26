@@ -15,6 +15,7 @@ the browser and never saved in the database.
 from __future__ import annotations
 
 import base64
+import json
 import logging
 from typing import Any, Literal, TypeVar
 
@@ -22,7 +23,7 @@ import anthropic
 from annotated_types import MaxLen
 from pydantic import BaseModel
 
-from app.providers.base import ProviderError, ProviderInfo, UsageMeter
+from app.providers.base import ProviderError, ProviderInfo, StepPlan, UsageMeter
 from app.schemas.design_spec import DesignSpec, TailorNotes
 from app.schemas.outputs import (
     DesignConceptOutput,
@@ -365,3 +366,54 @@ class AnthropicPhotoProvider:
     def read_photo(self, image: bytes, mime_type: str, spec: DesignSpec, meter: UsageMeter) -> PhotoHints:
         answer = self.client.ask(PHOTO_PROMPT, PhotoAnswer, meter, "Reference photo", images=[(image, mime_type)])
         return PhotoHints(**answer.model_dump())
+
+
+class StepAnswer(BaseModel):
+    module_slug: str
+    why: str
+    instructions: list[str]
+    tips: list[str]
+    fabric_tips: list[str]
+
+
+class GuideAnswer(BaseModel):
+    steps: list[StepAnswer]
+
+
+GUIDE_PROMPT = """You are a master tailor writing a stitching guide for the garment below. The technique modules are the ONLY source of methods: they are checked, original instructions. For every module, write that step of the guide for this exact garment and fabric.
+
+Rules:
+- Return one step for each module, using its exact slug in module_slug. Do not add steps that are not in the modules, and do not drop any.
+- Keep every instruction of the module, in the same order. You may reword to fit this garment (name its neckline, sleeves, closure and fabric where it helps), but do not change the method.
+- why: one sentence on why this step matters for THIS design. Start from the reason given.
+- tips: the module's tips, adapted. fabric_tips: advice specific to this fabric, taken from the fabric card and the module's fabric notes only. Leave it empty if there is none.
+- Never invent measurements, seam allowances, stitch lengths or product names. If a number is not in the modules or the fabric card, do not write one.
+- Plain, short sentences. English only."""
+
+
+class AnthropicGuideProvider:
+    """The master tailor, as the Anthropic API: words each step for this design, from the retrieved modules."""
+
+    def __init__(self, client: AnthropicClient) -> None:
+        self.client = client
+        self.info = _info(client.model, "writes the stitching guide for this design", 0.15)
+
+    def compose(self, garment, modules, reasons, fabric, meter) -> list[StepPlan]:  # noqa: ANN001 - see base.py
+        payload = {
+            "garment": garment.model_dump(exclude={"features"}),
+            "fabric_card": None if fabric is None else {
+                "fabric": fabric.title, "needle": fabric.needle, "thread": fabric.thread,
+                "stitch_length": fabric.stitch_length, "seam_types": list(fabric.seam_types),
+                "pressing": fabric.pressing, "notes": list(fabric.notes), "by_phase": {k: list(v) for k, v in fabric.by_phase.items()},
+            },
+            "modules": [
+                {"slug": m.slug, "title": m.title, "phase": m.phase, "reason": reasons.get(m.slug, ""),
+                 "instructions": list(m.steps), "tips": list(m.tips), "fabric_notes": m.fabric_notes}
+                for m in modules
+            ],
+        }
+        brief = f"{GUIDE_PROMPT}\n\n{json.dumps(payload, ensure_ascii=False)}"
+        answer = self.client.ask(brief, GuideAnswer, meter, "Stitching guide")
+        known = {m.slug for m in modules}
+        return [StepPlan(s.module_slug, s.why, s.instructions, s.tips, s.fabric_tips)
+                for s in answer.steps if s.module_slug in known]

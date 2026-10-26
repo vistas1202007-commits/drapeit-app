@@ -37,6 +37,7 @@ from app.providers.base import (
     IdeaUnderstandingProvider,
     ImageGenerationProvider,
     MaterialsProvider,
+    StitchingGuideProvider,
     TutorialSearchProvider,
     VideoIndexProvider,
 )
@@ -74,6 +75,7 @@ class Providers:
     photo: GarmentPhotoProvider | None = None  # reads a reference photo (Anthropic API or Gemini)
     embedder: EmbeddingProvider | None = None  # searches the sewing library by meaning (Gemini)
     video_index: VideoIndexProvider | None = None  # finds where a step starts inside a video (Gemini)
+    guide: StitchingGuideProvider | None = None  # words the guide steps for the design (Anthropic API); None = library text as is
 
 
 def build_providers(settings: Settings) -> Providers:
@@ -115,6 +117,7 @@ def build_providers(settings: Settings) -> Providers:
         from app.providers.anthropic_provider import (
             AnthropicClient,
             AnthropicFabricProvider,
+            AnthropicGuideProvider,
             AnthropicIdeaProvider,
             AnthropicIdeasProvider,
             AnthropicMaterialsProvider,
@@ -127,6 +130,7 @@ def build_providers(settings: Settings) -> Providers:
         providers.materials = AnthropicMaterialsProvider(client)
         providers.ideas = AnthropicIdeasProvider(client)
         providers.photo = AnthropicPhotoProvider(client)
+        providers.guide = AnthropicGuideProvider(client)
 
     # ----- tutorial search (free quota, no billing) -----
     if settings.tutorial_provider != "mock" and settings.youtube_api_key:

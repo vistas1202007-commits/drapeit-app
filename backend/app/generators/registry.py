@@ -18,7 +18,7 @@ from typing import Any
 
 from pydantic import BaseModel, ValidationError
 
-from app.providers.base import GeneratedImage, ImageRequest, ProviderInfo, UsageMeter
+from app.providers.base import GeneratedImage, ImageRequest, ProviderError, ProviderInfo, UsageMeter
 from app.providers.registry import Providers
 from app.schemas.design_spec import DesignSpec
 from app.schemas.outputs import (
@@ -31,12 +31,16 @@ from app.schemas.outputs import (
     SketchOutput,
     TutorialOutput,
 )
+from app.schemas.stitching import PhotoHints
 from app.services.cost_estimate import estimate_cost, starter_inputs
+from app.services.garment_parser import parse_garment
 from app.services.image_prompts import preview_prompt, sketch_prompt
 from app.services.pattern import build_pattern
+from app.services.stitching_guide import build_guide, load_knowledge
 from app.services.storyboard import build_storyboard
 from app.services.tailor_sheet import build_tailor_sheet
 from app.services.tutorials import build_tutorial
+from app.storage.knowledge_repository import KnowledgeRepository
 
 
 class GeneratorInputError(Exception):
@@ -55,6 +59,14 @@ def _no_assets() -> list[Any]:
     return []
 
 
+def _no_asset_bytes(asset_id: str) -> tuple[bytes, str] | None:
+    return None
+
+
+def _no_budget_problem(estimate: float) -> str | None:
+    return None
+
+
 @dataclass
 class GeneratorContext:
     spec: DesignSpec
@@ -68,6 +80,12 @@ class GeneratorContext:
     latest_output: Callable[[str], dict[str, Any] | None] = _no_lookup
     # The project's pictures (uploads, studio sketches, generated images), newest first.
     project_assets: Callable[[], list[Any]] = _no_assets
+    # The bytes and picture type of one of the project pictures, or None if it cannot be read.
+    load_asset: Callable[[str], tuple[bytes, str] | None] = _no_asset_bytes
+    # Says why a paid call of about this many dollars may not run today (daily limit), or None if it may.
+    budget_problem: Callable[[float], str | None] = _no_budget_problem
+    # The sewing library tables, when the app has a database for them.
+    knowledge_repo: KnowledgeRepository | None = None
 
 
 RunFn = Callable[[GeneratorContext], BaseModel]
@@ -193,6 +211,40 @@ def _tutorial(ctx: GeneratorContext) -> BaseModel:
     if language not in TUTORIAL_LANGUAGES:
         raise GeneratorInputError("Tutorial language must be any, en (English) or hi (Hindi).")
     return build_tutorial(ctx.spec, ctx.providers.tutorials, ctx.meter, language)
+
+
+PHOTO_TYPES = ("image/png", "image/jpeg", "image/webp")
+
+
+def _read_reference_photo(ctx: GeneratorContext) -> tuple[PhotoHints | None, list[str]]:
+    """What the newest uploaded reference photo shows, when a provider can look at pictures. Never fails the guide."""
+    reader = ctx.providers.photo
+    if reader is None or not ctx.options.get("read_photo", True):
+        return None, []
+    photo = next((a for a in ctx.project_assets() if a.kind == "upload" and a.mime_type in PHOTO_TYPES), None)
+    if photo is None:
+        return None, []
+    if problem := (ctx.budget_problem(reader.info.estimated_cost_usd) if reader.info.paid else None):
+        return None, [f"Your reference photo was not read: {problem}"]
+    loaded = ctx.load_asset(photo.id)
+    if loaded is None:
+        return None, []
+    try:
+        hints = reader.read_photo(loaded[0], loaded[1], ctx.spec, ctx.meter)
+    except ProviderError as exc:
+        return None, [f"Your reference photo could not be read ({exc}). The guide uses the design spec only."]
+    hints.notes = [f"From your photo \u201c{photo.filename}\u201d: {n}" for n in hints.notes]
+    return hints, []
+
+
+def _stitching_guide(ctx: GeneratorContext) -> BaseModel:
+    _need_garment(ctx, "building a stitching guide")
+    hints, photo_notes = _read_reference_photo(ctx)
+    garment = parse_garment(ctx.spec, hints)
+    knowledge = load_knowledge(ctx.knowledge_repo, ctx.providers.embedder)
+    guide = build_guide(ctx.spec, garment, knowledge, ctx.providers.guide, ctx.meter)
+    guide.notes = [*photo_notes, *guide.notes]
+    return guide
 
 
 def _variations(ctx: GeneratorContext) -> BaseModel:
@@ -336,6 +388,14 @@ GENERATORS: list[GeneratorDefinition] = [
         run=_tutorial, provider=lambda p: p.tutorials.info,
     ),
     GeneratorDefinition(
+        "stitching_guide", "Generate Stitching Guide",
+        "Step-by-step stitching in the order a tailor works, with the right tutorial video for each step.",
+        service="stitching_guide", phase=7,
+        depends_on=["garment_category", "silhouette", "fit", "neckline", "sleeve_style", "garment_length", "closures",
+                    "embellishments", "preferred_fabrics", "fabric_requirements", "design_notes", "visual_description"],
+        run=_stitching_guide, provider=lambda p: p.guide.info if p.guide else BUILT_IN,
+    ),
+    GeneratorDefinition(
         "video", "Generate Instructional Video",
         "No video provider is set up: makes a storyboard and script, plus links to real tutorials.",
         service="video_generation", phase=4,
@@ -350,4 +410,4 @@ GENERATORS_BY_ID: dict[str, GeneratorDefinition] = {g.id: g for g in GENERATORS}
 # The order the complete package runs in. Design runs first because the others
 # use the spec it produces.
 PACKAGE_ORDER = ["design", "sketch", "visual_preview", "fabric", "materials", "variations", "moodboard",
-                 "embroidery", "pattern", "tailor_sheet", "cost", "tutorial", "video"]
+                 "embroidery", "pattern", "tailor_sheet", "cost", "stitching_guide", "tutorial", "video"]

@@ -33,6 +33,7 @@ from app.services.generation import GenerationService
 from app.services.rate_limit import RateLimiter
 from app.storage.database import Database, DatabaseError
 from app.storage.files import StorageError, SupabaseStorage
+from app.storage.knowledge_repository import KnowledgeRepository
 from app.storage.repository import NotFoundError, Repository, SystemRepository
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -63,6 +64,7 @@ class Container:
     settings: Settings
     db: Database
     system: SystemRepository
+    knowledge: KnowledgeRepository
     store: SupabaseStorage
     verifier: TokenVerifier
     providers: Providers
@@ -74,7 +76,8 @@ class Container:
         return Repository(self.db, user_id)
 
     def generation_for(self, user_id: str) -> GenerationService:
-        return GenerationService(self.repo_for(user_id), self.system, self.store, self.providers, self.settings)
+        return GenerationService(self.repo_for(user_id), self.system, self.store, self.providers, self.settings,
+                                 self.knowledge)
 
 
 # AI generation can take a minute: these routes keep using a short transaction per step instead of holding
@@ -205,6 +208,7 @@ def create_app(settings: Settings | None = None, *, db: Database | None = None,
         settings=settings,
         db=db,
         system=SystemRepository(db),
+        knowledge=KnowledgeRepository(db),
         store=SupabaseStorage(settings.supabase_url, settings.supabase_secret_key, settings.storage_bucket,
                               client=http_client),
         verifier=TokenVerifier(settings.supabase_url, settings.supabase_jwt_secret, client=http_client),

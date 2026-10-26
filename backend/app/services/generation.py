@@ -28,7 +28,8 @@ from app.schemas.api import GenerationJob, PackageResult, PackageStepResult
 from app.schemas.design_spec import DesignSpec, changed_fields
 from app.schemas.outputs import DesignConceptOutput
 from app.storage.files import StorageError, SupabaseStorage
-from app.storage.repository import Repository, SystemRepository, new_id
+from app.storage.knowledge_repository import KnowledgeRepository
+from app.storage.repository import NotFoundError, Repository, SystemRepository, new_id
 
 IMAGE_EXTENSIONS = {"image/png": ".png", "image/jpeg": ".jpg", "image/webp": ".webp", "image/svg+xml": ".svg"}
 
@@ -53,8 +54,9 @@ class GenerationService:
     """Runs generators for one signed-in user (the user's `repo`)."""
 
     def __init__(self, repo: Repository, system: SystemRepository, store: SupabaseStorage,
-                 providers: Providers, settings: Settings) -> None:
+                 providers: Providers, settings: Settings, knowledge: KnowledgeRepository | None = None) -> None:
         self.repo = repo
+        self.knowledge = knowledge
         self.system = system
         self.store = store
         self.providers = providers
@@ -88,6 +90,16 @@ class GenerationService:
 
         return save
 
+    def _asset_loader(self):
+        def load(asset_id: str) -> tuple[bytes, str] | None:
+            try:
+                asset, path = self.repo.get_asset_with_path(asset_id)
+                return self.store.get(path), asset.mime_type
+            except (NotFoundError, StorageError):
+                return None  # the picture was deleted, or cannot be fetched right now
+
+        return load
+
     def run(self, project_id: str, generator_id: str, options: dict[str, Any]) -> GenerationJob:
         definition = GENERATORS_BY_ID.get(generator_id)
         if definition is None:
@@ -111,6 +123,7 @@ class GenerationService:
             ),
             latest_output=lambda gid: self.repo.latest_output(project_id, gid),
             project_assets=lambda: self.repo.list_assets(project_id),
+            load_asset=self._asset_loader(), budget_problem=self._budget_problem, knowledge_repo=self.knowledge,
         )
         try:
             if info.paid and (problem := self._budget_problem(info.estimated_cost_usd)):

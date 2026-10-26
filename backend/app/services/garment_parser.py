@@ -256,6 +256,8 @@ def parse_garment(spec: DesignSpec, photo: PhotoHints | None = None) -> GarmentC
         tags.append("french-seam")
     elif fabric_class in ("denim", "linen", "khadi") and family in ("top", "trousers", "jacket", "kurta", "jumpsuit", "dress"):
         tags.append("flat-fell")
+    else:
+        tags.append("plain-seam")
 
     lined = _has(corpus, FEATURE_WORDS["lined"]) or bool(photo and "lining" in " ".join(photo.features).lower())
     if lined:

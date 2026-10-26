@@ -72,6 +72,10 @@ class Settings:
     anthropic_effort: str = "medium"
     gemini_api_key: str | None = field(default=None, repr=False)
     gemini_image_model: str = "gemini-nano-banana-2.1"
+    # Gemini also reads reference photos, searches the sewing library by meaning and (if you ask) watches
+    # tutorial videos once to find where a step starts. Needs the same GEMINI_API_KEY.
+    gemini_text_model: str = "gemini-flash-latest"
+    gemini_embedding_model: str = "gemini-embedding-001"
     openai_api_key: str | None = field(default=None, repr=False)
     openai_image_model: str = "gpt-image-2"
     openai_image_quality: str = "medium"
@@ -153,6 +157,8 @@ def load_settings() -> Settings:
         anthropic_effort=os.environ.get("ANTHROPIC_EFFORT", "medium").strip().lower(),
         gemini_api_key=_secret("GEMINI_API_KEY"),
         gemini_image_model=os.environ.get("GEMINI_IMAGE_MODEL", "gemini-nano-banana-2.1").strip(),
+        gemini_text_model=os.environ.get("GEMINI_TEXT_MODEL", "gemini-flash-latest").strip(),
+        gemini_embedding_model=os.environ.get("GEMINI_EMBEDDING_MODEL", "gemini-embedding-001").strip(),
         openai_api_key=_secret("OPENAI_API_KEY"),
         openai_image_model=os.environ.get("OPENAI_IMAGE_MODEL", "gpt-image-2").strip(),
         openai_image_quality=os.environ.get("OPENAI_IMAGE_QUALITY", "medium").strip().lower(),

@@ -16,6 +16,10 @@ TUTORIAL_PROVIDER (Generate Tutorial and the Learning Library):
     "mock"   -> always "not connected" (search links only, never made-up videos)
 
 Design ideas (variations, moodboard, embroidery) follow LANGUAGE_PROVIDER.
+
+Stitching Guide extras (all optional; the guide works without them):
+    reference photo reading -> the Anthropic API if it is set up, else Gemini if GEMINI_API_KEY is set
+    library search by meaning and "find where a step starts in a video" -> Gemini
 Instructional videos have no provider yet: the generator makes a storyboard instead.
 """
 
@@ -27,11 +31,14 @@ from dataclasses import dataclass, field
 from app.config import Settings
 from app.providers.base import (
     DesignIdeasProvider,
+    EmbeddingProvider,
     FabricRecommendationProvider,
+    GarmentPhotoProvider,
     IdeaUnderstandingProvider,
     ImageGenerationProvider,
     MaterialsProvider,
     TutorialSearchProvider,
+    VideoIndexProvider,
 )
 from app.providers.mock.fabric import MockFabricProvider, MockMaterialsProvider
 from app.providers.mock.idea import MockIdeaProvider
@@ -63,6 +70,10 @@ class Providers:
     tutorials: TutorialSearchProvider
     # Problems with the setup worth showing on the AI Providers page.
     warnings: list[str] = field(default_factory=list)
+    # Stitching Guide extras. None means "not connected": the guide still works without them.
+    photo: GarmentPhotoProvider | None = None  # reads a reference photo (Anthropic API or Gemini)
+    embedder: EmbeddingProvider | None = None  # searches the sewing library by meaning (Gemini)
+    video_index: VideoIndexProvider | None = None  # finds where a step starts inside a video (Gemini)
 
 
 def build_providers(settings: Settings) -> Providers:
@@ -107,6 +118,7 @@ def build_providers(settings: Settings) -> Providers:
             AnthropicIdeaProvider,
             AnthropicIdeasProvider,
             AnthropicMaterialsProvider,
+            AnthropicPhotoProvider,
         )
 
         client = AnthropicClient(settings.anthropic_api_key or "", settings.anthropic_model, settings.anthropic_effort)
@@ -114,6 +126,7 @@ def build_providers(settings: Settings) -> Providers:
         providers.fabric = AnthropicFabricProvider(client)
         providers.materials = AnthropicMaterialsProvider(client)
         providers.ideas = AnthropicIdeasProvider(client)
+        providers.photo = AnthropicPhotoProvider(client)
 
     # ----- tutorial search (free quota, no billing) -----
     if settings.tutorial_provider != "mock" and settings.youtube_api_key:
@@ -122,6 +135,15 @@ def build_providers(settings: Settings) -> Providers:
         providers.tutorials = YouTubeSearchProvider(settings.youtube_api_key)
     elif settings.tutorial_provider == "youtube":
         warnings.append("TUTORIAL_PROVIDER is 'youtube' but YOUTUBE_API_KEY is empty, so tutorial search is off.")
+
+    # ----- Gemini extras for the Stitching Guide -----
+    if settings.gemini_api_key:
+        from app.providers.gemini_tools import GeminiEmbedder, GeminiPhotoProvider, GeminiVideoIndexer
+
+        if providers.photo is None:
+            providers.photo = GeminiPhotoProvider(settings.gemini_api_key, settings.gemini_text_model)
+        providers.embedder = GeminiEmbedder(settings.gemini_api_key, settings.gemini_embedding_model)
+        providers.video_index = GeminiVideoIndexer(settings.gemini_api_key, settings.gemini_text_model)
 
     # ----- images -----
     choice = settings.image_provider

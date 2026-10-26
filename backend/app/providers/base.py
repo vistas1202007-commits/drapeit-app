@@ -24,6 +24,7 @@ from app.schemas.outputs import (
     SketchStyle,
     VariationsOutput,
 )
+from app.schemas.stitching import PhotoHints
 
 
 @dataclass(frozen=True)
@@ -122,6 +123,9 @@ class VideoResult:
     published_at: str
     thumbnail_url: str
     duration_seconds: int | None = None
+    # The video's whole description (the search answer only carries the first few words).
+    # Chapters are read from it. Empty when the provider did not return it.
+    full_description: str = ""
 
 
 class TutorialSearchProvider(Protocol):
@@ -130,3 +134,40 @@ class TutorialSearchProvider(Protocol):
     connected: bool
 
     def search(self, query: str, max_results: int, language: str, meter: UsageMeter) -> list[VideoResult]: ...
+
+
+class GarmentPhotoProvider(Protocol):
+    """Reads a reference photo of a garment (needs a provider that can look at pictures)."""
+
+    info: ProviderInfo
+
+    def read_photo(self, image: bytes, mime_type: str, spec: DesignSpec, meter: UsageMeter) -> PhotoHints: ...
+
+
+class EmbeddingProvider(Protocol):
+    """Turns text into numbers so texts can be compared by meaning."""
+
+    info: ProviderInfo
+    dimensions: int
+
+    def embed(self, texts: list[str], purpose: Literal["document", "query"] = "document") -> list[list[float]]: ...
+
+
+@dataclass(frozen=True)
+class VideoSegment:
+    """Where a technique is shown inside a video, in seconds."""
+
+    module_slug: str
+    start_seconds: int
+    end_seconds: int
+
+
+class VideoIndexProvider(Protocol):
+    """Watches a video once and finds where each technique is shown."""
+
+    info: ProviderInfo
+
+    def estimate_cost(self, duration_seconds: int) -> float: ...
+
+    def index(self, video_id: str, duration_seconds: int, topics: list[tuple[str, str]],
+              meter: UsageMeter) -> list[VideoSegment]: ...

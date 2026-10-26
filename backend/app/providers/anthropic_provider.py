@@ -14,6 +14,7 @@ the browser and never saved in the database.
 
 from __future__ import annotations
 
+import base64
 import logging
 from typing import Any, Literal, TypeVar
 
@@ -34,6 +35,8 @@ from app.schemas.outputs import (
     Suggestion,
     VariationsOutput,
 )
+from app.providers.photo import PHOTO_PROMPT, PhotoAnswer
+from app.schemas.stitching import PhotoHints
 
 log = logging.getLogger(__name__)
 
@@ -163,8 +166,16 @@ class AnthropicClient:
         price_in, price_out = PRICES_PER_MTOK.get(model_family(self.model), UNKNOWN_MODEL_PRICE)
         return (input_tokens * price_in + output_tokens * price_out) / 1_000_000
 
-    def ask(self, user_text: str, answer_type: type[T], meter: UsageMeter, label: str) -> T:
+    def ask(self, user_text: str, answer_type: type[T], meter: UsageMeter, label: str,
+            images: list[tuple[bytes, str]] | None = None) -> T:
         extra: dict[str, Any] = {}
+        content: Any = user_text
+        if images:
+            content = [
+                *({"type": "image", "source": {"type": "base64", "media_type": mime, "data": base64.b64encode(data).decode()}}
+                  for data, mime in images),
+                {"type": "text", "text": user_text},
+            ]
         if model_family(self.model) in FALLBACK_MODELS:
             extra = {"betas": [FALLBACK_BETA], "fallbacks": "default"}
         try:
@@ -172,7 +183,7 @@ class AnthropicClient:
                 model=self.model,
                 max_tokens=16000,
                 system=SYSTEM_PROMPT,
-                messages=[{"role": "user", "content": user_text}],
+                messages=[{"role": "user", "content": content}],
                 output_config={"effort": self.effort},
                 output_format=answer_type,
                 **extra,
@@ -342,3 +353,15 @@ class AnthropicIdeasProvider:
             "<design_spec>\n" + _spec_brief(spec) + "\n</design_spec>"
         )
         return self.client.ask(prompt, EmbroideryOutput, meter, "embroidery")
+
+
+class AnthropicPhotoProvider:
+    """Reads a reference photo with the Anthropic API (the model can look at pictures)."""
+
+    def __init__(self, client: AnthropicClient) -> None:
+        self.client = client
+        self.info = _info(client.model, "reads a reference photo", 0.05)
+
+    def read_photo(self, image: bytes, mime_type: str, spec: DesignSpec, meter: UsageMeter) -> PhotoHints:
+        answer = self.client.ask(PHOTO_PROMPT, PhotoAnswer, meter, "Reference photo", images=[(image, mime_type)])
+        return PhotoHints(**answer.model_dump())

@@ -58,8 +58,8 @@ export function GuideVideoPlayer({ step }: { step: GuideStep }) {
                 <path d="M8 5v14l11-7z" />
               </svg>
             </span>
-            <span className="absolute bottom-2 left-2 rounded bg-overlay/80 px-2 py-0.5 text-xs font-medium text-on-overlay">{playLabel(video)}</span>
-            {video.duration && <span className="absolute bottom-2 right-2 rounded bg-overlay/75 px-1 text-[11px] text-on-overlay">{video.duration}</span>}
+            <span className="absolute bottom-2 left-2 right-2 w-fit max-w-[calc(100%-1rem)] rounded bg-overlay/80 px-2 py-0.5 text-xs font-medium text-on-overlay">{playLabel(video)}</span>
+            {video.duration && <span className="absolute right-2 top-2 rounded bg-overlay/75 px-1 text-[11px] text-on-overlay">{video.duration}</span>}
           </button>
         )}
       </div>

@@ -128,9 +128,9 @@ export function StitchingGuideView({ job }: { job: GenerationJob }) {
         setDone(ticks);
         setFirstOpen(steps.find((s) => !ticks.has(s.key))?.key ?? "");
       })
-      .catch(() => {
+      .catch((e) => {
         if (cancelled) return;
-        setProblem("Your saved ticks could not be loaded. Ticks you make now may not be saved.");
+        setProblem(`Your saved ticks could not be loaded${e instanceof Error ? `: ${e.message}` : "."} Ticks you make now may not be saved.`);
         setFirstOpen(steps[0]?.key ?? "");
       });
     return () => {

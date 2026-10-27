@@ -23,7 +23,7 @@ MIGRATIONS = BACKEND.parent / "supabase" / "migrations"
 SHIM = Path(__file__).with_name("supabase_shim.sql")
 EXE = ".exe" if os.name == "nt" else ""
 
-# Everything else cascades from projects (and from sewing_modules for video_segments).
+# Everything else cascades from projects (and video_segments from video_index_runs).
 APP_TABLES = ["projects", "provider_usage", "sewing_modules", "sewing_fabric_rules", "video_search_cache", "video_index_runs"]
 
 

@@ -68,7 +68,8 @@ create table public.video_index_runs (
 -- Where in a video a technique is shown, found by that AI watching.
 create table public.video_segments (
   video_id text not null references public.video_index_runs(video_id) on delete cascade,
-  module_slug text not null references public.sewing_modules(slug) on delete cascade,
+  -- Not a foreign key: the guide may be using the library files before the seed script has run.
+  module_slug text not null check (module_slug ~ '^[a-z0-9][a-z0-9-]*$'),
   start_seconds integer not null check (start_seconds >= 0),
   end_seconds integer not null check (end_seconds > start_seconds),
   created_at timestamptz not null default now(),

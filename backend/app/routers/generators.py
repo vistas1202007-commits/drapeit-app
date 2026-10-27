@@ -81,10 +81,20 @@ def list_providers(ctx: Context) -> Any:
         ProviderStatus(service="Video generation", provider="none", is_mock=False, configured=False,
                        note="No provider set up. Instructional Video makes a free storyboard and script instead.")
     )
-    statuses.append(
-        ProviderStatus(service="Vision / sketch analysis", provider="none", is_mock=False, configured=False,
-                       note="Not connected yet (later phase).")
+    extras = (
+        ("Stitching Guide: reading a reference photo", p.photo,
+         "Not connected. Set up the Anthropic API, or add a GEMINI_API_KEY, to read your reference photo."),
+        ("Stitching Guide: finding where a step starts in a video", p.video_index,
+         "Not connected. Video chapters are still used. Add a GEMINI_API_KEY to let it watch videos once."),
+        ("Stitching Guide: searching the sewing library by meaning", p.embedder,
+         "Not connected. Steps are still picked from the garment's features. Add a GEMINI_API_KEY to turn it on."),
     )
+    for service, provider, missing in extras:
+        statuses.append(
+            ProviderStatus(service=service, provider=provider.info.name if provider else "none", is_mock=False,
+                           configured=provider is not None, note=provider.info.note if provider else missing,
+                           paid=bool(provider and provider.info.paid))
+        )
     return ProviderOverview(
         services=statuses,
         warnings=p.warnings,

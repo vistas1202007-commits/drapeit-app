@@ -34,6 +34,7 @@ from app.schemas.outputs import (
 from app.schemas.stitching import PhotoHints
 from app.services.cost_estimate import estimate_cost, starter_inputs
 from app.services.garment_parser import parse_garment
+from app.services.guide_videos import attach_videos
 from app.services.image_prompts import preview_prompt, sketch_prompt
 from app.services.pattern import build_pattern
 from app.services.stitching_guide import build_guide, load_knowledge
@@ -243,6 +244,14 @@ def _stitching_guide(ctx: GeneratorContext) -> BaseModel:
     garment = parse_garment(ctx.spec, hints)
     knowledge = load_knowledge(ctx.knowledge_repo, ctx.providers.embedder)
     guide = build_guide(ctx.spec, garment, knowledge, ctx.providers.guide, ctx.meter)
+    language = ctx.options.get("language", "any")
+    if language not in TUTORIAL_LANGUAGES:
+        raise GeneratorInputError("Video language must be any, en (English) or hi (Hindi).")
+    if ctx.options.get("videos", True):
+        attach_videos(guide, {m.slug: m for m in knowledge.modules}, ctx.providers.tutorials, ctx.knowledge_repo,
+                      ctx.meter, language, beginner=ctx.spec.skill_level == "beginner",
+                      indexer=ctx.providers.video_index, index_videos=bool(ctx.options.get("index_videos")),
+                      budget_problem=ctx.budget_problem)
     guide.notes = [*photo_notes, *guide.notes]
     return guide
 

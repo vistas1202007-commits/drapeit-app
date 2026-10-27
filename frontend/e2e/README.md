@@ -37,6 +37,7 @@ accounts themselves (the rest goes with them).
 | --- | --- |
 | `auth.setup.ts` | signs each account in through the real sign-in screen |
 | `flows/01` … `flows/09` | sign-up and onboarding, profile, designs (notebook, studio, fabric, tailor, cost), publishing with each visibility, likes / comments / saves / reposts / safety tools, chats and notifications, every settings page, admin actions, and security (one person reaching another's data) |
+| `pages/stitching-guide.e2e.ts` | the Stitching Guide on desktop and phone: generate it, tick a step (still ticked after a reload), open a step's video at its chapter, the Stale badge, tap sizes, no sideways scrolling. With `E2E_EXPECT_VIDEOS=1` the backend must have tutorial search connected and the "Sew the darts" video must start at 3:10 |
 | `pages/all-pages.e2e.ts` | every page on desktop and phone: time until content, stuck loading messages, sideways scrolling, crashes, empty states, signed-out access, the phone menu, buttons that do nothing |
 | `support/qa.ts` | shared helpers; findings (console errors, failed requests, slow pages) go to `e2e/.results/findings.jsonl` |
 

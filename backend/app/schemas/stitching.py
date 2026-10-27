@@ -122,6 +122,7 @@ class StitchingGuideOutput(BaseModel):
     knowledge_source: str = "built-in library"
     video_source: str = "not connected"
     video_connected: bool = False
+    video_language: str = "any"
     notes: list[str] = Field(default_factory=list)
 
 

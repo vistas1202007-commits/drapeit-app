@@ -247,6 +247,7 @@ def _stitching_guide(ctx: GeneratorContext) -> BaseModel:
     language = ctx.options.get("language", "any")
     if language not in TUTORIAL_LANGUAGES:
         raise GeneratorInputError("Video language must be any, en (English) or hi (Hindi).")
+    guide.video_language = language
     if ctx.options.get("videos", True):
         attach_videos(guide, {m.slug: m for m in knowledge.modules}, ctx.providers.tutorials, ctx.knowledge_repo,
                       ctx.meter, language, beginner=ctx.spec.skill_level == "beginner",

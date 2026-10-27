@@ -2,6 +2,10 @@
 
 These are starting points, not laws. Weaves, finishes and blends differ a lot, so the guide always
 tells the sewer to try the settings on a scrap of the real fabric first.
+
+Advice comes in two kinds. `by_phase` is true for the whole phase (it appears once, under the phase heading).
+`by_module` belongs to one technique (it appears on that step only). Advice a module already carries in its own
+`fabric_notes` is not repeated here.
 """
 
 from app.knowledge import FabricRule
@@ -18,13 +22,20 @@ RULES: list[FabricRule] = [
                "Raw silk and dupion ravel badly: finish every edge before you handle the pieces much.",
                "Needle holes in silk are permanent, so unpick as little as possible."),
         by_phase={
-            "prep": ("Do not wash silk unless the seller says it is washable. Steam it flat instead.",
-                     "Cut silk in a single layer, with sharp shears or a rotary cutter, on a surface that does not slip."),
-            "shaping": ("Sew darts with a short stitch and tie the ends in a knot rather than backstitching.",),
+            "prep": ("Silk slips and frays: work on a surface that does not slide, and handle the cut pieces as little as you can.",),
+            "shaping": ("Silk shows every needle hole and pressing mark, so sew each shaping line once, carefully, and press gently with a cloth.",),
             "main_seams": ("Use a fine needle and let the machine feed the fabric. Hold it gently in front of and behind the foot.",),
-            "openings": ("Add a strip of light interfacing or silk organza to zip areas and buttonholes so they do not pucker.",),
+            "openings": ("Silk puckers around edge finishes. A strip of light interfacing or silk organza under an opening keeps it flat.",),
             "hem": ("A hand-stitched hem hangs best on silk. Press it with a low heat and a cloth.",),
             "pressing": ("Press with a low heat and a cloth. Do not rub: silk shows shine and water marks.",),
+        },
+        by_module={
+            "prepare-fabric": ("Do not wash silk unless the seller says it is washable. Steam it flat instead.",),
+            "layout-and-cutting": ("Cut silk in a single layer, with sharp shears or a rotary cutter, on a surface that does not slip.",),
+            "darts": ("Sew darts with a short stitch and tie the ends in a knot rather than backstitching.",),
+            "invisible-zip": ("Add a strip of light interfacing or silk organza to the zip area so it does not pucker.",),
+            "lapped-zip": ("Add a strip of light interfacing or silk organza to the zip area so it does not pucker.",),
+            "buttons-and-buttonholes": ("Put a small piece of silk organza behind each buttonhole so it does not pucker.",),
         },
     ),
     FabricRule(
@@ -38,13 +49,19 @@ RULES: list[FabricRule] = [
                "Lay tissue paper under the fabric when you sew. Tear it away afterwards.",
                "If the garment is fitted, a lining or an underskirt is usually needed."),
         by_phase={
-            "prep": ("Cut on tissue paper or on a sheet, in a single layer, with very sharp scissors.",
-                     "Use plenty of fine pins in the seam allowance only, or pattern weights."),
-            "shaping": ("Sew darts with a short stitch, and press them gently, not hard, or the fold will show as a mark.",),
-            "main_seams": ("Choose French seams where they are possible. Use a straight-stitch plate if your machine has one.",),
-            "openings": ("Stabilise the zip and buttonhole areas with organza, or the fabric will pull into waves.",),
+            "prep": ("Chiffon is slippery and sheer. Keep the cut pieces flat and handle them gently so they do not stretch.",),
+            "shaping": ("Shaping lines show through chiffon, so keep the stitching narrow and neat.",),
+            "main_seams": ("Use a straight-stitch plate if your machine has one, and tissue paper under the fabric as you sew.",),
+            "openings": ("Stabilise zip and buttonhole areas with organza, or the fabric will pull into waves.",),
             "hem": ("A narrow rolled hem is the usual finish on chiffon.",),
             "pressing": ("Press on a low heat with a cloth and let the fabric cool. Steam can shrink or ripple some chiffons.",),
+        },
+        by_module={
+            "layout-and-cutting": ("Cut on tissue paper or on a sheet, in a single layer, with very sharp scissors.",
+                                   "Use plenty of fine pins in the seam allowance only, or pattern weights."),
+            "darts": ("Sew darts with a short stitch, and press them gently, not hard, or the fold will show as a mark.",),
+            "french-seam": ("Choose French seams wherever the seam is straight. Chiffon frays too easily for a plain seam.",),
+            "lapped-zip": ("Stabilise the zip area with a strip of organza, or the zip will ripple.",),
         },
     ),
     FabricRule(
@@ -57,13 +74,18 @@ RULES: list[FabricRule] = [
         notes=("Georgette has a crinkly, bouncy surface. It frays and shifts, but is easier than chiffon.",
                "It is slightly see-through: choose a lining or a slip for the body of fitted garments."),
         by_phase={
-            "prep": ("Georgette shrinks a little with steam. Pre-treat it the way you will treat the garment.",
-                     "Cut in a single layer and keep all pieces on the same grain. Georgette hangs differently on the bias."),
-            "shaping": ("Gathers look good on georgette. Use two rows of stitching and let the fabric bounce back before you pin.",),
-            "main_seams": ("A French seam looks tidy and is easy on georgette. Use a longer tail of thread at the ends.",),
-            "openings": ("Use bias binding in a matching georgette for the neckline. It gives a light, soft finish.",),
+            "prep": ("Georgette frays and shifts, so cut in a single layer and keep every piece on the same grain.",),
+            "shaping": ("Georgette shifts under the presser foot, so pin shaping lines closely and baste by hand if the layers creep.",),
+            "main_seams": ("Use a fine needle and a short to medium stitch. Georgette is bouncy and stretches easily, so let the machine do the feeding.",),
+            "openings": ("Light fabric ripples at openings. A thin strip of interfacing or organza keeps zips and edges flat.",),
             "hem": ("A rolled hem or a narrow machine hem suits georgette. Heavy hems pull the fabric down.",),
             "pressing": ("Press with a low heat and a cloth. Let the steam settle and cool before moving the fabric.",),
+        },
+        by_module={
+            "prepare-fabric": ("Georgette shrinks a little with steam. Pre-treat it the way you will treat the garment.",),
+            "layout-and-cutting": ("Georgette hangs differently on the bias, so check the grain line on every piece.",),
+            "gathers": ("Gathers look good on georgette. Use two rows of stitching and let the fabric bounce back before you pin.",),
+            "french-seam": ("A French seam looks tidy and is easy on georgette. Use a longer tail of thread at the ends.",),
         },
     ),
     FabricRule(
@@ -76,12 +98,16 @@ RULES: list[FabricRule] = [
         notes=("Cotton is the easiest fabric to learn on. It does not slip and it holds a crease.",
                "Fine cotton such as voile and mulmul is sheer and frays: treat it like a light fabric."),
         by_phase={
-            "prep": ("Wash and dry cotton before cutting. It shrinks, and the finish will wash out.",),
-            "shaping": ("Cotton holds pleats and darts with a firm press. Press each fold as you go.",),
+            "prep": ("Cotton is forgiving and does not slip, which makes it a good fabric to learn on. Still cut carefully on the grain.",),
+            "shaping": ("Cotton holds a fold well: press every dart, pleat and gathered seam firmly as you go.",),
             "main_seams": ("A medium stitch length gives strong seams. Press each seam before crossing it with another.",),
-            "openings": ("Use a lightweight fusible interfacing on collars and waistbands to keep them crisp.",),
-            "hem": ("A double-fold machine hem is quick and strong on cotton.",),
+            "openings": ("Use a lightweight fusible interfacing wherever an opening or an edge needs to stay crisp.",),
+            "hem": ("Cotton takes a crisp, flat hem. Press the fold before you stitch it.",),
             "pressing": ("Use a hot iron with steam. Press while the fabric is slightly damp for the sharpest result.",),
+        },
+        by_module={
+            "prepare-fabric": ("Wash and dry cotton before cutting. It shrinks, and the finish will wash out.",),
+            "machine-hem": ("A double-fold machine hem is quick and strong on cotton.",),
         },
     ),
     FabricRule(
@@ -95,13 +121,17 @@ RULES: list[FabricRule] = [
                "Linen softens and shrinks with washing. Treat the fabric before cutting.",
                "A lining stops linen from creasing too much at the seat or elbow."),
         by_phase={
-            "prep": ("Wash linen twice, if you plan to wash the garment often. Press it before cutting.",
-                     "Finish all the cut edges soon after cutting, or they will fray in your hands."),
-            "shaping": ("Press pleats and darts with steam. Linen shapes well when damp.",),
-            "main_seams": ("Flat-fell and bound seams hold linen together well, since linen frays and wears at the seam.",),
-            "openings": ("Use interfacing of a similar weight, or linen itself, so stiff collars do not look out of place.",),
-            "hem": ("A deeper double-fold hem looks good and keeps linen from fraying.",),
-            "pressing": ("Press with steam while slightly damp. Press the right side with a cloth to avoid shine.",),
+            "prep": ("Linen frays quickly. Finish cut edges early and keep the pieces flat so they do not crease.",),
+            "shaping": ("Linen creases easily but shapes well when damp, so press every fold with steam.",),
+            "main_seams": ("Choose seams that enclose the raw edge (flat-fell, French or bound): linen frays and wears at the seam.",),
+            "openings": ("Use interfacing of a similar weight, so stiff areas do not look out of place.",),
+            "hem": ("A deeper hem looks good on linen and keeps the edge from fraying.",),
+            "pressing": ("Press with plenty of steam while slightly damp. Press the right side through a cloth to avoid shine.",),
+        },
+        by_module={
+            "prepare-fabric": ("Wash linen twice if you plan to wash the garment often. Press it before cutting.",),
+            "finish-raw-edges": ("Finish all the cut edges soon after cutting, or linen will fray in your hands.",),
+            "flat-fell-seam": ("Flat-fell seams hold linen together well and hide the raw edges that fray.",),
         },
     ),
     FabricRule(
@@ -114,12 +144,16 @@ RULES: list[FabricRule] = [
         notes=("Denim is thick, strong and hard on needles. Sew slowly across thick seams.",
                "Use a jeans needle and keep pressure steady. Do not force the needle through."),
         by_phase={
-            "prep": ("Wash denim twice before cutting: it shrinks, and often loses colour in the first wash.",),
-            "shaping": ("Use a longer stitch for darts and press hard to one side. Thick darts need a hammer, too.",),
-            "main_seams": ("Sew flat-fell seams. Hammer the thick crossings flat, and take thick spots slowly.",),
-            "openings": ("Use a strong zip and a bar tack or rivet at stress points like pocket corners and the base of a fly.",),
+            "prep": ("Denim is thick: use sharp shears, keep the pieces flat and cut them one layer at a time.",),
+            "shaping": ("Heavy fabric needs a longer stitch for shaping lines. Press them hard, and tap thick ones flat with a hammer.",),
+            "main_seams": ("Sew slowly across thick seam crossings. Hammer them flat first, and do not force the needle.",),
+            "openings": ("Use strong zips, and reinforce stress points such as pocket corners and the base of a fly with a bar tack or rivet.",),
             "hem": ("Fold the hem twice and topstitch with heavy thread. Hammer the seam crossings first.",),
-            "pressing": ("Press with a hot iron with steam. A clapper (a block of wood) sets the creases for good.",),
+            "pressing": ("Press with a hot iron and steam. A clapper (a block of wood) sets creases for good.",),
+        },
+        by_module={
+            "flat-fell-seam": ("Sew flat-fell seams on denim. Hammer the thick crossings flat, and take thick spots slowly.",),
+            "waistband": ("Use a strong, stiff interfacing and a bar tack at the ends of the waistband.",),
         },
     ),
     FabricRule(
@@ -133,12 +167,17 @@ RULES: list[FabricRule] = [
                "Velvet pile creeps: one layer slides on the other while you sew. Baste it by hand or use a walking foot.",
                "Velvet sheds. Finish raw edges and vacuum your sewing area."),
         by_phase={
-            "prep": ("Cut every piece with the pile running the same way (usually up). Mark with chalk on the back, not with pins in the face.",),
-            "shaping": ("Do not press hard on darts. Slit wide ones open and steam them over a needle board.",),
-            "main_seams": ("Baste first, or use a walking foot. Sew in the direction of the pile.",),
-            "openings": ("Use sew-in interfacing and hand-stitch where you can. Zips need a stabilised opening.",),
+            "prep": ("Velvet has a pile: keep every piece running the same way. Vacuum your sewing area, because velvet sheds.",),
+            "shaping": ("Never press velvet hard. Steam shaping lines over a needle board or a thick towel, with the pile facing it.",),
+            "main_seams": ("Velvet creeps: baste first, or use a walking foot, and sew in the direction of the pile.",),
+            "openings": ("Use sew-in interfacing and hand-stitch wherever you can.",),
             "hem": ("Hem velvet by hand with a seam binding on the edge. A machine hem leaves ridges on the pile.",),
             "pressing": ("Steam from the back over a needle board. If you must press the front, use a very soft brush and no pressure.",),
+        },
+        by_module={
+            "layout-and-cutting": ("Cut every piece with the pile running the same way (usually up). Mark with chalk on the back, not with pins in the face.",),
+            "plain-seam": ("Baste first, or use a walking foot. Sew in the direction of the pile.",),
+            "lapped-zip": ("Stabilise the zip opening with a strip of interfacing tape before you sew.",),
         },
     ),
     FabricRule(
@@ -152,13 +191,17 @@ RULES: list[FabricRule] = [
                "It shrinks and softens with every wash. Pre-wash more than once if you will wash the garment often.",
                "Khadi frays: finish seams soon after sewing."),
         by_phase={
-            "prep": ("Soak and wash khadi before cutting. It carries starch and shrinks.",
-                     "Handloom edges may not be straight. Straighten the grain before you cut."),
-            "shaping": ("Gathers and pleats sit well on khadi. Use steam to set them.",),
-            "main_seams": ("Overlock or zigzag all seam edges, since the loose weave frays.",),
-            "openings": ("Interface collars and plackets to keep their shape, because khadi is soft and drapey after washing.",),
+            "prep": ("Khadi is handwoven, so the weave can be uneven. Check the grain carefully before you cut.",),
+            "shaping": ("Khadi takes steam well: set darts, pleats and gathers with steam while the fabric is slightly damp.",),
+            "main_seams": ("Overlock or zigzag all seam edges soon after sewing, because the loose weave frays.",),
+            "openings": ("Khadi is soft and drapey after washing: interface collars, plackets and waistbands so they keep their shape.",),
             "hem": ("A deep double-fold hem keeps khadi from fraying and helps the garment hang.",),
             "pressing": ("Press with steam while slightly damp. Khadi creases easily and relaxes with a firm press.",),
+        },
+        by_module={
+            "layout-and-cutting": ("Handloom edges may not be straight. Straighten the grain before you cut.",),
+            "pleats": ("Pleats sit well on khadi. Use steam to set them.",),
+            "gathers": ("Gathers sit well on khadi. Use steam to set them.",),
         },
     ),
 ]

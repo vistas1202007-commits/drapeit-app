@@ -106,20 +106,29 @@ def test_a_garment_with_nothing_chosen_still_gets_a_short_honest_guide():
 # ---------- fabric advice ----------
 
 
-def test_fabric_card_and_fabric_tips_come_from_the_fabric_rules():
+def test_fabric_card_and_phase_advice_come_from_the_fabric_rules():
     guide = guide_for(anarkali())
     assert guide.fabric_card is not None and guide.fabric_card.fabric == "Georgette"
     assert "French seam" in guide.fabric_card.seam_types
-    tips_by_phase = {}
-    for s in guide.steps:
-        tips_by_phase.setdefault(s.phase, []).extend(s.fabric_tips)
-    for phase in ("prep", "main_seams", "hem", "pressing"):
-        assert tips_by_phase[phase], phase
     rules = {r.fabric: r for r in all_fabric_rules()}["georgette"]
-    first_prep = next(s for s in guide.steps if s.phase == "prep")
-    assert rules.by_phase["prep"][0] in first_prep.fabric_tips
-    # the phase advice is given once, on the first step of the phase, not repeated on every step
-    assert sum(rules.by_phase["prep"][0] in s.fabric_tips for s in guide.steps) == 1
+    assert guide.phase_tips == {phase: list(tips) for phase, tips in rules.by_phase.items()}
+    for phase in ("prep", "main_seams", "hem", "pressing"):
+        assert guide.phase_tips[phase], phase
+    # advice for a whole phase belongs under the phase heading, never repeated on one of its steps
+    everything = {tip for s in guide.steps for tip in s.fabric_tips}
+    assert not everything & {tip for tips in rules.by_phase.values() for tip in tips}
+
+
+def test_advice_for_a_technique_is_on_that_technique_s_step_and_nowhere_else():
+    steps = {s.module_slug: s for s in guide_for(anarkali(silhouette="Flared, fitted bodice, gathered skirt")).steps}
+    gathers_tip = "Gathers look good on georgette. Use two rows of stitching and let the fabric bounce back before you pin."
+    assert gathers_tip in steps["gathers"].fabric_tips
+    assert gathers_tip not in steps["darts"].fabric_tips  # the tip that used to land on the first shaping step
+    assert any("French seam looks tidy" in t for t in steps["french-seam"].fabric_tips)
+    assert not any("French seam looks tidy" in t for step in steps.values() if step.module_slug != "french-seam" for t in step.fabric_tips)
+    # a module's own fabric note comes before the fabric rule's advice
+    georgette_hem = steps["rolled-hem"].fabric_tips
+    assert georgette_hem and "tissue" not in " ".join(georgette_hem)  # that note is for chiffon, not georgette
 
 
 def test_module_specific_fabric_notes_appear_on_that_step_only_for_that_fabric():
@@ -127,6 +136,8 @@ def test_module_specific_fabric_notes_appear_on_that_step_only_for_that_fabric()
     assert any("needle board" in t for t in velvet["darts"].fabric_tips)
     cotton = {s.module_slug: s for s in guide_for(anarkali(preferred_fabrics=["Cotton"])).steps}
     assert not any("needle board" in t for t in cotton["darts"].fabric_tips)
+    chiffon = {s.module_slug: s for s in guide_for(anarkali(preferred_fabrics=["Chiffon"])).steps}
+    assert any("tissue" in t for t in chiffon["rolled-hem"].fabric_tips)
 
 
 # ---------- searching the design's own words ----------

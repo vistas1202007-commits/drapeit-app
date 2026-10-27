@@ -378,6 +378,90 @@ export interface TutorialOutput {
   notes: string[];
 }
 
+// ----- Stitching Guide -----
+
+export type GuidePhase = "prep" | "shaping" | "main_seams" | "openings" | "side_seams" | "hem" | "pressing";
+
+export interface GarmentComponents {
+  garment_type: string;
+  family: string;
+  bodice: string;
+  neckline: string;
+  neckline_finish: string;
+  sleeves: string;
+  skirt: string;
+  closure: string;
+  closure_position: string;
+  length: string;
+  fabric: string;
+  fabric_class: string;
+  fabric_weight: "light" | "medium" | "heavy";
+  lined: boolean;
+  features: string[];
+  source: "spec" | "spec+photo";
+  assumptions: string[];
+  photo_notes: string[];
+}
+
+export interface GuideVideo {
+  video_id: string;
+  title: string;
+  channel: string;
+  url: string;
+  thumbnail_url: string;
+  duration: string;
+  start_seconds: number;
+  end_seconds: number | null;
+  timing: "chapter" | "indexed" | "whole_video";
+  chapter_title: string;
+  relevance: string[];
+}
+
+export interface GuideStep {
+  key: string;
+  number: number;
+  phase: GuidePhase;
+  phase_label: string;
+  title: string;
+  module_slug: string;
+  module_title: string;
+  why: string;
+  instructions: string[];
+  tips: string[];
+  fabric_tips: string[];
+  video: GuideVideo | null;
+  more_videos: GuideVideo[];
+  video_status: "found" | "none" | "not_connected";
+  search_query: string;
+  search_url: string;
+}
+
+export interface FabricCard {
+  fabric: string;
+  needle: string;
+  thread: string;
+  stitch_length: string;
+  seam_types: string[];
+  pressing: string;
+  notes: string[];
+}
+
+export interface StitchingGuideOutput {
+  garment: GarmentComponents;
+  fabric_card: FabricCard | null;
+  steps: GuideStep[];
+  knowledge_source: string;
+  video_source: string;
+  video_connected: boolean;
+  video_language: string;
+  notes: string[];
+}
+
+export interface StitchingProgress {
+  version_number: number;
+  done_keys: string[];
+}
+
 export interface ColourSwatch {
   name: string;
   hex: string;

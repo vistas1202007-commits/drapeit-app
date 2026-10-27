@@ -57,6 +57,7 @@ import type {
   SearchEntry,
   SearchResults,
   SendResult,
+  StitchingProgress,
   SuggestedPerson,
   TimeDay,
   TutorialVideo,
@@ -244,6 +245,11 @@ export const api = {
   retryJob: (id: string, jobId: string) => request<GenerationJob>(`/api/projects/${id}/jobs/${jobId}/retry`, json("POST")),
   applyDesign: (id: string, jobId: string) =>
     request<{ version_number: number }>(`/api/projects/${id}/jobs/${jobId}/apply`, json("POST")),
+  /** Ticked steps of a stitching guide, saved per design version. */
+  getStitchingProgress: (id: string, version: number) =>
+    request<StitchingProgress>(`/api/projects/${id}/stitching-progress?version=${version}`),
+  setStitchingStep: (id: string, version: number, stepKey: string, done: boolean) =>
+    request<StitchingProgress>(`/api/projects/${id}/stitching-progress`, json("PUT", { version_number: version, step_key: stepKey, done })),
   deleteJob: (id: string, jobId: string) => request<void>(`/api/projects/${id}/jobs/${jobId}`, { method: "DELETE" }),
   /** Download the tailor sheet PDF (dated in the user's own time zone). */
   downloadTailorPdf: (id: string, jobId: string) =>

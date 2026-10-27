@@ -41,6 +41,7 @@ create table public.sewing_fabric_rules (
   pressing text not null,
   notes jsonb not null,
   by_phase jsonb not null default '{}',
+  by_module jsonb not null default '{}',
   updated_at timestamptz not null default now()
 );
 

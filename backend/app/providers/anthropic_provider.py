@@ -23,6 +23,7 @@ import anthropic
 from annotated_types import MaxLen
 from pydantic import BaseModel
 
+from app.knowledge import fabric_notes_for
 from app.providers.base import ProviderError, ProviderInfo, StepPlan, UsageMeter
 from app.schemas.design_spec import DesignSpec, TailorNotes
 from app.schemas.outputs import (
@@ -404,11 +405,11 @@ class AnthropicGuideProvider:
             "fabric_card": None if fabric is None else {
                 "fabric": fabric.title, "needle": fabric.needle, "thread": fabric.thread,
                 "stitch_length": fabric.stitch_length, "seam_types": list(fabric.seam_types),
-                "pressing": fabric.pressing, "notes": list(fabric.notes), "by_phase": {k: list(v) for k, v in fabric.by_phase.items()},
+                "pressing": fabric.pressing, "notes": list(fabric.notes),
             },
             "modules": [
                 {"slug": m.slug, "title": m.title, "phase": m.phase, "reason": reasons.get(m.slug, ""),
-                 "instructions": list(m.steps), "tips": list(m.tips), "fabric_notes": m.fabric_notes}
+                 "instructions": list(m.steps), "tips": list(m.tips), "fabric_notes": fabric_notes_for(m, fabric)}
                 for m in modules
             ],
         }

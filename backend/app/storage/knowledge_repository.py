@@ -75,7 +75,8 @@ class KnowledgeRepository:
         return [
             FabricRule(fabric=r["fabric"], title=r["title"], needle=r["needle"], thread=r["thread"],
                        stitch_length=r["stitch_length"], seam_types=tuple(r["seam_types"]), pressing=r["pressing"],
-                       notes=tuple(r["notes"]), by_phase={k: tuple(v) for k, v in dict(r["by_phase"]).items()})
+                       notes=tuple(r["notes"]), by_phase={k: tuple(v) for k, v in dict(r["by_phase"]).items()},
+                       by_module={k: tuple(v) for k, v in dict(r["by_module"]).items()})
             for r in rows
         ]
 
@@ -123,12 +124,14 @@ class KnowledgeRepository:
             for r in rules:
                 conn.execute(
                     "INSERT INTO public.sewing_fabric_rules (fabric, title, needle, thread, stitch_length, seam_types,"
-                    " pressing, notes, by_phase, updated_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, now())"
+                    " pressing, notes, by_phase, by_module, updated_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, now())"
                     " ON CONFLICT (fabric) DO UPDATE SET title = EXCLUDED.title, needle = EXCLUDED.needle,"
                     " thread = EXCLUDED.thread, stitch_length = EXCLUDED.stitch_length, seam_types = EXCLUDED.seam_types,"
-                    " pressing = EXCLUDED.pressing, notes = EXCLUDED.notes, by_phase = EXCLUDED.by_phase, updated_at = now()",
+                    " pressing = EXCLUDED.pressing, notes = EXCLUDED.notes, by_phase = EXCLUDED.by_phase,"
+                    " by_module = EXCLUDED.by_module, updated_at = now()",
                     (r.fabric, r.title, r.needle, r.thread, r.stitch_length, Jsonb(list(r.seam_types)), r.pressing,
-                     Jsonb(list(r.notes)), Jsonb({k: list(v) for k, v in r.by_phase.items()})),
+                     Jsonb(list(r.notes)), Jsonb({k: list(v) for k, v in r.by_phase.items()}),
+                     Jsonb({k: list(v) for k, v in r.by_module.items()})),
                 )
             conn.execute("DELETE FROM public.sewing_fabric_rules WHERE NOT (fabric = ANY(%s))", ([r.fabric for r in rules],))
         if embedder is not None:

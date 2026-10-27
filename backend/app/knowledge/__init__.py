@@ -50,8 +50,18 @@ class FabricRule:
     seam_types: tuple[str, ...]
     pressing: str
     notes: tuple[str, ...]
-    # Short advice for each phase of the work, shown on the steps of that phase.
+    # Advice for a whole phase of the work (shown once, under the phase heading).
     by_phase: dict[Phase, tuple[str, ...]] = field(default_factory=dict)
+    # Advice for one technique on this fabric, by module slug (shown on that step only).
+    by_module: dict[str, tuple[str, ...]] = field(default_factory=dict)
+
+
+def fabric_notes_for(module: Module, fabric: FabricRule | None) -> list[str]:
+    """Advice for this technique on this fabric: the module's own note first, then the fabric rule's."""
+    if fabric is None:
+        return []
+    notes = [module.fabric_notes[fabric.fabric]] if fabric.fabric in module.fabric_notes else []
+    return [*notes, *fabric.by_module.get(module.slug, ())]
 
 
 def all_modules() -> list[Module]:
@@ -86,4 +96,11 @@ def check_library(modules: list[Module], rules: list[FabricRule]) -> list[str]:
     names = [r.fabric for r in rules]
     if len(set(names)) != len(names):
         problems.append("duplicate fabric rule")
+    by_slug = {m.slug: m for m in modules}
+    for r in rules:
+        for slug, tips in r.by_module.items():
+            if slug not in by_slug:
+                problems.append(f"{r.fabric}: advice for unknown module {slug}")
+            elif by_slug[slug].fabric_notes.get(r.fabric) in tips:
+                problems.append(f"{r.fabric}: advice for {slug} repeats the module's own note")
     return problems

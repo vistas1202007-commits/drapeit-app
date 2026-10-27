@@ -117,6 +117,8 @@ class FabricCard(BaseModel):
 class StitchingGuideOutput(BaseModel):
     garment: GarmentComponents
     fabric_card: FabricCard | None = None
+    # Advice for the main fabric that covers a whole phase (shown under the phase heading), by phase.
+    phase_tips: dict[Phase, list[str]] = Field(default_factory=dict)
     steps: list[GuideStep]
     # Where the steps came from: "technique library" (database) or "built-in library" (files).
     knowledge_source: str = "built-in library"

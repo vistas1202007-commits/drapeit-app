@@ -19,7 +19,7 @@ import time
 from dataclasses import dataclass
 from urllib.parse import quote_plus
 
-from app.knowledge import FabricRule, Module, all_fabric_rules, all_modules
+from app.knowledge import FabricRule, Module, all_fabric_rules, all_modules, fabric_notes_for
 from app.providers.base import EmbeddingProvider, ProviderError, StepPlan, StitchingGuideProvider, UsageMeter
 from app.schemas.design_spec import DesignSpec
 from app.schemas.stitching import PHASE_LABELS, PHASES, FabricCard, GarmentComponents, GuideStep, StitchingGuideOutput
@@ -215,20 +215,9 @@ def order_modules(selected: list[Selected]) -> list[Selected]:
 
 
 def direct_plans(garment: GarmentComponents, selected: list[Selected], fabric: FabricRule | None) -> list[StepPlan]:
-    """Steps straight from the library text: no AI. Fabric advice is added, once per phase and where a module has its own."""
-    plans: list[StepPlan] = []
-    phase_done: set[str] = set()
-    for s in selected:
-        m = s.module
-        fabric_tips: list[str] = []
-        if fabric is not None:
-            if m.phase not in phase_done:
-                fabric_tips += list(fabric.by_phase.get(m.phase, ()))
-                phase_done.add(m.phase)
-            if note := m.fabric_notes.get(fabric.fabric):
-                fabric_tips.append(note)
-        plans.append(StepPlan(m.slug, s.reason, list(m.steps), list(m.tips), fabric_tips))
-    return plans
+    """Steps straight from the library text: no AI. Each step gets the fabric advice written for its own technique."""
+    return [StepPlan(s.module.slug, s.reason, list(s.module.steps), list(s.module.tips), fabric_notes_for(s.module, fabric))
+            for s in selected]
 
 
 def _clean_list(values: list[str]) -> list[str]:
@@ -268,11 +257,15 @@ def build_guide(spec: DesignSpec, garment: GarmentComponents, knowledge: Knowled
         ))
 
     card = None
+    phase_tips: dict[str, list[str]] = {}
     if fabric is not None:
+        used = {s.phase for s in steps}
+        phase_tips = {phase: list(tips) for phase, tips in fabric.by_phase.items() if phase in used and tips}
         card = FabricCard(fabric=fabric.title, needle=fabric.needle, thread=fabric.thread, stitch_length=fabric.stitch_length,
                           seam_types=list(fabric.seam_types), pressing=fabric.pressing, notes=list(fabric.notes))
     elif garment.fabric:
         notes.append(f"There is no fabric card for “{garment.fabric}” yet, so only the general advice is shown.")
     notes.append("The settings on the fabric card are starting points. Always sew a test seam on a scrap of your real fabric.")
     notes.append("This guide explains the order and the methods. It has no cutting measurements: those come from the tailor sheet.")
-    return StitchingGuideOutput(garment=garment, fabric_card=card, steps=steps, knowledge_source=knowledge.source, notes=notes)
+    return StitchingGuideOutput(garment=garment, fabric_card=card, phase_tips=phase_tips, steps=steps,
+                                knowledge_source=knowledge.source, notes=notes)

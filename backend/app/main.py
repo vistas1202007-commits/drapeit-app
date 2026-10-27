@@ -273,7 +273,7 @@ def create_app(settings: Settings | None = None, *, db: Database | None = None,
         ok = app.state.container.db.ping()
         return JSONResponse({"status": "ok" if ok else "database unreachable"}, status_code=200 if ok else 503)
 
-    from app.routers import account, admin, bootstrap, chats, community, generators, members, projects, social
+    from app.routers import account, admin, bootstrap, chats, community, generators, members, projects, social, stitching
 
     app.include_router(projects.router)
     app.include_router(generators.router)
@@ -284,6 +284,7 @@ def create_app(settings: Settings | None = None, *, db: Database | None = None,
     app.include_router(members.router)
     app.include_router(admin.router)
     app.include_router(bootstrap.router)
+    app.include_router(stitching.router)
     return app
 
 

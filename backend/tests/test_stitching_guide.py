@@ -339,3 +339,32 @@ def test_paid_photo_reading_stops_at_the_daily_limit(client, project):
     client.post(f"/api/projects/{pid}/assets", files={"file": ("ref.png", PNG, "image/png")}, data={"kind": "upload"})
     job = generate(client, pid)
     assert job["status"] == "succeeded" and any("Daily spending limit" in n for n in job["output"]["notes"])
+
+
+# ---------- the checklist ticks ----------
+
+
+def test_ticks_are_saved_per_design_version_and_only_for_the_owner(client, client_b, project):
+    pid = project["id"]
+    url = f"/api/projects/{pid}/stitching-progress"
+    assert client.get(url, params={"version": 1}).json() == {"version_number": 1, "done_keys": []}
+    for key in ("prepare-fabric", "darts"):
+        assert client.put(url, json={"version_number": 1, "step_key": key, "done": True}).status_code == 200
+    assert client.put(url, json={"version_number": 1, "step_key": "darts", "done": True}).json()["done_keys"] == ["prepare-fabric", "darts"]
+    assert client.put(url, json={"version_number": 1, "step_key": "prepare-fabric", "done": False}).json()["done_keys"] == ["darts"]
+
+    set_spec(client, pid, garment_category="Dress")  # version 2 starts with an empty checklist
+    assert client.get(url, params={"version": 2}).json()["done_keys"] == []
+    assert client.get(url, params={"version": 1}).json()["done_keys"] == ["darts"]
+    assert client.put(url, json={"version_number": 9, "step_key": "darts", "done": True}).status_code == 404
+
+    assert client_b.get(url, params={"version": 1}).status_code == 404
+    assert client_b.put(url, json={"version_number": 1, "step_key": "darts", "done": False}).status_code == 404
+    assert client.get(url, params={"version": 1}).json()["done_keys"] == ["darts"]
+
+
+def test_tick_keys_must_be_plain_step_ids(client, project):
+    url = f"/api/projects/{project['id']}/stitching-progress"
+    for bad in ("", "Darts", "darts; drop table", "../x", "a" * 81):
+        assert client.put(url, json={"version_number": 1, "step_key": bad, "done": True}).status_code == 422, bad
+    assert client.get(url, params={"version": 0}).status_code == 422

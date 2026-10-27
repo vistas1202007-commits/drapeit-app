@@ -388,6 +388,35 @@ class Repository:
 
     # ---------- canvas ----------
 
+    # ---------- stitching guide checklist ----------
+
+    def stitch_progress(self, project_id: str, version_number: int) -> list[str]:
+        """The ticked steps of one design version's stitching guide."""
+        with self._conn() as conn:
+            project = self._project_row(conn, project_id)
+            rows = conn.execute(
+                "SELECT step_key FROM stitch_progress WHERE project_id = %s AND version_number = %s ORDER BY done_at",
+                (project["id"], version_number),
+            ).fetchall()
+            return [r["step_key"] for r in rows]
+
+    def set_stitch_step(self, project_id: str, version_number: int, step_key: str, done: bool) -> list[str]:
+        with self._conn() as conn:
+            project = self._project_row(conn, project_id)
+            if version_number > project["current_version"]:
+                raise NotFoundError("Design version not found")
+            if done:
+                conn.execute(
+                    "INSERT INTO stitch_progress (project_id, version_number, step_key) VALUES (%s, %s, %s)"
+                    " ON CONFLICT DO NOTHING", (project["id"], version_number, step_key),
+                )
+            else:
+                conn.execute(
+                    "DELETE FROM stitch_progress WHERE project_id = %s AND version_number = %s AND step_key = %s",
+                    (project["id"], version_number, step_key),
+                )
+        return self.stitch_progress(project_id, version_number)
+
     def get_canvas(self, project_id: str) -> CanvasDocument:
         with self._conn() as conn:
             project = self._project_row(conn, project_id)

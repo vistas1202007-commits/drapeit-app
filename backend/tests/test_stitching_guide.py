@@ -374,6 +374,16 @@ def test_ticks_are_saved_per_design_version_and_only_for_the_owner(client, clien
     assert client.get(url, params={"version": 1}).json()["done_keys"] == ["darts"]
 
 
+def test_ticking_is_rate_limited_per_person(client, project):
+    from app.services.rate_limit import RateLimiter
+
+    client.app.state.container.social_limiter = RateLimiter(3)
+    url = f"/api/projects/{project['id']}/stitching-progress"
+    codes = [client.put(url, json={"version_number": 1, "step_key": "darts", "done": i % 2 == 0}).status_code for i in range(5)]
+    assert codes == [200, 200, 200, 429, 429]
+    assert client.get(url, params={"version": 1}).status_code == 200  # reading is never limited
+
+
 def test_tick_keys_must_be_plain_step_ids(client, project):
     url = f"/api/projects/{project['id']}/stitching-progress"
     for bad in ("", "Darts", "darts; drop table", "../x", "a" * 81):

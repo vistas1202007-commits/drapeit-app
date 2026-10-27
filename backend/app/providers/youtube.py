@@ -110,15 +110,17 @@ class YouTubeSearchProvider:
         if not found:
             return []
 
-        details = self._get("videos", {"part": "contentDetails", "id": ",".join(v.video_id for v in found)})
+        # The same 1-unit lookup also returns the whole description, where creators list their chapters.
+        details = self._get("videos", {"part": "contentDetails,snippet", "id": ",".join(v.video_id for v in found)})
         meter.add(0.0, f"YouTube video details: {DETAILS_UNITS} quota unit (free)")
-        durations = {
-            d.get("id"): parse_duration((d.get("contentDetails") or {}).get("duration", ""))
-            for d in details.get("items", [])
-        }
+        durations, descriptions = {}, {}
+        for d in details.get("items", []):
+            durations[d.get("id")] = parse_duration((d.get("contentDetails") or {}).get("duration", ""))
+            descriptions[d.get("id")] = html.unescape((d.get("snippet") or {}).get("description", ""))
         # A video missing from the details answer was removed or made private since the search.
         return [
-            VideoResult(**{**v.__dict__, "duration_seconds": durations[v.video_id]})
+            VideoResult(**{**v.__dict__, "duration_seconds": durations[v.video_id],
+                           "full_description": descriptions.get(v.video_id, "")})
             for v in found if v.video_id in durations
         ]
 

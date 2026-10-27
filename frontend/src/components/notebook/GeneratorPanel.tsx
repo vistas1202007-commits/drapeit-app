@@ -20,6 +20,8 @@ export function GeneratorPanel({ sketchStyle, onSketchStyle, ideaDraft }: { sket
   const [pkgResult, setPkgResult] = useState<PackageResult | null>(null);
   const [pkgError, setPkgError] = useState<string | null>(null);
   const [tutorialLanguage, setTutorialLanguage] = useState("any");
+  const [guideLanguage, setGuideLanguage] = useState("any");
+  const [indexVideos, setIndexVideos] = useState(false);
 
   const idea = ideaDraft.trim() || detail?.current_spec.idea || [...(detail?.messages ?? [])].reverse().find((m) => m.role === "user")?.content || "";
 
@@ -36,7 +38,7 @@ export function GeneratorPanel({ sketchStyle, onSketchStyle, ideaDraft }: { sket
     setPkgRunning(true);
     setPkgError(null);
     try {
-      const res = await api.generatePackage(projectId, ids, { design: { idea }, sketch: { style: sketchStyle }, tutorial: { language: tutorialLanguage } });
+      const res = await api.generatePackage(projectId, ids, { design: { idea }, sketch: { style: sketchStyle }, tutorial: { language: tutorialLanguage }, stitching_guide: { language: guideLanguage } });
       setPkgResult(res);
       await refresh();
     } catch (e) {
@@ -59,6 +61,8 @@ export function GeneratorPanel({ sketchStyle, onSketchStyle, ideaDraft }: { sket
           ? { idea }
           : id === "tutorial"
             ? { language: tutorialLanguage }
+            : id === "stitching_guide"
+            ? { language: guideLanguage, index_videos: indexVideos }
             : lastCost?.status === "succeeded"
             ? (costInputsFromOutput(lastCost.output as unknown as CostEstimateOutput) as unknown as Record<string, unknown>) // keep the prices typed in Cost Estimate
             : {};
@@ -104,6 +108,24 @@ export function GeneratorPanel({ sketchStyle, onSketchStyle, ideaDraft }: { sket
                       </option>
                     ))}
                   </select>
+                </div>
+              )}
+              {g.id === "stitching_guide" && (
+                <div className="mt-2 space-y-2">
+                  <div>
+                    <label htmlFor="guide-language" className={labelClass}>
+                      Video language
+                    </label>
+                    <select id="guide-language" className={`${inputClass} py-1.5`} value={guideLanguage} onChange={(e) => setGuideLanguage(e.target.value)}>
+                      <option value="any">Any language</option>
+                      <option value="en">English</option>
+                      <option value="hi">Hindi</option>
+                    </select>
+                  </div>
+                  <label className="flex cursor-pointer items-start gap-2 text-xs text-muted">
+                    <input type="checkbox" className="mt-0.5 accent-wine" checked={indexVideos} onChange={(e) => setIndexVideos(e.target.checked)} />
+                    <span>Let AI watch videos without chapters once, to start them at the right moment (needs a Gemini key; costs a little)</span>
+                  </label>
                 </div>
               )}
               {g.id === "tutorial" && (

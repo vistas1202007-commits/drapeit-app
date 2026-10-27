@@ -21,6 +21,7 @@ const SECTIONS = [
   { id: "moodboard", title: "Moodboard", empty: "Collect the mood, palette, textures and motifs for this design." },
   { id: "embroidery", title: "Embroidery & print", empty: "Get embroidery and print concepts with placement ideas." },
   { id: "pattern", title: "Pattern assistance", empty: "Conceptual help: pattern pieces, measurements, drafting and cutting layout." },
+  { id: "stitching_guide", title: "Stitching guide", empty: "Step-by-step stitching in the order a tailor works, with a tutorial video for each step." },
   { id: "tutorial", title: "Tutorials", empty: "Find real tutorial videos for this design (needs a free YouTube key)." },
   { id: "video", title: "Instructional video", empty: "Plan a how-to video: storyboard and script, plus real tutorial links." },
 ];
@@ -30,6 +31,7 @@ function regenerateOptions(sectionId: string, job: GenerationJob, sketchStyle: s
   if (sectionId === "sketch") return { style: (job.output as { style?: string } | null)?.style ?? sketchStyle };
   if (sectionId === "cost" && job.status === "succeeded") return costInputsFromOutput(job.output as unknown as CostEstimateOutput) as unknown as Record<string, unknown>;
   if (sectionId === "tutorial") return { language: (job.output as { language?: string } | null)?.language ?? "any" };
+  if (sectionId === "stitching_guide") return { language: (job.output as { video_language?: string } | null)?.video_language ?? "any" };
   return {};
 }
 

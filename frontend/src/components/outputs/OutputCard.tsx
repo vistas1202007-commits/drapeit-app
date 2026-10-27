@@ -18,6 +18,7 @@ import { MaterialsView } from "./MaterialsView";
 import { MoodboardView } from "./MoodboardView";
 import { PatternView } from "./PatternView";
 import { PreviewView, SketchView } from "./SketchView";
+import { StitchingGuideView } from "./StitchingGuideView";
 import { TailorSheetView } from "./TailorSheetView";
 import { TutorialView } from "./TutorialView";
 import { VariationsView } from "./VariationsView";
@@ -47,6 +48,8 @@ export function renderOutput(job: GenerationJob): ReactNode {
       return <EmbroideryView job={job} />;
     case "pattern":
       return <PatternView job={job} />;
+    case "stitching_guide":
+      return <StitchingGuideView job={job} />;
     case "tutorial":
       return <TutorialView job={job} />;
     case "video":

@@ -166,11 +166,6 @@ export function StitchingGuideView({ job }: { job: GenerationJob }) {
     <div className="space-y-4 text-sm">
       <div className="space-y-2">
         <div className="flex flex-wrap items-center gap-1.5">
-          {job.stale && (
-            <Badge tone="wine" title={`Changed since: ${job.stale_fields.join(", ")}`}>
-              Stale
-            </Badge>
-          )}
           {out.garment.source === "spec+photo" && <Badge tone="gold">Read from your photo too</Badge>}
           <span className="text-xs text-muted">
             {out.knowledge_source} · videos: {out.video_source}
@@ -178,9 +173,11 @@ export function StitchingGuideView({ job }: { job: GenerationJob }) {
           </span>
         </div>
         {job.stale && (
-          <p className="rounded-md bg-wine-soft px-3 py-2 text-xs text-wine">
-            The design spec changed after this guide was made ({job.stale_fields.join(", ").replaceAll("_", " ")}), so some steps may no longer fit. Press Update for a new guide. Your ticks for
-            version {job.version_number} stay saved.
+          <p className="flex flex-wrap items-center gap-2 text-xs text-wine">
+            <Badge tone="wine" title={`Changed since: ${job.stale_fields.join(", ")}`}>
+              Stale
+            </Badge>
+            <span>Some steps may no longer fit the changed design. Your ticks for version {job.version_number} stay saved.</span>
           </p>
         )}
         <GarmentSummary out={out} />
@@ -271,6 +268,16 @@ export function StitchingGuideView({ job }: { job: GenerationJob }) {
                 ({group.steps.filter((s) => done.has(s.key)).length}/{group.steps.length})
               </span>
             </h3>
+            {(out.phase_tips?.[group.phase]?.length ?? 0) > 0 && (
+              <div className="mb-2 rounded-md bg-gold-soft px-3 py-2 text-xs">
+                <p className="font-medium text-gold-ink">For your {out.fabric_card?.fabric ?? "fabric"} in this part</p>
+                <ul className="mt-1 list-disc space-y-0.5 pl-4">
+                  {out.phase_tips[group.phase]!.map((t) => (
+                    <li key={t}>{t}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <ol className="space-y-2">
               {group.steps.map((step) => (
                 <StepItem key={step.key} step={step} done={done.has(step.key)} saving={saving === step.key} onToggle={(v) => toggle(step.key, v)} startOpen={step.key === firstOpen} />

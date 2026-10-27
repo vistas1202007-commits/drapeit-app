@@ -449,6 +449,8 @@ export interface FabricCard {
 export interface StitchingGuideOutput {
   garment: GarmentComponents;
   fabric_card: FabricCard | null;
+  /** Advice for the main fabric that covers a whole phase, shown under that phase's heading. */
+  phase_tips: Partial<Record<GuidePhase, string[]>>;
   steps: GuideStep[];
   knowledge_source: string;
   video_source: string;

@@ -166,3 +166,13 @@
 - [x] `frontend/Dockerfile`, `docker-compose.yml` and README "Run with Docker" (runtime files tested without Docker)
 - [ ] Run `docker compose up --build` once on a computer with Docker Desktop (needs you or whoever gets the code)
 
+## Stitching Guide ✅ (migration 0012 waits for you to run it)
+- [x] Garment parser: type, bodice, neckline and finish, sleeves, skirt, closure and position, length, fabric and weight
+- [x] About 40 original technique modules and fabric rules for silk, chiffon, georgette, cotton, linen, denim, velvet, khadi
+- [x] Master tailor step builder: retrieve (features + design notes), order by construction rules, fabric tips, module shown on every step
+- [x] Video per step from the cached YouTube search, started at the matching chapter; channel always shown; never invents videos
+- [x] Optional: Gemini watches a video once and saves start / end times
+- [x] Notebook section: checklist saved per design version, player under each step, Stale badge, phone layout
+- [ ] Run `0012_stitching_guide.sql` in Supabase, then `python scripts/seed_sewing_library.py` (needs you)
+- [ ] Add `YOUTUBE_API_KEY` for videos (free); optional Anthropic / Gemini keys
+

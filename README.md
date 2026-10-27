@@ -66,6 +66,7 @@ A web app that helps tailors, boutique owners, designers, students and anyone wi
 | Tailor Workspace | Measurements (cm/in) with notes, marked **Measured**, **Estimate** or **Missing**; neckline, sleeves, length, fit, closures; your construction, cutting and stitching notes; pick front / back / side / detail reference pictures. The sheet adds fabric-specific cutting and stitching advice and **never invents cutting dimensions**. **Download PDF** (A4, professional layout) or print |
 | Cost Estimate | Lists what needs a price (from your fabrics and checklist), you type real quantities and prices with region and date, it adds them up. Materials and labour are separate, a buffer % is optional, missing prices are listed (not guessed), every assumption is written out, and the total is compared with your budget |
 | My Designs | All projects with search, filter, sort, duplicate, export (JSON), delete |
+| Stitching Guide (Notebook) | Step-by-step stitching in the order a tailor works (prep, shaping, main seams, openings, side seams, hem, pressing), built from about 40 technique modules and fabric rules for 8 fabrics, with a real tutorial video for each step started at the right chapter, a checklist saved per design version, and a Stale badge when the spec changes. See [Stitching Guide](#stitching-guide) |
 | Learning Library | Search real YouTube tutorials (any language, English or Hindi): real titles, thumbnails, channels and links, plus the reasons each one fits. Without a key it explains the free setup and links to the same search on YouTube. Never shows made-up videos |
 | Phase 4 generators (Notebook) | **Tutorial**: a learning guide for this design (garment, measurements, embellishment, neckline, tricky fabric, zip) with real videos per step. **Design Variations**: alternative necklines, sleeves, silhouettes, embellishments and colours, each with a "Try this" button that saves it as a new version. **Moodboard**: mood words, palette, textures, motifs, visual references and your project's own pictures. **Embroidery & Print**: techniques, motifs, materials and a front/back placement diagram. **Pattern Assistance** (conceptual, not production-ready): pieces to cut, required measurements, drafting guidance and a not-to-scale cutting layout. **Instructional Video**: no video provider is set up, so it writes a storyboard and narration script and adds real tutorial links |
 | Profile | Username (unique), display name, bio, avatar picture and role (designer, tailor, boutique, student, other). Public page at `/u/<username>` with a grid of published designs (up to 3 pinned first). Edit at `/profile/edit`. Follow / unfollow other people |
@@ -299,13 +300,51 @@ frontend/           Next.js 16 + React 19 + TypeScript + Tailwind CSS 4
   src/components/theme  theme provider (applies and remembers the theme) and theme previews
   src/app/globals.css design tokens: every colour, font, radius, shadow and motion setting
   src/lib/            API client, Supabase sign-in client, types, canvas drawing model, themes, helpers
-supabase/migrations The database: run 0001–0011 in order in Supabase (tables, per-user rules, storage)
+supabase/migrations The database: run 0001–0012 in order in Supabase (tables, per-user rules, storage)
 render.yaml         Render blueprint for the backend
 docker-compose.yml  Runs backend and website together with Docker (backend/Dockerfile, frontend/Dockerfile)
 docs/               Deployment guide, security notes, architecture, development log, task checklist
 ```
 
 More detail: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) · [docs/SECURITY.md](docs/SECURITY.md) · [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/DEVELOPMENT_LOG.md](docs/DEVELOPMENT_LOG.md) · [docs/TASKS.md](docs/TASKS.md)
+
+## Stitching Guide
+
+**Generate Stitching Guide** (Notebook → Generate) turns a design into step-by-step stitching instructions, in the
+order a real tailor works, with the right tutorial video for each step.
+
+1. **Reads the garment.** The garment type, bodice, neckline and how it is finished, sleeves, skirt, closure and where it
+   sits, length, fabric and fabric weight are worked out from the design spec. If you uploaded a reference photo and a
+   picture-reading provider is set up, the photo fills in what the spec leaves empty (the spec always wins). Anything
+   guessed is listed under "What the guide worked out for itself".
+2. **Picks the techniques.** A library of about 40 original technique modules (stay-stitching, interfacing, darts, pleats,
+   gathers, shoulder and side seams, bodice to skirt, facings, bias binding, invisible and lapped zips, set-in sleeves,
+   cuffs, waistband, rolled / blind / machine hems, French and flat-fell seams, pressing...) plus rules for silk, chiffon,
+   georgette, cotton, linen, denim, velvet and khadi (needle, thread, stitch length, seam type, pressing heat). Steps are
+   chosen from the garment's features; words in your design notes can add more (by meaning when Gemini is set up).
+3. **Orders them like a tailor:** prep and cutting, shaping, main seams, openings and finishes, side seams, hem, pressing.
+   Each step shows which module it came from and fabric-specific tips. With the Anthropic API set up, the steps are
+   worded for your design; without it they come straight from the library (no AI, no cost).
+4. **Finds a real video for every step** with the YouTube search (kept for 14 days in the database, so the free quota
+   lasts). If the video's description has chapters, the player starts at the matching one. The channel name is always
+   shown. If nothing suitable is found it says "No video found" and links to the same search; it never invents a video.
+5. **Checklist.** Tick steps as you sew; ticks are saved per design version. When the design spec changes, the guide shows a
+   **Stale** badge. Works on phone screens.
+
+**To set it up (once):**
+
+1. Supabase → **SQL Editor** → **New query**, paste `supabase/migrations/0012_stitching_guide.sql`, press **Run**. It only
+   adds new tables (the sewing library, a search cache, video start times and checklist ticks) and turns on `pgvector`.
+2. Load the library: in `backend/` run `python scripts/seed_sewing_library.py` (add `--check` to only check the files).
+   Run it again whenever `backend/app/knowledge/` changes. Until then the guide reads the same library from the files, so it
+   works straight away; the database copy adds search by meaning.
+
+| Key | Needed? | What it adds | Cost |
+| --- | --- | --- | --- |
+| none | - | The whole guide: garment reading, steps, fabric tips, checklist | free |
+| `YOUTUBE_API_KEY` | for videos | A real video per step, started at its chapter | free (10,000 units a day; one new search costs 100, and a new guide makes about 20) |
+| `ANTHROPIC_API_KEY` + `ANTHROPIC_MODEL` | optional | Steps worded for your design; reading a reference photo | paid, a few cents per guide |
+| `GEMINI_API_KEY` | optional | Reading a reference photo (if no Anthropic key), search by meaning, and (when you tick it) an AI watching a video once to find where a step starts | embeddings free, photo and video a little paid (limited by `DAILY_BUDGET_USD`) |
 
 ## Upgrading to Phase 8
 

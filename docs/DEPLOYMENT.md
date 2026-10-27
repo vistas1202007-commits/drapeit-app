@@ -44,7 +44,7 @@ You also need a free **GitHub** account: Render and Vercel deploy straight from 
    * Choose a strong **database password** and save it in your password manager. You need it in step 4.
 2. Wait until the project is ready (about 2 minutes).
 3. **Create the tables.** Open **SQL Editor → New query**. For each file in `supabase/migrations/`, **in order**
-   (`0001`, `0002`, `0003`, `0004`, `0005`, `0006`, `0007`, `0008`, `0009`, `0010`, `0011`): open the file in a text editor, copy everything, paste it into the
+   (`0001`, `0002`, `0003`, `0004`, `0005`, `0006`, `0007`, `0008`, `0009`, `0010`, `0011`, `0012`): open the file in a text editor, copy everything, paste it into the
    SQL editor and press **Run**. Each should say "Success".
    * `0004` locks the tables so only the backend can reach them, and turns on per-user rules.
    * `0005` creates the private picture bucket `project-assets`. Check it under **Storage**.
@@ -62,6 +62,9 @@ You also need a free **GitHub** account: Render and Vercel deploy straight from 
      insert into public.admin_users (user_id, note)
      select id, 'owner' from auth.users where email = 'you@example.com';
      ```
+   * `0012` adds the Stitching Guide: the sewing library, a cache of tutorial searches, video start times and
+     checklist ticks (and turns on `pgvector` for search by meaning). After it, run
+     `python scripts/seed_sewing_library.py` once from `backend/` to load the library.
    * `0011` adds themes (app theme, profile theme, custom theme) and the Premium flag (`premium_members`, which
      people can never set themselves).
 4. **Sign-in settings.** Open **Authentication → Sign In / Providers → Email**: keep *Email* on and

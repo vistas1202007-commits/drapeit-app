@@ -544,3 +544,21 @@
   timings are in `docs/AUDIT.md` section 6 (design pages 11–14 s → about 6 s, shell API calls 11 → 7). QA accounts
   deleted afterwards.
 - Still open: opening a design takes about 6 s from India; BUG-13 rate limits; the other bugs in `docs/AUDIT.md`.
+
+## 2026-10-27 · Stitching Guide
+
+- New generator **Generate Stitching Guide** with a notebook section: tickable checklist saved per design version,
+  progress, a video player per step that starts at the right chapter, fabric tips, and a Stale badge. See README
+  "Stitching Guide" and `docs/ARCHITECTURE.md`.
+- Garment parser (`services/garment_parser.py`), about 40 original technique modules and 8 fabric rules
+  (`app/knowledge/`), master tailor step builder (`services/stitching_guide.py`), video matching
+  (`services/guide_videos.py`), optional photo reading, Gemini helpers (`providers/gemini_tools.py`).
+- **Migration 0012** (`stitching_guide.sql`): `sewing_modules` (with a pgvector column), `sewing_fabric_rules`,
+  `video_search_cache`, `video_index_runs`, `video_segments`, `stitch_progress`. Seed script
+  `scripts/seed_sewing_library.py`.
+- The YouTube details call now also returns the full description (same 1 quota unit) for chapters.
+- Tests: new backend test files for the parser, library, providers, database, builder and videos; `npm test` has
+  `lib/stitching.test.ts`; browser test `e2e/pages/stitching-guide.e2e.ts` on a desktop and a phone screen.
+- **Not run** by me: migration 0012 and the seed script on the real Supabase project (the tests used a local test
+  database, a fake YouTube server and a local sign-in).
+

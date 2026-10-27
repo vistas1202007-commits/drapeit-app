@@ -430,3 +430,34 @@ gains `appearance` (profile theme, custom theme when used, `is_premium`). The da
 profile theme with a cover banner and a Premium tag. The tailor sheet always shows in the Light theme (it is a paper
 document).
 
+## Stitching Guide (migration 0012)
+
+The `stitching_guide` generator (`app/generators/registry.py`) is an ordinary generator: its output is saved as a job
+for one design version and goes out of date by the same rule as the others (`depends_on`).
+
+```
+design spec (+ newest uploaded photo, if a picture-reading provider is set up)
+   -> services/garment_parser.py      components + feature tags (darts, gathers, closure-zip-invisible, hem-rolled...)
+   -> services/stitching_guide.py     1 retrieve: modules whose `triggers` match the tags, plus free-text search of the
+                                         design notes (pgvector similarity if embeddings exist, plain words if not)
+                                      2 order: phase (prep, shaping, main_seams, openings, side_seams, hem, pressing)
+                                         then the module's place in the phase - always code, never the AI
+                                      3 write: provider.compose() rewords each step for the design (Anthropic API), or the
+                                         library text is used as it is; the AI cannot add, drop or reorder steps
+   -> services/guide_videos.py        one YouTube search per step (cache table, 14 days, shared), chapter parsing and
+                                      matching, optional Gemini "watch once" index (video_index_runs, video_segments)
+```
+
+* **Library** (`app/knowledge/`): original text, one `Module` per technique and one `FabricRule` per fabric. These files
+  are the source of truth. `scripts/seed_sewing_library.py` copies them into `sewing_modules` /
+  `sewing_fabric_rules` (changed modules are re-embedded, removed ones deleted). If the tables are missing or empty the
+  builder reads the files, so the guide never depends on the seed having been run.
+* **pgvector** is created inside a guarded block in migration 0012: where the extension is not available the tables are
+  still made and search by meaning is simply off. `match_sewing_modules()` is only callable by the backend.
+* **Privacy:** the library and video tables have RLS on and no policies (the backend's own connection reads them);
+  `stitch_progress` is per project (`owns_project`) like other project data. Videos are only ever ids the search returned;
+  the website builds the player address from a checked 11-character id (`lib/stitching.ts`).
+* **Cost control:** the guide is free unless an AI key is set. Paid calls (photo reading, wording the steps, watching a
+  video) go through the same daily limit (`DAILY_BUDGET_USD`); a Gemini video is watched at most once and at most three
+  new videos per guide.
+

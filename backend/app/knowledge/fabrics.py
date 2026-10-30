@@ -12,6 +12,21 @@ from app.knowledge import FabricRule
 
 RULES: list[FabricRule] = [
     FabricRule(
+        fabric="knit", title="Knit or stretch fabric",
+        needle="A compatible ballpoint or stretch needle; check the fabric and machine manual",
+        thread="A compatible sewing thread, tested on the actual fabric",
+        stitch_length="Use the machine's recommended stretch stitch; test on a scrap",
+        seam_types=("Stretch seam",), pressing="Test heat on a scrap and avoid stretching the fabric.",
+        notes=("Fibre and fabric construction are separate: silk jersey is a knit, not woven silk.",
+               "Check the pattern's required stretch and recovery before cutting."),
+        by_phase={
+            "prep": ("Let the fabric rest flat and check its stretch against the pattern.",),
+            "main_seams": ("Use a tested stretch stitch without pulling the fabric.",),
+            "hem": ("Use a hem method that retains the stretch required by the pattern.",),
+            "pressing": ("Test the heat on a scrap; avoid stretching the garment while pressing.",),
+        },
+    ),
+    FabricRule(
         fabric="silk", title="Silk",
         needle="Fine, new, sharp needle (size 60/8 to 70/10). A blunt needle snags silk.",
         thread="Fine polyester or silk thread, a shade darker than the fabric.",

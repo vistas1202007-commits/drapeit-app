@@ -60,8 +60,8 @@ def test_an_anarkali_in_georgette_gets_the_right_steps_in_the_right_order():
         assert needed in got, needed
     for not_needed in ("blind-hem", "machine-hem", "plain-seam", "lapped-zip", "cuffs", "waistband", "collar-and-stand"):
         assert not_needed not in got, not_needed
-    phase_numbers = [PHASES.index(s.phase) for s in guide.steps]
-    assert phase_numbers == sorted(phase_numbers)
+    positions = {s.module_slug: i for i, s in enumerate(guide.steps)}
+    assert all(positions[d] < positions[s.module_slug] for s in guide.steps for d in s.depends_on)
     assert got[0] == "prepare-fabric" and got[-1] == "final-inspection"
     assert [s.number for s in guide.steps] == list(range(1, len(got) + 1))
     assert len(set(s.key for s in guide.steps)) == len(got)
@@ -71,7 +71,7 @@ def test_a_tailor_never_hems_before_the_side_seams_or_sews_a_zip_after_the_hem()
     got = slugs(guide_for(anarkali()))
     assert got.index("shoulder-seams") < got.index("bias-binding") < got.index("side-seams") < got.index("rolled-hem")
     assert got.index("darts") < got.index("shoulder-seams")
-    assert got.index("set-in-sleeve") < got.index("side-seams")
+    assert got.index("side-seams") < got.index("set-in-sleeve")
     assert got.index("invisible-zip") < got.index("rolled-hem")
     assert got.index("stay-stitching") < got.index("shoulder-seams")
     assert got.index("interfacing") < got.index("set-in-sleeve") if "interfacing" in got else True
@@ -166,9 +166,9 @@ def test_search_by_meaning_adds_modules_when_the_library_has_embeddings():
     knowledge = Knowledge(all_modules(), {}, "technique library (database)", FakeRepo(), FakeEmbedder(), vectors=True)
     guide = guide_for(anarkali(design_notes="Soft shaped waist with curved seams"), knowledge=knowledge)
     got = slugs(guide)
-    assert "princess-seams" in got and "pleats" in got
+    assert "princess-seams" not in got and "pleats" in got  # semantic search cannot contradict darted shaping
     assert got.count("rolled-hem") == 1  # already chosen by the exact rules; not added twice
-    assert next(s for s in guide.steps if s.module_slug == "princess-seams").why.startswith("Found in the library by the meaning")
+    assert next(s for s in guide.steps if s.module_slug == "pleats").why.startswith("Found in the library by the meaning")
 
 
 def test_if_search_by_meaning_breaks_the_exact_steps_still_work():
@@ -212,9 +212,10 @@ def test_the_ai_writer_rewords_steps_but_cannot_add_drop_or_reorder_them():
     guide = guide_for(anarkali(), writer=writer)
     got = slugs(guide)
     assert "invented-step" not in got
-    assert [PHASES.index(s.phase) for s in guide.steps] == sorted(PHASES.index(s.phase) for s in guide.steps)
+    positions = {s.module_slug: i for i, s in enumerate(guide.steps)}
+    assert all(positions[d] < positions[s.module_slug] for s in guide.steps for d in s.depends_on)
     by_slug = {s.module_slug: s for s in guide.steps}
-    assert by_slug["set-in-sleeve"].instructions == ["Do set-in-sleeve for georgette."]
+    assert by_slug["set-in-sleeve"].instructions == list(next(m for m in all_modules() if m.slug == "set-in-sleeve").steps)
     assert by_slug["set-in-sleeve"].why == "Why set-in-sleeve (AI)"
     darts = next(m for m in all_modules() if m.slug == "darts")
     assert by_slug["darts"].instructions == list(darts.steps)   # the AI skipped it, so the library text is kept

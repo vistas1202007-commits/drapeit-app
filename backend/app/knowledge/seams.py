@@ -4,6 +4,18 @@ from app.knowledge import Module
 
 MODULES: list[Module] = [
     Module(
+        slug="stretch-seam", title="Sew a stretch seam", phase="main_seams", order=15, triggers=("stretch-seam",),
+        summary="Join knitted or stretch fabric with a stitch that can stretch with the fabric.",
+        steps=("Check the pattern's stretch requirement against the actual fabric before cutting.",
+               "Fit a compatible ballpoint or stretch needle and select a stretch stitch supported by the machine.",
+               "Test on scraps of the actual fabric, stretching the sample gently to check that stitches do not break.",
+               "Join the pieces without pulling the fabric. Support their weight as they feed through the machine.",
+               "Check for skipped stitches or wavy seams before continuing."),
+        tips=("Use the pattern and machine manual for stitch settings; a fibre name alone does not determine them.",),
+        keywords=("stretch seam", "knit seam", "jersey seam"),
+        video_query="how to sew stretch seams on jersey knit fabric ballpoint needle",
+    ),
+    Module(
         slug="plain-seam", title="Sew a plain seam", phase="main_seams", order=10, triggers=("plain-seam",),
         summary="The plain seam is the basis of most sewing: two layers, right sides together, one straight line, pressed open.",
         steps=(
@@ -93,7 +105,7 @@ MODULES: list[Module] = [
         summary="A set-in sleeve is sewn into the armhole after the shoulder seam, with the cap eased smoothly into the armhole curve.",
         steps=(
             "Sew the underarm seam of each sleeve and press it open. Do not sew the sleeve into the armhole yet.",
-            "Turn the garment body right side out and the sleeve wrong side out. Slide the sleeve into the armhole, right sides together.",
+            "Turn the garment body wrong side out and the sleeve right side out. Slide the sleeve into the armhole, right sides together.",
             "Match the underarm seams, the shoulder notch and the front and back notches. Pin these first, then the rest, spreading the ease evenly.",
             "Sew from the underarm seam all the way round, with the sleeve side on top so you can see the ease. Overlap the first stitches by a few stitches.",
             "Check from the right side. If there are folds, unpick that section, re-pin and sew again.",
@@ -123,7 +135,7 @@ MODULES: list[Module] = [
         slug="bodice-to-skirt", title="Join the bodice to the skirt", phase="main_seams", order=70, triggers=("bodice-to-skirt",),
         summary="The waist seam joins the fitted top to the skirt. It must match the body's waist, because the whole fit depends on it.",
         steps=(
-            "Finish the skirt first: gather or pleat the top edge so it matches the bodice waist edge.",
+            "Assemble the skirt according to the pattern. Only gather or pleat its waist if the selected pattern calls for that shaping.",
             "Pin the bodice to the skirt, right sides together, matching the centre front, centre back and side seams.",
             "Sew with the gathered skirt on top. Keep an eye on the pleats or gathers so they lie flat.",
             "If a zip lies at the waist, stop and begin on each side of it so the zip tape stays free.",
@@ -167,10 +179,10 @@ MODULES: list[Module] = [
         slug="side-seams", title="Close the side seams", phase="side_seams", order=10, triggers=("side-seams",),
         summary="The side seams close the garment around the body. Done last, they let you adjust the fit before everything is final.",
         steps=(
-            "Place the front and back right sides together and match the underarm seams, the waist marks and the hem edges.",
+            "Place the matching front and back pieces right sides together. Match side notches, waist or hip marks and hem edges.",
             "If a zip sits in the side seam, start and stop where the zip tape ends and leave that part open.",
-            "Pin from the waist outward, to the underarm and to the hem.",
-            "Sew from the underarm to the hem, or the reverse, keeping the same direction on both sides.",
+            "Pin the matching side-seam edges from the balance marks outward, leaving the pattern's openings free.",
+            "Sew the indicated side seams in the same direction on both sides, retaining any opening required by the pattern.",
             "Try the garment on and check the fit. Take in or let out the seam as needed, then finish the edges.",
             "Press the seams open, and clip the allowance at the waist so it lies flat.",
         ),

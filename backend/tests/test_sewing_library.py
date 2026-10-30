@@ -13,9 +13,9 @@ PARSER_TAGS = {
     "interfacing", "neckline-binding", "neckline-facing", "sleeves", "sleeveless", "armhole-finish", "sleeve-set-in",
     "sleeve-flat", "gathers", "cuffs", "skirt", "flared-skirt", "circular-skirt", "kali-panels", "pleats", "waistband",
     "bodice-to-skirt", "inseam", "slit", "dupatta", "closure-zip-invisible", "closure-zip-lapped", "closure-buttons",
-    "closure-hooks", "hem-rolled", "hem-blind", "hem-machine", "hem-curved",
+    "closure-hooks", "hem-rolled", "hem-blind", "hem-machine", "hem-curved", "stretch-seam",
 }
-FABRICS_REQUESTED = {"silk", "chiffon", "georgette", "cotton", "linen", "denim", "velvet", "khadi"}
+FABRICS_REQUESTED = {"silk", "chiffon", "georgette", "cotton", "linen", "denim", "velvet", "khadi", "knit"}
 TECHNIQUES_REQUESTED = [
     "stay-stitching", "interfacing", "darts", "pleats", "gathers", "shoulder-seams", "side-seams", "bodice-to-skirt",
     "facing", "bias-binding", "invisible-zip", "lapped-zip", "set-in-sleeve", "cuffs", "waistband", "rolled-hem",

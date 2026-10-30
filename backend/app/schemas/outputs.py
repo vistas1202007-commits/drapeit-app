@@ -11,6 +11,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from app.schemas.design_spec import DesignSpec
+from app.schemas.stitching import StitchingGuideOutput
 
 SketchStyle = Literal["pencil", "ink", "technical_flat", "charcoal", "coloured", "watercolour"]
 SKETCH_STYLES: tuple[str, ...] = ("pencil", "ink", "technical_flat", "charcoal", "coloured", "watercolour")
@@ -394,6 +395,7 @@ class StoryboardScene(BaseModel):
 
 
 class VideoOutput(BaseModel):
+    stitching_guide: StitchingGuideOutput | None = None
     mode: Literal["generated", "storyboard"]
     provider_note: str
     title: str

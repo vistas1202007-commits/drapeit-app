@@ -203,3 +203,69 @@ class KnowledgeRepository:
                     "INSERT INTO public.video_segments (video_id, module_slug, start_seconds, end_seconds)"
                     " VALUES (%s, %s, %s, %s)", (video_id, s.module_slug, s.start_seconds, s.end_seconds),
                 )
+
+
+    def has_topic_checks(self) -> bool:
+        with self.db.connect(None) as conn:
+            return conn.execute("SELECT to_regclass('public.video_topic_checks') IS NOT NULL AS present").fetchone()["present"]
+
+    def topic_checks(self, video_ids: list[str]):
+        if not video_ids:
+            return {}
+        with self.db.connect(None) as conn:
+            rows = conn.execute(
+                "SELECT * FROM public.video_topic_checks WHERE video_id = ANY(%s)", (video_ids,)
+            ).fetchall()
+        return {
+            (r["video_id"], r["module_slug"], r["module_revision"]):
+                VideoSegment(r["module_slug"], r["start_seconds"], r["end_seconds"]) if r["shown"] else None
+            for r in rows
+        }
+
+    def save_topic_checks(self, video_id: str, model: str, topics: dict[str, str], segments: list[VideoSegment]) -> None:
+        """Remember positive AND negative checks per technique revision; never erase other techniques."""
+        found = {s.module_slug: s for s in segments if s.module_slug in topics}
+        with self.db.connect(None) as conn:
+            conn.execute(
+                "INSERT INTO public.video_index_runs (video_id, model, segments_found) VALUES (%s, %s, %s)"
+                " ON CONFLICT (video_id) DO UPDATE SET model = EXCLUDED.model, indexed_at = now()",
+                (video_id, model, len(found)),
+            )
+            for slug, revision in topics.items():
+                s = found.get(slug)
+                conn.execute(
+                    "INSERT INTO public.video_topic_checks (video_id, module_slug, module_revision, shown,"
+                    " start_seconds, end_seconds, model) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+                    " ON CONFLICT (video_id, module_slug, module_revision) DO UPDATE SET shown = EXCLUDED.shown,"
+                    " start_seconds = EXCLUDED.start_seconds, end_seconds = EXCLUDED.end_seconds,"
+                    " model = EXCLUDED.model, checked_at = now()",
+                    (video_id, slug, revision, s is not None, s.start_seconds if s else None,
+                     s.end_seconds if s else None, model),
+                )
+                # Preserve the legacy positive cache for older application versions.
+                if s:
+                    conn.execute(
+                        "INSERT INTO public.video_segments (video_id, module_slug, start_seconds, end_seconds)"
+                        " VALUES (%s, %s, %s, %s) ON CONFLICT (video_id, module_slug) DO UPDATE"
+                        " SET start_seconds = EXCLUDED.start_seconds, end_seconds = EXCLUDED.end_seconds",
+                        (video_id, slug, s.start_seconds, s.end_seconds),
+                    )
+
+    def curated_clips(self):
+        from app.schemas.clips import CuratedClip
+        from psycopg.errors import UndefinedTable
+        try:
+            with self.db.connect(None) as conn:
+                rows = conn.execute("SELECT payload FROM public.sewing_clips WHERE payload->>'review_status' = 'approved' ORDER BY id").fetchall()
+        except UndefinedTable:
+            return []
+        return [CuratedClip.model_validate(r["payload"]) for r in rows]
+
+    def import_clips(self, clips) -> None:
+        with self.db.connect(None) as conn:
+            for clip in clips:
+                conn.execute(
+                    "INSERT INTO public.sewing_clips (id, payload) VALUES (%s, %s)"
+                    " ON CONFLICT (id) DO UPDATE SET payload = EXCLUDED.payload, updated_at = now()",
+                    (clip.id, Jsonb(clip.model_dump(mode="json"))),
+                )

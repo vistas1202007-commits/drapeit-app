@@ -5,8 +5,8 @@
    Free text in the design (notes, embellishments, the photo's notes) is searched too: by meaning when
    the library has embeddings, by plain words otherwise. This can only add steps, never contradict the
    exact ones.
-2. Order: steps always come out in the order a tailor works, by fixed construction rules (prep & cutting,
-   shaping, main seams, openings & finishes, side seams, hem, pressing), whatever any AI says.
+2. Order: a versioned dependency graph orders operations; phase and order break ties. A closed-armhole
+   set-in sleeve follows body side seams; a flat sleeve precedes them. AI cannot change dependencies.
 3. Write: a provider words each step for this design and fabric. Without an AI key the built-in writer
    uses the library text as it is and adds the fabric's advice.
 """
@@ -22,6 +22,8 @@ from urllib.parse import quote_plus
 from app.knowledge import FabricRule, Module, all_fabric_rules, all_modules, fabric_notes_for
 from app.providers.base import EmbeddingProvider, ProviderError, StepPlan, StitchingGuideProvider, UsageMeter
 from app.schemas.design_spec import DesignSpec
+from app.services.construction_plan import PLAN_VERSION, dependencies, order_operations, target_piece
+from app.storage.knowledge_repository import content_hash
 from app.schemas.stitching import PHASE_LABELS, PHASES, FabricCard, GarmentComponents, GuideStep, StitchingGuideOutput
 from app.storage.knowledge_repository import KnowledgeRepository
 
@@ -30,7 +32,7 @@ log = logging.getLogger(__name__)
 # Only one of each group can be in a guide: the tags decide which, free-text search may not add a second.
 EXCLUSIVE_GROUPS: tuple[frozenset[str], ...] = (
     frozenset({"rolled-hem", "blind-hem", "machine-hem"}),
-    frozenset({"plain-seam", "french-seam", "flat-fell-seam"}),
+    frozenset({"plain-seam", "french-seam", "flat-fell-seam", "stretch-seam"}),
     frozenset({"invisible-zip", "lapped-zip"}),
 )
 # Words too general to show that a module was meant (they appear in almost any design note).
@@ -197,6 +199,13 @@ def retrieve(garment: GarmentComponents, spec: DesignSpec, knowledge: Knowledge,
         for module, reason in candidates:
             if module.slug in taken or _in_group(module.slug) or added >= MAX_FREE_TEXT_STEPS:
                 continue
+            # Semantic retrieval cannot override explicit shaping or add anatomy absent from this garment.
+            if module.slug == "princess-seams" and "darts" in tags:
+                continue
+            if garment.family in {"skirt", "trousers", "dupatta"} and any(
+                word in module.slug for word in ("sleeve", "shoulder", "neckline", "collar", "bodice")
+            ):
+                continue
             chosen[module.slug] = Selected(module, reason)
             taken.add(module.slug)
             added += 1
@@ -208,7 +217,7 @@ def retrieve(garment: GarmentComponents, spec: DesignSpec, knowledge: Knowledge,
 
 def order_modules(selected: list[Selected]) -> list[Selected]:
     """The order a tailor works in: phase first, then the module's place in the phase."""
-    return sorted(selected, key=lambda s: (PHASES.index(s.module.phase), s.module.order, s.module.slug))
+    return order_operations(selected, lambda s: (PHASES.index(s.module.phase), s.module.order, s.module.slug))
 
 
 # ---------- 3. write ----------
@@ -240,8 +249,13 @@ def build_guide(spec: DesignSpec, garment: GarmentComponents, knowledge: Knowled
             for i, base in enumerate(plans):
                 p = written.get(base.module_slug)
                 if p and _clean_list(p.instructions):
-                    plans[i] = StepPlan(base.module_slug, p.why.strip() or base.why, _clean_list(p.instructions),
-                                        _clean_list(p.tips), _clean_list(p.fabric_tips) or base.fabric_tips)
+                    # Preserve the grounded method, tips, numbers and fabric settings.
+                    # The model provides a contextual explanation, not a second construction authority.
+                    why = p.why.strip()[:500]
+                    if set(re.findall(r"[0-9]+", why)) - set(re.findall(r"[0-9]+", base.why)):
+                        why = base.why
+                    plans[i] = StepPlan(base.module_slug, why or base.why, base.instructions,
+                                        base.tips, base.fabric_tips)
         except ProviderError as exc:
             notes.append(f"The AI could not word the steps for this design ({exc}), so the library text is shown as it is.")
 
@@ -252,6 +266,9 @@ def build_guide(spec: DesignSpec, garment: GarmentComponents, knowledge: Knowled
         steps.append(GuideStep(
             key=m.slug, number=number, phase=m.phase, phase_label=PHASE_LABELS[m.phase], title=m.title,
             module_slug=m.slug, module_title=m.title, why=plan.why, instructions=plan.instructions, tips=plan.tips,
+            depends_on=sorted(dependencies(m.slug, set(by_slug))), source_hash=content_hash(m),
+            preconditions=[f"Complete: {by_slug[d].module.title}" for d in sorted(dependencies(m.slug, set(by_slug)))],
+            target_piece=target_piece(m.slug, garment),
             fabric_tips=plan.fabric_tips, search_query=query,
             search_url=f"https://www.youtube.com/results?search_query={quote_plus(query)}",
         ))
@@ -267,5 +284,10 @@ def build_guide(spec: DesignSpec, garment: GarmentComponents, knowledge: Knowled
         notes.append(f"There is no fabric card for “{garment.fabric}” yet, so only the general advice is shown.")
     notes.append("The settings on the fabric card are starting points. Always sew a test seam on a scrap of your real fabric.")
     notes.append("This guide explains the order and the methods. It has no cutting measurements: those come from the tailor sheet.")
+    needs_review = any(d.needs_confirmation for d in garment.decisions)
+    if needs_review:
+        notes.insert(0, "Draft construction plan: confirm the proposed choices before using these steps to sew.")
+    notes.append("Technique instructions are original application content and still need professional tailoring review.")
     return StitchingGuideOutput(garment=garment, fabric_card=card, phase_tips=phase_tips, steps=steps,
+                                plan_version=PLAN_VERSION, requires_confirmation=needs_review,
                                 knowledge_source=knowledge.source, notes=notes)

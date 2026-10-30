@@ -9,6 +9,7 @@ already found for this design. Ordinary code, not AI.
 from __future__ import annotations
 
 from app.schemas.design_spec import DesignSpec
+from app.schemas.stitching import StitchingGuideOutput
 from app.schemas.outputs import (
     DesignPlan,
     MaterialsOutput,
@@ -23,14 +24,6 @@ PROVIDER_NOTE = (
     "No video generation provider is set up, so this is a storyboard and narration script you can film yourself "
     "or give to a video editor. Real tutorial videos for this design are listed below when tutorial search is connected."
 )
-DEFAULT_STEPS = [
-    "Stay-stitch the neckline and finish darts or princess seams",
-    "Join the shoulder seams and finish the neckline",
-    "Attach the sleeves",
-    "Close the side seams",
-    "Insert the closures",
-    "Hem the garment",
-]
 SHOTS = ["Close-up of hands at the machine", "Overhead shot of the work table", "Medium shot at the ironing board"]
 
 
@@ -39,7 +32,13 @@ def build_storyboard(
     materials: MaterialsOutput | None = None,
     plan: DesignPlan | None = None,
     tutorial: TutorialOutput | None = None,
+    guide: StitchingGuideOutput | None = None,
 ) -> VideoOutput:
+    if guide is None:
+        from app.services.garment_parser import parse_garment
+        from app.services.stitching_guide import build_guide, load_knowledge
+        from app.providers.base import UsageMeter
+        guide = build_guide(spec, parse_garment(spec), load_knowledge(None), None, UsageMeter())
     garment = spec.garment_category or "garment"
     name = spec.title or garment
     details = ", ".join(v.lower() for v in (spec.neckline, spec.sleeve_style, spec.garment_length) if v)
@@ -72,9 +71,9 @@ def build_storyboard(
             "Work the embellishment on the cut panels.",
             f"Finish the {', '.join(e.lower() for e in spec.embellishments)} on the cut panels before joining them.",
             seconds=25)
-    steps = [s.step for s in plan.construction_overview][:6] if plan and plan.construction_overview else DEFAULT_STEPS
-    for i, step in enumerate(steps):
-        add(f"Step {i + 1}", SHOTS[i % len(SHOTS)], step, f"{step}. Press the seam before moving on.", seconds=25)
+    for i, step in enumerate(guide.steps):
+        add(f"Step {i + 1}: {step.title}", SHOTS[i % len(SHOTS)], step.title,
+            " ".join(step.instructions), on_screen=step.target_piece, seconds=25)
     add("Finishing and reveal", "Slow pan of the finished garment on a dress form or the wearer",
         "Final press, trial fitting and reveal.",
         f"Give it a final press and a fitting. And here is the finished {garment.lower()}.", on_screen=name, seconds=12)
@@ -84,5 +83,5 @@ def build_storyboard(
     notes = [f"About {sum(s.seconds for s in scenes) // 60} minutes of finished video if each scene is filmed as planned."]
     if not videos:
         notes.append("Run Generate Tutorial (with tutorial search connected) to add real videos that show these steps.")
-    return VideoOutput(mode="storyboard", provider_note=PROVIDER_NOTE, title=f"How to make {name}", scenes=scenes,
+    return VideoOutput(stitching_guide=guide, mode="storyboard", provider_note=PROVIDER_NOTE, title=f"How to make {name}", scenes=scenes,
                        script=script, tutorial_videos=videos, notes=notes)

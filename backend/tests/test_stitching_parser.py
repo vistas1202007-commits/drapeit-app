@@ -72,7 +72,8 @@ def test_the_spec_wins_and_the_photo_only_fills_blanks():
 
 def test_unknown_garments_still_get_the_base_steps():
     g = parse_garment(spec(garment_category="Mystery thing"))
-    assert g.family == "dress" and "base" in g.features
+    assert g.family == "other" and "base" in g.features
+    assert not {"shoulder-seams", "sleeve-set-in", "bodice-to-skirt"} & set(g.features)
     assert parse_garment(spec()).family == "other"
 
 

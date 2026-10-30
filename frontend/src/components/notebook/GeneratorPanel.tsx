@@ -38,7 +38,7 @@ export function GeneratorPanel({ sketchStyle, onSketchStyle, ideaDraft }: { sket
     setPkgRunning(true);
     setPkgError(null);
     try {
-      const res = await api.generatePackage(projectId, ids, { design: { idea }, sketch: { style: sketchStyle }, tutorial: { language: tutorialLanguage }, stitching_guide: { language: guideLanguage } });
+      const res = await api.generatePackage(projectId, ids, { design: { idea }, sketch: { style: sketchStyle }, tutorial: { language: tutorialLanguage }, stitching_guide: { language: guideLanguage }, video: { language: guideLanguage } });
       setPkgResult(res);
       await refresh();
     } catch (e) {
@@ -61,7 +61,7 @@ export function GeneratorPanel({ sketchStyle, onSketchStyle, ideaDraft }: { sket
           ? { idea }
           : id === "tutorial"
             ? { language: tutorialLanguage }
-            : id === "stitching_guide"
+            : (id === "stitching_guide" || id === "video")
             ? { language: guideLanguage, index_videos: indexVideos }
             : lastCost?.status === "succeeded"
             ? (costInputsFromOutput(lastCost.output as unknown as CostEstimateOutput) as unknown as Record<string, unknown>) // keep the prices typed in Cost Estimate
@@ -110,13 +110,13 @@ export function GeneratorPanel({ sketchStyle, onSketchStyle, ideaDraft }: { sket
                   </select>
                 </div>
               )}
-              {g.id === "stitching_guide" && (
+              {(g.id === "stitching_guide" || g.id === "video") && (
                 <div className="mt-2 space-y-2">
                   <div>
-                    <label htmlFor="guide-language" className={labelClass}>
+                    <label htmlFor={g.id + "-language"} className={labelClass}>
                       Video language
                     </label>
-                    <select id="guide-language" className={`${inputClass} py-1.5`} value={guideLanguage} onChange={(e) => setGuideLanguage(e.target.value)}>
+                    <select id={g.id + "-language"} className={`${inputClass} py-1.5`} value={guideLanguage} onChange={(e) => setGuideLanguage(e.target.value)}>
                       <option value="any">Any language</option>
                       <option value="en">English</option>
                       <option value="hi">Hindi</option>

@@ -8,11 +8,12 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "e2e": "playwright test",
     "e2e:desktop": "playwright test --project=desktop",
     "e2e:mobile": "playwright test --project=mobile",
-    "e2e:cleanup": "node e2e/support/cleanup.mjs"
+    "e2e:cleanup": "node e2e/support/cleanup.mjs",
+    "test:stitching-browser": "playwright test --config playwright.offline.config.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.117.2",
@@ -30,6 +31,9 @@
     "eslint-config-next": "16.4.2",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "^3.2.7"
+    "vitest": "^3.2.7",
+    "esbuild": "0.28.2",
+    "@tailwindcss/node": "4.3.3",
+    "@tailwindcss/oxide": "4.3.3"
   }
 }

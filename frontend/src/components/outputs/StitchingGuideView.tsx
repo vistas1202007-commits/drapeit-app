@@ -8,6 +8,7 @@ import { api } from "@/lib/api";
 import { byPhase, knownTicks, progress } from "@/lib/stitching";
 import type { GenerationJob, GuideStep, StitchingGuideOutput } from "@/lib/types";
 import { GuideVideoPlayer } from "./GuideVideoPlayer";
+import { ConstructionReview } from "./ConstructionReview";
 
 const LANGUAGE: Record<string, string> = { any: "any language", en: "English", hi: "Hindi" };
 
@@ -71,6 +72,12 @@ function StepItem({ step, done, onToggle, saving, startOpen }: { step: GuideStep
       {open && (
         <div id={panelId} className="space-y-3 border-t border-line px-3 pb-3 pt-2.5 text-sm sm:px-4">
           <p className="text-xs text-muted">{step.why}</p>
+          {step.target_piece && <p className="text-xs font-medium">For this design: {step.target_piece}</p>}
+          {!!step.preconditions?.length && (
+            <details className="text-xs text-muted"><summary className="cursor-pointer">Before this step</summary>
+              <ul className="mt-1 list-disc pl-4">{step.preconditions.map((p) => <li key={p}>{p}</li>)}</ul>
+            </details>
+          )}
           <ol className="list-decimal space-y-1.5 pl-5">
             {step.instructions.map((line, i) => (
               <li key={i}>{line}</li>
@@ -181,6 +188,8 @@ export function StitchingGuideView({ job }: { job: GenerationJob }) {
           </p>
         )}
         <GarmentSummary out={out} />
+        {out.media_policy && <p className="text-xs text-muted">{out.media_policy}</p>}
+        <ConstructionReview key={job.id} out={out} stale={job.stale} />
         {(out.garment.assumptions.length > 0 || out.garment.photo_notes.length > 0) && (
           <details className="rounded-md bg-sunken px-3 py-2 text-xs">
             <summary className="cursor-pointer font-medium">

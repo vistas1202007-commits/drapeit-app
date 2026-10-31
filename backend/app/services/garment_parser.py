@@ -15,6 +15,7 @@ from __future__ import annotations
 import re
 
 from app.schemas.design_spec import DesignSpec
+from app.services.construction_choices import apply_choices
 from app.schemas.stitching import FabricWeight, GarmentComponents, PhotoHints
 
 # (family, words that name it). The first family with a matching word wins, so the more
@@ -35,6 +36,7 @@ FAMILIES: list[tuple[str, tuple[str, ...]]] = [
 ]
 
 FABRIC_CLASSES: list[tuple[str, tuple[str, ...]]] = [
+    ("knit", ("knit", "jersey")),
     ("chiffon", ("chiffon",)),
     ("georgette", ("georgette", "crepe", "crape")),
     ("velvet", ("velvet", "velour", "velveteen")),
@@ -46,6 +48,7 @@ FABRIC_CLASSES: list[tuple[str, tuple[str, ...]]] = [
 ]
 # How heavy each class usually is. Words in the spec ("lightweight", "heavy") override this.
 CLASS_WEIGHT: dict[str, FabricWeight] = {
+    "knit": "medium",
     "chiffon": "light", "georgette": "light", "silk": "medium", "cotton": "medium", "linen": "medium",
     "khadi": "medium", "denim": "heavy", "velvet": "heavy",
 }
@@ -97,7 +100,7 @@ def _family(spec: DesignSpec, photo: PhotoHints | None) -> str:
         for family, words in FAMILIES:
             if any(w in low for w in words):
                 return family
-    return "dress" if spec.garment_category.strip() else "other"
+    return "other"
 
 
 def _fabric(spec: DesignSpec) -> tuple[str, str, FabricWeight, bool, list[str]]:
@@ -263,7 +266,7 @@ def parse_garment(spec: DesignSpec, photo: PhotoHints | None = None) -> GarmentC
     if lined:
         tags.append("lined")
 
-    has_body = family not in ("skirt", "trousers", "dupatta")
+    has_body = family not in ("skirt", "trousers", "dupatta", "other")
     bodice = ""
     if has_body:
         fit = f"{spec.fit} {spec.silhouette}".lower()
@@ -309,6 +312,8 @@ def parse_garment(spec: DesignSpec, photo: PhotoHints | None = None) -> GarmentC
             tags.append("bodice-to-skirt")
     elif _has(corpus, FEATURE_WORDS["pleats"]):
         tags.append("pleats")
+    if family == "skirt":
+        tags.append("side-seams")
     if family == "trousers":
         tags += ["waistband", "side-seams", "inseam"]
         if "gathers" in tags:
@@ -344,10 +349,11 @@ def parse_garment(spec: DesignSpec, photo: PhotoHints | None = None) -> GarmentC
     length = spec.garment_length.strip() or (photo.length.strip() if photo else "")
 
     unique: list[str] = list(dict.fromkeys(tags))
-    return GarmentComponents(
+    garment = GarmentComponents(
         garment_type=garment_type, family=family, bodice=bodice, neckline=neckline, neckline_finish=finish,
         sleeves=sleeves, skirt=skirt, closure=closure, closure_position=position, length=length, fabric=fabric,
         fabric_class=fabric_class, fabric_weight=weight, lined=lined, features=unique,
         source="spec+photo" if photo else "spec", assumptions=list(dict.fromkeys(assumptions)),
         photo_notes=list(dict.fromkeys(photo_notes)),
     )
+    return apply_choices(spec, garment, photo)

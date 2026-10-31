@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 MeasurementUnit = Literal["cm", "in"]
 SkillLevel = Literal["beginner", "intermediate", "advanced", "professional"]
@@ -54,9 +54,22 @@ class TailorNotes(BaseModel):
     references: list[TailorReference] = Field(default_factory=list, max_length=8)
 
 
+class ConstructionChoices(BaseModel):
+    """Decisions explicitly confirmed by the designer; empty means not confirmed."""
+
+    bodice: Literal["", "darted", "princess", "unfitted"] = ""
+    neckline_finish: Literal["", "facing", "binding", "collar"] = ""
+    closure_type: Literal["", "none", "invisible_zip", "lapped_zip", "buttons", "hooks"] = ""
+    closure_position: Literal["", "front", "back", "side", "none"] = ""
+    fabric_construction: Literal["", "woven", "knit"] = ""
+    fabric_weight: Literal["", "light", "medium", "heavy"] = ""
+    seam_finish: Literal["", "plain", "french", "flat_fell", "stretch"] = ""
+
+
 class DesignSpec(BaseModel):
     """Structured description of one garment design."""
 
+    construction: ConstructionChoices = Field(default_factory=ConstructionChoices)
     title: str = Field(default="", max_length=120)
     idea: str = Field(default="", max_length=4000, description="The user's idea in their own words.")
     garment_category: str = Field(default="", max_length=60)
@@ -85,6 +98,27 @@ class DesignSpec(BaseModel):
     tailor: TailorNotes = Field(default_factory=TailorNotes)
     unresolved_questions: list[str] = Field(default_factory=list, max_length=20)
     assumptions: list[str] = Field(default_factory=list, max_length=20)
+
+
+    @model_validator(mode="after")
+    def synchronize_closure(self):
+        """Confirmed closure choices must agree with the spec used by every other tool."""
+        import re
+        c = self.construction
+        if c.closure_position == "none" or c.closure_type == "none":
+            c.closure_position, c.closure_type = "none", "none"
+            self.closures = []
+        elif c.closure_type or c.closure_position:
+            old = ", ".join(self.closures)
+            position = c.closure_position or next((p for p in ("front", "back", "side") if re.search(rf"\b{p}\b", old.lower())), "")
+            kind = {"invisible_zip": "Invisible zip", "lapped_zip": "Lapped zip", "buttons": "Buttons",
+                    "hooks": "Hooks and eyes"}.get(c.closure_type)
+            if kind:
+                self.closures = [f"{position} {kind}".strip()]
+            elif position:
+                self.closures = [f"{position} " + re.sub(r"\b(front|back|side|centre|center)\b", "", x, flags=re.I).strip()
+                                 for x in self.closures]
+        return self
 
 
 # Field names, used when a generator says which parts of the spec it depends on.

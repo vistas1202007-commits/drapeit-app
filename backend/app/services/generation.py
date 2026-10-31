@@ -123,7 +123,8 @@ class GenerationService:
             ),
             latest_output=lambda gid: self.repo.latest_output(project_id, gid),
             project_assets=lambda: self.repo.list_assets(project_id),
-            load_asset=self._asset_loader(), budget_problem=self._budget_problem, knowledge_repo=self.knowledge,
+            load_asset=self._asset_loader(), budget_problem=lambda estimate: self._budget_problem(estimate + meter.cost_usd),
+            knowledge_repo=self.knowledge,
         )
         try:
             if info.paid and (problem := self._budget_problem(info.estimated_cost_usd)):
@@ -145,7 +146,7 @@ class GenerationService:
         duration = int((time.monotonic() - started) * 1000)
         self.system.record_usage(
             self.repo.user_id, job.id, definition.service, info.name, info.is_mock, error is None, duration, error,
-            estimated_cost_usd=round(meter.cost_usd, 6), paid=info.paid,
+            estimated_cost_usd=round(meter.cost_usd, 6), paid=info.paid or meter.cost_usd > 0,
         )
         return self.repo.finish_job(job.id, output, error)
 

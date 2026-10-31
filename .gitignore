@@ -9,6 +9,9 @@
 *.crt
 secrets/
 
+# Project-local dependency caches
+.cache/
+
 # Python
 .venv/
 venv/

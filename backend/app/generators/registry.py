@@ -33,6 +33,7 @@ from app.schemas.outputs import (
 )
 from app.schemas.stitching import PhotoHints
 from app.services.cost_estimate import estimate_cost, starter_inputs
+from app.services.curated_clips import attach_curated
 from app.services.garment_parser import parse_garment
 from app.services.guide_videos import attach_videos
 from app.services.image_prompts import preview_prompt, sketch_prompt
@@ -240,15 +241,19 @@ def _read_reference_photo(ctx: GeneratorContext) -> tuple[PhotoHints | None, lis
 
 def _stitching_guide(ctx: GeneratorContext) -> BaseModel:
     _need_garment(ctx, "building a stitching guide")
-    hints, photo_notes = _read_reference_photo(ctx)
-    garment = parse_garment(ctx.spec, hints)
-    knowledge = load_knowledge(ctx.knowledge_repo, ctx.providers.embedder)
-    guide = build_guide(ctx.spec, garment, knowledge, ctx.providers.guide, ctx.meter)
     language = ctx.options.get("language", "any")
     if language not in TUTORIAL_LANGUAGES:
         raise GeneratorInputError("Video language must be any, en (English) or hi (Hindi).")
+    hints, photo_notes = _read_reference_photo(ctx)
+    try:
+        garment = parse_garment(ctx.spec, hints)
+    except ValueError as exc:
+        raise GeneratorInputError(str(exc)) from exc
+    knowledge = load_knowledge(ctx.knowledge_repo, ctx.providers.embedder)
+    guide = build_guide(ctx.spec, garment, knowledge, ctx.providers.guide, ctx.meter)
     guide.video_language = language
     if ctx.options.get("videos", True):
+        attach_curated(guide, {m.slug: m for m in knowledge.modules}, ctx.knowledge_repo, language)
         attach_videos(guide, {m.slug: m for m in knowledge.modules}, ctx.providers.tutorials, ctx.knowledge_repo,
                       ctx.meter, language, beginner=ctx.spec.skill_level == "beginner",
                       indexer=ctx.providers.video_index, index_videos=bool(ctx.options.get("index_videos")),
@@ -284,7 +289,9 @@ def _pattern(ctx: GeneratorContext) -> BaseModel:
 
 def _video(ctx: GeneratorContext) -> BaseModel:
     _need_garment(ctx, "planning an instructional video")
-    return build_storyboard(ctx.spec, _saved_materials(ctx), _saved_plan(ctx), _saved(ctx, "tutorial", TutorialOutput))
+    guide = _stitching_guide(ctx)
+    return build_storyboard(ctx.spec, ctx.providers.builtin_materials.tools_and_materials(ctx.spec, ctx.meter),
+                            tutorial=_saved(ctx, "tutorial", TutorialOutput), guide=guide)
 
 
 def _cost(ctx: GeneratorContext) -> BaseModel:
@@ -340,14 +347,14 @@ GENERATORS: list[GeneratorDefinition] = [
         "materials", "Generate Tools and Materials",
         "A checklist of tools, notions and embellishments for this design version.",
         service="tools_materials", phase=1,
-        depends_on=["garment_category", "silhouette", "neckline", "sleeve_style", "closures", "embellishments",
+        depends_on=["construction", "garment_category", "silhouette", "neckline", "sleeve_style", "closures", "embellishments",
                     "preferred_fabrics", "fabric_requirements", "idea"],
         run=_materials, provider=lambda p: p.materials.info, in_package_by_default=True,
     ),
     GeneratorDefinition(
         "tailor_sheet", "Generate Tailor Sheet", "Combine everything into a printable tailor specification.",
         service="export", phase=1,
-        depends_on=["title", "garment_category", "occasion", "silhouette", "fit", "neckline", "sleeve_style",
+        depends_on=["construction", "title", "garment_category", "occasion", "silhouette", "fit", "neckline", "sleeve_style",
                     "garment_length", "closures", "embellishments", "colour_palette", "preferred_fabrics",
                     "fabric_requirements", "measurements", "measurement_unit", "budget", "design_notes",
                     "unresolved_questions", "skill_level", "climate", "tailor"],
@@ -401,17 +408,18 @@ GENERATORS: list[GeneratorDefinition] = [
         "stitching_guide", "Generate Stitching Guide",
         "Step-by-step stitching in the order a tailor works, with the right tutorial video for each step.",
         service="stitching_guide", phase=7,
-        depends_on=["garment_category", "silhouette", "fit", "neckline", "sleeve_style", "garment_length", "closures",
-                    "embellishments", "preferred_fabrics", "fabric_requirements", "design_notes", "visual_description"],
+        depends_on=["construction", "garment_category", "silhouette", "fit", "neckline", "sleeve_style", "garment_length", "closures",
+                    "embellishments", "preferred_fabrics", "fabric_requirements", "design_notes", "visual_description", "skill_level", "reference_asset_ids"],
         run=_stitching_guide, provider=lambda p: p.guide.info if p.guide else BUILT_IN,
     ),
     GeneratorDefinition(
-        "video", "Generate Instructional Video",
-        "No video provider is set up: makes a storyboard and script, plus links to real tutorials.",
+        "video", "Generate Stitching Video Guide",
+        "A garment-specific stitching guide with existing demonstrations and an optional filming storyboard.",
         service="video_generation", phase=4,
-        depends_on=["garment_category", "title", "neckline", "sleeve_style", "garment_length", "embellishments",
-                    "preferred_fabrics", "fabric_requirements"],
-        run=_video, provider=lambda p: BUILT_IN,
+        depends_on=["construction", "garment_category", "title", "neckline", "sleeve_style", "garment_length", "embellishments",
+                    "preferred_fabrics", "fabric_requirements", "closures", "silhouette", "fit",
+                    "design_notes", "visual_description", "skill_level", "reference_asset_ids"],
+        run=_video, provider=lambda p: p.guide.info if p.guide else BUILT_IN,
     ),
 ]
 

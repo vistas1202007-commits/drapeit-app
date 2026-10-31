@@ -1,0 +1,1459 @@
+{
+  "spec": {
+    "construction": {
+      "bodice": "",
+      "neckline_finish": "",
+      "closure_type": "",
+      "closure_position": "",
+      "fabric_construction": "",
+      "fabric_weight": "",
+      "seam_finish": ""
+    },
+    "title": "Fixture skirt",
+    "idea": "",
+    "garment_category": "Skirt",
+    "occasion": "",
+    "silhouette": "",
+    "fit": "",
+    "neckline": "",
+    "sleeve_style": "",
+    "garment_length": "",
+    "fabric_requirements": "",
+    "preferred_fabrics": [
+      "Linen"
+    ],
+    "colour_palette": [],
+    "embellishments": [],
+    "closures": [],
+    "climate": "",
+    "measurement_unit": "cm",
+    "measurements": [],
+    "budget": {
+      "amount": null,
+      "currency": "INR",
+      "note": ""
+    },
+    "skill_level": "beginner",
+    "design_notes": "",
+    "visual_description": "",
+    "reference_asset_ids": [],
+    "tailor": {
+      "construction": "",
+      "cutting": "",
+      "stitching": "",
+      "references": []
+    },
+    "unresolved_questions": [],
+    "assumptions": []
+  },
+  "video": {
+    "stitching_guide": {
+      "garment": {
+        "decisions": [
+          {
+            "key": "closure_type",
+            "label": "Closure type",
+            "value": "none",
+            "source": "unknown",
+            "needs_confirmation": true
+          },
+          {
+            "key": "closure_position",
+            "label": "Closure position",
+            "value": "none",
+            "source": "unknown",
+            "needs_confirmation": true
+          },
+          {
+            "key": "fabric_construction",
+            "label": "Fabric construction",
+            "value": "woven",
+            "source": "proposed",
+            "needs_confirmation": true
+          },
+          {
+            "key": "fabric_weight",
+            "label": "Fabric weight",
+            "value": "medium",
+            "source": "proposed",
+            "needs_confirmation": true
+          },
+          {
+            "key": "seam_finish",
+            "label": "Seam finish",
+            "value": "plain",
+            "source": "proposed",
+            "needs_confirmation": true
+          }
+        ],
+        "fabric_construction": "woven",
+        "garment_type": "Skirt",
+        "family": "skirt",
+        "bodice": "",
+        "neckline": "",
+        "neckline_finish": "",
+        "sleeves": "",
+        "skirt": "Straight skirt",
+        "closure": "",
+        "closure_position": "",
+        "length": "",
+        "fabric": "Linen",
+        "fabric_class": "linen",
+        "fabric_weight": "medium",
+        "lined": false,
+        "features": [
+          "base",
+          "fabric-linen",
+          "hem-blind",
+          "plain-seam",
+          "side-seams",
+          "skirt",
+          "waistband"
+        ],
+        "source": "spec",
+        "assumptions": [
+          "The spec has no closure, so no closure step was added."
+        ],
+        "photo_notes": []
+      },
+      "plan_version": "construction-1",
+      "requires_confirmation": true,
+      "media_policy": "Technique demonstrations on example pieces, linked to this garment's steps.",
+      "fabric_card": {
+        "fabric": "Linen",
+        "needle": "Sharp needle, size 80/12 to 90/14.",
+        "thread": "Strong cotton or polyester thread.",
+        "stitch_length": "Medium (about 2.5 to 3 mm).",
+        "seam_types": [
+          "Flat-fell seam",
+          "Plain seam with a zigzag or bound edge",
+          "French seam on fine linen"
+        ],
+        "pressing": "High heat with plenty of steam, pressed while still slightly damp.",
+        "notes": [
+          "Linen frays quickly and creases easily. Finish edges early.",
+          "Linen softens and shrinks with washing. Treat the fabric before cutting.",
+          "A lining stops linen from creasing too much at the seat or elbow."
+        ]
+      },
+      "phase_tips": {
+        "prep": [
+          "Linen frays quickly. Finish cut edges early and keep the pieces flat so they do not crease."
+        ],
+        "main_seams": [
+          "Choose seams that enclose the raw edge (flat-fell, French or bound): linen frays and wears at the seam."
+        ],
+        "openings": [
+          "Use interfacing of a similar weight, so stiff areas do not look out of place."
+        ],
+        "hem": [
+          "A deeper hem looks good on linen and keeps the edge from fraying."
+        ],
+        "pressing": [
+          "Press with plenty of steam while slightly damp. Press the right side through a cloth to avoid shine."
+        ]
+      },
+      "steps": [
+        {
+          "key": "prepare-fabric",
+          "number": 1,
+          "phase": "prep",
+          "phase_label": "Prep & cutting",
+          "title": "Prepare the fabric",
+          "module_slug": "prepare-fabric",
+          "module_title": "Prepare the fabric",
+          "why": "Every garment needs this step.",
+          "instructions": [
+            "Check the care label or ask the seller how the fabric should be washed. Treat the fabric the way you will treat the finished garment.",
+            "Wash, soak or steam the fabric as that care says, then dry it flat or on a line.",
+            "Press it flat while it is still slightly damp, working along the lengthwise threads.",
+            "Fold it in half along the length and check that both cut edges meet and the fabric lies flat. If it twists, tug it gently on the diagonal until it sits straight.",
+            "Mark the right side with a small chalk cross or a safety pin if the two sides look alike."
+          ],
+          "depends_on": [],
+          "preconditions": [],
+          "target_piece": "Skirt: garment pieces",
+          "source_hash": "95186a6a1c899f5fb48dcdbb8bcc190d9b969737766cc012477c2e694077591e",
+          "instruction_source": "library",
+          "tips": [
+            "A fabric that will only ever be dry-cleaned should be steamed, not washed.",
+            "Save a small scrap from this prepared fabric: it is your test piece for stitches and pressing."
+          ],
+          "fabric_tips": [
+            "Wash linen twice if you plan to wash the garment often. Press it before cutting."
+          ],
+          "video": null,
+          "more_videos": [],
+          "video_status": "not_connected",
+          "search_query": "how to prepare fabric before cutting and stitching pre-shrink straighten grain",
+          "search_url": "https://www.youtube.com/results?search_query=how+to+prepare+fabric+before+cutting+and+stitching+pre-shrink+straighten+grain"
+        },
+        {
+          "key": "layout-and-cutting",
+          "number": 2,
+          "phase": "prep",
+          "phase_label": "Prep & cutting",
+          "title": "Lay out and cut",
+          "module_slug": "layout-and-cutting",
+          "module_title": "Lay out and cut",
+          "why": "Every garment needs this step.",
+          "instructions": [
+            "Lay the fabric flat on a clean table, right sides together, with the lengthwise grain parallel to the table edge.",
+            "Place each pattern piece so its grain line runs along the lengthwise threads. Measure from the grain line to the selvedge at both ends to be sure.",
+            "Check that every piece fits before you cut anything, and that patterned or one-way fabric faces the same direction on every piece.",
+            "Pin only inside the seam allowance, or use weights, so the fabric does not shift.",
+            "Cut with long, steady strokes of sharp shears. Cut notches as small snips outward, not inward.",
+            "Keep the cut pieces flat and label each with a pin or chalk: front, back, sleeve, facing."
+          ],
+          "depends_on": [
+            "prepare-fabric"
+          ],
+          "preconditions": [
+            "Complete: Prepare the fabric"
+          ],
+          "target_piece": "Skirt: garment pieces",
+          "source_hash": "fb140046c877543d71a2a1a6c1801ec391797a8283404ea0c6c5654f8813891b",
+          "instruction_source": "library",
+          "tips": [
+            "Cut out curved edges slowly. A wobble in the cut line shows up in the finished seam.",
+            "Never cut anything that you have not checked against the measurements written for the tailor."
+          ],
+          "fabric_tips": [],
+          "video": null,
+          "more_videos": [],
+          "video_status": "not_connected",
+          "search_query": "how to lay out pattern and cut fabric grainline for beginners",
+          "search_url": "https://www.youtube.com/results?search_query=how+to+lay+out+pattern+and+cut+fabric+grainline+for+beginners"
+        },
+        {
+          "key": "marking-and-notches",
+          "number": 3,
+          "phase": "prep",
+          "phase_label": "Prep & cutting",
+          "title": "Mark the pattern on the fabric",
+          "module_slug": "marking-and-notches",
+          "module_title": "Mark the pattern on the fabric",
+          "why": "Every garment needs this step.",
+          "instructions": [
+            "Mark every dart point, pleat line, pocket spot and zip stop from the pattern onto the wrong side of the fabric.",
+            "Use tailor's chalk, a fading pen or tailor's tacks, whichever shows on your fabric but will not stain it.",
+            "For tailor's tacks, make a loose double stitch through pattern and both layers, then cut the loop and gently part the layers.",
+            "Match the notches of neighbouring pieces and number them with a pin or a clip so you can find pairs quickly."
+          ],
+          "depends_on": [
+            "layout-and-cutting"
+          ],
+          "preconditions": [
+            "Complete: Lay out and cut"
+          ],
+          "target_piece": "Skirt: garment pieces",
+          "source_hash": "af3af6cb40af349f41329749938cf7a6c63f0a1df756a8793d5091a26922852e",
+          "instruction_source": "library",
+          "tips": [
+            "Test a marking pen on a scrap first. Some pens leave marks on silk that never wash out.",
+            "On sheer fabric use small thread tacks, so no chalk shows through."
+          ],
+          "fabric_tips": [],
+          "video": null,
+          "more_videos": [],
+          "video_status": "not_connected",
+          "search_query": "how to mark darts and pattern marks on fabric tailor tacks chalk",
+          "search_url": "https://www.youtube.com/results?search_query=how+to+mark+darts+and+pattern+marks+on+fabric+tailor+tacks+chalk"
+        },
+        {
+          "key": "finish-raw-edges",
+          "number": 4,
+          "phase": "prep",
+          "phase_label": "Prep & cutting",
+          "title": "Finish the raw edges",
+          "module_slug": "finish-raw-edges",
+          "module_title": "Finish the raw edges",
+          "why": "Every garment needs this step.",
+          "instructions": [
+            "Decide the finish for each seam: overlock, zigzag, pinked edge or hand overcast. Fine fabric usually needs a narrow finish.",
+            "Finish the edges of every piece that will have an open seam, such as side seams and shoulders, before you sew them together.",
+            "Leave out the edges that will be enclosed, such as a seam that will be turned inside a French seam, or a hem that will be turned up.",
+            "Trim loose threads as you go and check that the finish did not stretch or ripple the edge."
+          ],
+          "depends_on": [
+            "marking-and-notches"
+          ],
+          "preconditions": [
+            "Complete: Mark the pattern on the fabric"
+          ],
+          "target_piece": "Skirt: garment pieces",
+          "source_hash": "116cd9af75f83a8455f1228ea7ac8bf482f758fd333b66bac66b314bb829ccc5",
+          "instruction_source": "library",
+          "tips": [
+            "On sheer fabric choose a French seam or a rolled finish rather than a thick overlock."
+          ],
+          "fabric_tips": [
+            "Finish all the cut edges soon after cutting, or linen will fray in your hands."
+          ],
+          "video": null,
+          "more_videos": [],
+          "video_status": "not_connected",
+          "search_query": "how to finish raw edges seam finishes zigzag overlock pinking shears",
+          "search_url": "https://www.youtube.com/results?search_query=how+to+finish+raw+edges+seam+finishes+zigzag+overlock+pinking+shears"
+        },
+        {
+          "key": "plain-seam",
+          "number": 5,
+          "phase": "main_seams",
+          "phase_label": "Main seams",
+          "title": "Sew a plain seam",
+          "module_slug": "plain-seam",
+          "module_title": "Sew a plain seam",
+          "why": "The main seams are plain seams.",
+          "instructions": [
+            "Place the two pieces right sides together, edges level, notches matching.",
+            "Pin at right angles to the edge, with the pin heads toward the seam allowance so they can be pulled out as you sew.",
+            "Sew with the seam allowance that the pattern gives, keeping the edge of the fabric against the guide on the needle plate.",
+            "Backstitch a few stitches at the start and end, so the seam does not open.",
+            "Press the seam flat as sewn, to set the stitches, then press it open from the wrong side."
+          ],
+          "depends_on": [
+            "marking-and-notches"
+          ],
+          "preconditions": [
+            "Complete: Mark the pattern on the fabric"
+          ],
+          "target_piece": "Skirt: garment pieces",
+          "source_hash": "a6adea52f5006da2c22c2ea7e1b9578f2a9f5117da3481046107beada38a870a",
+          "instruction_source": "library",
+          "tips": [
+            "Sew slowly across curves and at corners. A fast seam is a crooked seam.",
+            "Do not sew over pins. They bend needles and spoil the stitch."
+          ],
+          "fabric_tips": [],
+          "video": null,
+          "more_videos": [],
+          "video_status": "not_connected",
+          "search_query": "how to sew a straight seam on a sewing machine for beginners seam allowance backstitch",
+          "search_url": "https://www.youtube.com/results?search_query=how+to+sew+a+straight+seam+on+a+sewing+machine+for+beginners+seam+allowance+backstitch"
+        },
+        {
+          "key": "side-seams",
+          "number": 6,
+          "phase": "side_seams",
+          "phase_label": "Side seams",
+          "title": "Close the side seams",
+          "module_slug": "side-seams",
+          "module_title": "Close the side seams",
+          "why": "The garment closes with side seams.",
+          "instructions": [
+            "Place the matching front and back pieces right sides together. Match side notches, waist or hip marks and hem edges.",
+            "If a zip sits in the side seam, start and stop where the zip tape ends and leave that part open.",
+            "Pin the matching side-seam edges from the balance marks outward, leaving the pattern's openings free.",
+            "Sew the indicated side seams in the same direction on both sides, retaining any opening required by the pattern.",
+            "Try the garment on and check the fit. Take in or let out the seam as needed, then finish the edges.",
+            "Press the seams open, and clip the allowance at the waist so it lies flat."
+          ],
+          "depends_on": [
+            "marking-and-notches"
+          ],
+          "preconditions": [
+            "Complete: Mark the pattern on the fabric"
+          ],
+          "target_piece": "Skirt: garment pieces",
+          "source_hash": "4a7d0aad67bee2d1f6a1f20fba9da3f5fccee5dcebaf7e35df93f785be68ebd6",
+          "instruction_source": "library",
+          "tips": [
+            "Baste first and try on. It takes minutes, and a changed seam costs hours."
+          ],
+          "fabric_tips": [],
+          "video": null,
+          "more_videos": [],
+          "video_status": "not_connected",
+          "search_query": "how to sew side seams and check fit on a dress or kurta",
+          "search_url": "https://www.youtube.com/results?search_query=how+to+sew+side+seams+and+check+fit+on+a+dress+or+kurta"
+        },
+        {
+          "key": "waistband",
+          "number": 7,
+          "phase": "openings",
+          "phase_label": "Openings & finishes",
+          "title": "Attach the waistband",
+          "module_slug": "waistband",
+          "module_title": "Attach the waistband",
+          "why": "The design has a waistband.",
+          "instructions": [
+            "Cut the waistband and interface one layer. Press the long edge of the other layer under by the seam allowance.",
+            "Gather or pleat the garment waist edge to fit the waistband, with extra at the closure for the overlap.",
+            "Sew the interfaced layer to the garment, right sides together, matching the centre marks and the side seams.",
+            "Press the seam up toward the band. Fold the band over so the right sides are together and sew the short ends.",
+            "Turn the band right side out, fold the pressed edge over the seam and pin it. Sew in the ditch (right in the seam) from the right side, or hand-stitch.",
+            "Add the hook and eye, button or other closing at the end of the band."
+          ],
+          "depends_on": [
+            "marking-and-notches",
+            "side-seams"
+          ],
+          "preconditions": [
+            "Complete: Mark the pattern on the fabric",
+            "Complete: Close the side seams"
+          ],
+          "target_piece": "Skirt: skirt or lower section",
+          "source_hash": "49580e4e390e64c262f75c7220be3f1d2787e046698d80070fd07bd0cc68867d",
+          "instruction_source": "library",
+          "tips": [
+            "Use a stiff waistband interfacing for trousers, and a softer one for a gathered lehenga skirt.",
+            "A drawstring (nada) needs a channel and a flat hole at the centre."
+          ],
+          "fabric_tips": [],
+          "video": null,
+          "more_videos": [],
+          "video_status": "not_connected",
+          "search_query": "how to attach a waistband to a skirt or trousers tutorial",
+          "search_url": "https://www.youtube.com/results?search_query=how+to+attach+a+waistband+to+a+skirt+or+trousers+tutorial"
+        },
+        {
+          "key": "blind-hem",
+          "number": 8,
+          "phase": "hem",
+          "phase_label": "Hem",
+          "title": "Sew a blind hem",
+          "module_slug": "blind-hem",
+          "module_title": "Sew a blind hem",
+          "why": "The hem is a blind hem, for a clean finish.",
+          "instructions": [
+            "Finish the raw edge of the hem allowance, then turn it up along the marked fold line and press.",
+            "Pin or baste the hem in place, about a finger-width below the finished edge.",
+            "Fold the hem back against the garment so the finished edge shows. Take a tiny stitch in the garment, catching only one or two threads.",
+            "Take the next stitch in the hem allowance, a short distance along. Keep the thread loose. Repeat all around.",
+            "Press the hem lightly, from the wrong side, with a pressing cloth."
+          ],
+          "depends_on": [
+            "finish-raw-edges",
+            "layout-and-cutting",
+            "marking-and-notches",
+            "plain-seam",
+            "prepare-fabric",
+            "side-seams",
+            "waistband"
+          ],
+          "preconditions": [
+            "Complete: Finish the raw edges",
+            "Complete: Lay out and cut",
+            "Complete: Mark the pattern on the fabric",
+            "Complete: Sew a plain seam",
+            "Complete: Prepare the fabric",
+            "Complete: Close the side seams",
+            "Complete: Attach the waistband"
+          ],
+          "target_piece": "Skirt: garment pieces",
+          "source_hash": "a9c3d5e928d46a9c0377147e3c6fbf76748ca709418acc276b76e781d622fc1a",
+          "instruction_source": "library",
+          "tips": [
+            "A machine blind-hem foot works faster, but the hand method gives the softest result on silk.",
+            "Do not pull the thread tight. A tight stitch pulls a dimple into the right side."
+          ],
+          "fabric_tips": [],
+          "video": null,
+          "more_videos": [],
+          "video_status": "not_connected",
+          "search_query": "how to sew a blind hem by hand and by machine invisible hem",
+          "search_url": "https://www.youtube.com/results?search_query=how+to+sew+a+blind+hem+by+hand+and+by+machine+invisible+hem"
+        },
+        {
+          "key": "pressing-basics",
+          "number": 9,
+          "phase": "pressing",
+          "phase_label": "Pressing",
+          "title": "Press the garment properly",
+          "module_slug": "pressing-basics",
+          "module_title": "Press the garment properly",
+          "why": "Every garment needs this step.",
+          "instructions": [
+            "Choose the heat from the fabric card, and test it on your scrap first.",
+            "Put a pressing cloth (a thin cotton or muslin cloth) over delicate fabric. Press with the iron, lift, move, and press again.",
+            "Press each seam from the wrong side, then open it up and press it flat. Press curves over a tailor's ham or a rolled towel.",
+            "Press the garment from the wrong side first. If the right side needs it, use a cloth.",
+            "Let the fabric cool and dry before you move it. Heat and steam set the shape only while the cloth cools."
+          ],
+          "depends_on": [
+            "blind-hem",
+            "marking-and-notches"
+          ],
+          "preconditions": [
+            "Complete: Sew a blind hem",
+            "Complete: Mark the pattern on the fabric"
+          ],
+          "target_piece": "Skirt: garment pieces",
+          "source_hash": "508ec622e302cc4c44d51595bf69c7fff98d28b3810d44b37aac8501d7e404af",
+          "instruction_source": "library",
+          "tips": [
+            "Never press over pins with plastic heads, or over zip pulls and buttons. They melt or leave marks."
+          ],
+          "fabric_tips": [],
+          "video": null,
+          "more_videos": [],
+          "video_status": "not_connected",
+          "search_query": "how to press seams and darts when sewing pressing vs ironing tutorial",
+          "search_url": "https://www.youtube.com/results?search_query=how+to+press+seams+and+darts+when+sewing+pressing+vs+ironing+tutorial"
+        },
+        {
+          "key": "final-inspection",
+          "number": 10,
+          "phase": "pressing",
+          "phase_label": "Pressing",
+          "title": "Final check and thread trimming",
+          "module_slug": "final-inspection",
+          "module_title": "Final check and thread trimming",
+          "why": "Every garment needs this step.",
+          "instructions": [
+            "Trim every loose thread inside and outside the garment.",
+            "Check that every seam is closed and every button, hook or zip works smoothly.",
+            "Try the garment on, or hang it on a form, and look for pulling, gaping, twisting or a hem that is not level.",
+            "Check the measurements that the designer gave to the tailor against the finished garment.",
+            "Make a final press and hang or fold the garment as it will be stored."
+          ],
+          "depends_on": [
+            "marking-and-notches",
+            "pressing-basics"
+          ],
+          "preconditions": [
+            "Complete: Mark the pattern on the fabric",
+            "Complete: Press the garment properly"
+          ],
+          "target_piece": "Skirt: garment pieces",
+          "source_hash": "53eee672e3a511c0987e1143e2d2d33c390cdfde65cbf3f9718b26962ca0204c",
+          "instruction_source": "library",
+          "tips": [
+            "Keep the tailor sheet next to the garment. The final check is easier with the list in front of you."
+          ],
+          "fabric_tips": [],
+          "video": null,
+          "more_videos": [],
+          "video_status": "not_connected",
+          "search_query": "how to finish a sewn garment finishing touches trimming threads final check",
+          "search_url": "https://www.youtube.com/results?search_query=how+to+finish+a+sewn+garment+finishing+touches+trimming+threads+final+check"
+        }
+      ],
+      "knowledge_source": "built-in library",
+      "video_source": "not connected",
+      "video_connected": false,
+      "video_language": "any",
+      "notes": [
+        "Draft construction plan: confirm the proposed choices before using these steps to sew.",
+        "The settings on the fabric card are starting points. Always sew a test seam on a scrap of your real fabric.",
+        "This guide explains the order and the methods. It has no cutting measurements: those come from the tailor sheet.",
+        "Technique instructions are original application content and still need professional tailoring review."
+      ]
+    },
+    "mode": "storyboard",
+    "provider_note": "No video generation provider is set up, so this is a storyboard and narration script you can film yourself or give to a video editor. Real tutorial videos for this design are listed below when tutorial search is connected.",
+    "title": "How to make Fixture skirt",
+    "scenes": [
+      {
+        "number": 1,
+        "title": "Introduction",
+        "shot": "Wide shot of the sketch or reference picture, then the maker at the table",
+        "action": "Show the design reference and the fabric.",
+        "narration": "Today we are making Fixture skirt: a skirt.",
+        "on_screen_text": "Fixture skirt",
+        "seconds": 10
+      },
+      {
+        "number": 2,
+        "title": "Measurements",
+        "shot": "Medium shot of measuring the wearer (or a dress form)",
+        "action": "Measure and write down each value.",
+        "narration": "Take these measurements first: Waist, Hip, Skirt length. Write each one down before cutting.",
+        "on_screen_text": "Measure before you cut",
+        "seconds": 20
+      },
+      {
+        "number": 3,
+        "title": "Cutting",
+        "shot": "Overhead shot of the fabric with pattern pieces placed",
+        "action": "Lay out the pieces along the grain and cut.",
+        "narration": "Lay the pattern pieces along the grain and cut carefully. Pre-wash or soak the fabric before cutting: natural fibres can shrink.",
+        "on_screen_text": "Grainline parallel to the selvedge",
+        "seconds": 25
+      },
+      {
+        "number": 4,
+        "title": "Step 1: Prepare the fabric",
+        "shot": "Close-up of hands at the machine",
+        "action": "Prepare the fabric",
+        "narration": "Check the care label or ask the seller how the fabric should be washed. Treat the fabric the way you will treat the finished garment. Wash, soak or steam the fabric as that care says, then dry it flat or on a line. Press it flat while it is still slightly damp, working along the lengthwise threads. Fold it in half along the length and check that both cut edges meet and the fabric lies flat. If it twists, tug it gently on the diagonal until it sits straight. Mark the right side with a small chalk cross or a safety pin if the two sides look alike.",
+        "on_screen_text": "Skirt: garment pieces",
+        "seconds": 25
+      },
+      {
+        "number": 5,
+        "title": "Step 2: Lay out and cut",
+        "shot": "Overhead shot of the work table",
+        "action": "Lay out and cut",
+        "narration": "Lay the fabric flat on a clean table, right sides together, with the lengthwise grain parallel to the table edge. Place each pattern piece so its grain line runs along the lengthwise threads. Measure from the grain line to the selvedge at both ends to be sure. Check that every piece fits before you cut anything, and that patterned or one-way fabric faces the same direction on every piece. Pin only inside the seam allowance, or use weights, so the fabric does not shift. Cut with long, steady strokes of sharp shears. Cut notches as small snips outward, not inward. Keep the cut pieces flat and label each with a pin or chalk: front, back, sleeve, facing.",
+        "on_screen_text": "Skirt: garment pieces",
+        "seconds": 25
+      },
+      {
+        "number": 6,
+        "title": "Step 3: Mark the pattern on the fabric",
+        "shot": "Medium shot at the ironing board",
+        "action": "Mark the pattern on the fabric",
+        "narration": "Mark every dart point, pleat line, pocket spot and zip stop from the pattern onto the wrong side of the fabric. Use tailor's chalk, a fading pen or tailor's tacks, whichever shows on your fabric but will not stain it. For tailor's tacks, make a loose double stitch through pattern and both layers, then cut the loop and gently part the layers. Match the notches of neighbouring pieces and number them with a pin or a clip so you can find pairs quickly.",
+        "on_screen_text": "Skirt: garment pieces",
+        "seconds": 25
+      },
+      {
+        "number": 7,
+        "title": "Step 4: Finish the raw edges",
+        "shot": "Close-up of hands at the machine",
+        "action": "Finish the raw edges",
+        "narration": "Decide the finish for each seam: overlock, zigzag, pinked edge or hand overcast. Fine fabric usually needs a narrow finish. Finish the edges of every piece that will have an open seam, such as side seams and shoulders, before you sew them together. Leave out the edges that will be enclosed, such as a seam that will be turned inside a French seam, or a hem that will be turned up. Trim loose threads as you go and check that the finish did not stretch or ripple the edge.",
+        "on_screen_text": "Skirt: garment pieces",
+        "seconds": 25
+      },
+      {
+        "number": 8,
+        "title": "Step 5: Sew a plain seam",
+        "shot": "Overhead shot of the work table",
+        "action": "Sew a plain seam",
+        "narration": "Place the two pieces right sides together, edges level, notches matching. Pin at right angles to the edge, with the pin heads toward the seam allowance so they can be pulled out as you sew. Sew with the seam allowance that the pattern gives, keeping the edge of the fabric against the guide on the needle plate. Backstitch a few stitches at the start and end, so the seam does not open. Press the seam flat as sewn, to set the stitches, then press it open from the wrong side.",
+        "on_screen_text": "Skirt: garment pieces",
+        "seconds": 25
+      },
+      {
+        "number": 9,
+        "title": "Step 6: Close the side seams",
+        "shot": "Medium shot at the ironing board",
+        "action": "Close the side seams",
+        "narration": "Place the matching front and back pieces right sides together. Match side notches, waist or hip marks and hem edges. If a zip sits in the side seam, start and stop where the zip tape ends and leave that part open. Pin the matching side-seam edges from the balance marks outward, leaving the pattern's openings free. Sew the indicated side seams in the same direction on both sides, retaining any opening required by the pattern. Try the garment on and check the fit. Take in or let out the seam as needed, then finish the edges. Press the seams open, and clip the allowance at the waist so it lies flat.",
+        "on_screen_text": "Skirt: garment pieces",
+        "seconds": 25
+      },
+      {
+        "number": 10,
+        "title": "Step 7: Attach the waistband",
+        "shot": "Close-up of hands at the machine",
+        "action": "Attach the waistband",
+        "narration": "Cut the waistband and interface one layer. Press the long edge of the other layer under by the seam allowance. Gather or pleat the garment waist edge to fit the waistband, with extra at the closure for the overlap. Sew the interfaced layer to the garment, right sides together, matching the centre marks and the side seams. Press the seam up toward the band. Fold the band over so the right sides are together and sew the short ends. Turn the band right side out, fold the pressed edge over the seam and pin it. Sew in the ditch (right in the seam) from the right side, or hand-stitch. Add the hook and eye, button or other closing at the end of the band.",
+        "on_screen_text": "Skirt: skirt or lower section",
+        "seconds": 25
+      },
+      {
+        "number": 11,
+        "title": "Step 8: Sew a blind hem",
+        "shot": "Overhead shot of the work table",
+        "action": "Sew a blind hem",
+        "narration": "Finish the raw edge of the hem allowance, then turn it up along the marked fold line and press. Pin or baste the hem in place, about a finger-width below the finished edge. Fold the hem back against the garment so the finished edge shows. Take a tiny stitch in the garment, catching only one or two threads. Take the next stitch in the hem allowance, a short distance along. Keep the thread loose. Repeat all around. Press the hem lightly, from the wrong side, with a pressing cloth.",
+        "on_screen_text": "Skirt: garment pieces",
+        "seconds": 25
+      },
+      {
+        "number": 12,
+        "title": "Step 9: Press the garment properly",
+        "shot": "Medium shot at the ironing board",
+        "action": "Press the garment properly",
+        "narration": "Choose the heat from the fabric card, and test it on your scrap first. Put a pressing cloth (a thin cotton or muslin cloth) over delicate fabric. Press with the iron, lift, move, and press again. Press each seam from the wrong side, then open it up and press it flat. Press curves over a tailor's ham or a rolled towel. Press the garment from the wrong side first. If the right side needs it, use a cloth. Let the fabric cool and dry before you move it. Heat and steam set the shape only while the cloth cools.",
+        "on_screen_text": "Skirt: garment pieces",
+        "seconds": 25
+      },
+      {
+        "number": 13,
+        "title": "Step 10: Final check and thread trimming",
+        "shot": "Close-up of hands at the machine",
+        "action": "Final check and thread trimming",
+        "narration": "Trim every loose thread inside and outside the garment. Check that every seam is closed and every button, hook or zip works smoothly. Try the garment on, or hang it on a form, and look for pulling, gaping, twisting or a hem that is not level. Check the measurements that the designer gave to the tailor against the finished garment. Make a final press and hang or fold the garment as it will be stored.",
+        "on_screen_text": "Skirt: garment pieces",
+        "seconds": 25
+      },
+      {
+        "number": 14,
+        "title": "Finishing and reveal",
+        "shot": "Slow pan of the finished garment on a dress form or the wearer",
+        "action": "Final press, trial fitting and reveal.",
+        "narration": "Give it a final press and a fitting. And here is the finished skirt.",
+        "on_screen_text": "Fixture skirt",
+        "seconds": 12
+      }
+    ],
+    "script": "Scene 1 \u2013 Introduction: Today we are making Fixture skirt: a skirt.\nScene 2 \u2013 Measurements: Take these measurements first: Waist, Hip, Skirt length. Write each one down before cutting.\nScene 3 \u2013 Cutting: Lay the pattern pieces along the grain and cut carefully. Pre-wash or soak the fabric before cutting: natural fibres can shrink.\nScene 4 \u2013 Step 1: Prepare the fabric: Check the care label or ask the seller how the fabric should be washed. Treat the fabric the way you will treat the finished garment. Wash, soak or steam the fabric as that care says, then dry it flat or on a line. Press it flat while it is still slightly damp, working along the lengthwise threads. Fold it in half along the length and check that both cut edges meet and the fabric lies flat. If it twists, tug it gently on the diagonal until it sits straight. Mark the right side with a small chalk cross or a safety pin if the two sides look alike.\nScene 5 \u2013 Step 2: Lay out and cut: Lay the fabric flat on a clean table, right sides together, with the lengthwise grain parallel to the table edge. Place each pattern piece so its grain line runs along the lengthwise threads. Measure from the grain line to the selvedge at both ends to be sure. Check that every piece fits before you cut anything, and that patterned or one-way fabric faces the same direction on every piece. Pin only inside the seam allowance, or use weights, so the fabric does not shift. Cut with long, steady strokes of sharp shears. Cut notches as small snips outward, not inward. Keep the cut pieces flat and label each with a pin or chalk: front, back, sleeve, facing.\nScene 6 \u2013 Step 3: Mark the pattern on the fabric: Mark every dart point, pleat line, pocket spot and zip stop from the pattern onto the wrong side of the fabric. Use tailor's chalk, a fading pen or tailor's tacks, whichever shows on your fabric but will not stain it. For tailor's tacks, make a loose double stitch through pattern and both layers, then cut the loop and gently part the layers. Match the notches of neighbouring pieces and number them with a pin or a clip so you can find pairs quickly.\nScene 7 \u2013 Step 4: Finish the raw edges: Decide the finish for each seam: overlock, zigzag, pinked edge or hand overcast. Fine fabric usually needs a narrow finish. Finish the edges of every piece that will have an open seam, such as side seams and shoulders, before you sew them together. Leave out the edges that will be enclosed, such as a seam that will be turned inside a French seam, or a hem that will be turned up. Trim loose threads as you go and check that the finish did not stretch or ripple the edge.\nScene 8 \u2013 Step 5: Sew a plain seam: Place the two pieces right sides together, edges level, notches matching. Pin at right angles to the edge, with the pin heads toward the seam allowance so they can be pulled out as you sew. Sew with the seam allowance that the pattern gives, keeping the edge of the fabric against the guide on the needle plate. Backstitch a few stitches at the start and end, so the seam does not open. Press the seam flat as sewn, to set the stitches, then press it open from the wrong side.\nScene 9 \u2013 Step 6: Close the side seams: Place the matching front and back pieces right sides together. Match side notches, waist or hip marks and hem edges. If a zip sits in the side seam, start and stop where the zip tape ends and leave that part open. Pin the matching side-seam edges from the balance marks outward, leaving the pattern's openings free. Sew the indicated side seams in the same direction on both sides, retaining any opening required by the pattern. Try the garment on and check the fit. Take in or let out the seam as needed, then finish the edges. Press the seams open, and clip the allowance at the waist so it lies flat.\nScene 10 \u2013 Step 7: Attach the waistband: Cut the waistband and interface one layer. Press the long edge of the other layer under by the seam allowance. Gather or pleat the garment waist edge to fit the waistband, with extra at the closure for the overlap. Sew the interfaced layer to the garment, right sides together, matching the centre marks and the side seams. Press the seam up toward the band. Fold the band over so the right sides are together and sew the short ends. Turn the band right side out, fold the pressed edge over the seam and pin it. Sew in the ditch (right in the seam) from the right side, or hand-stitch. Add the hook and eye, button or other closing at the end of the band.\nScene 11 \u2013 Step 8: Sew a blind hem: Finish the raw edge of the hem allowance, then turn it up along the marked fold line and press. Pin or baste the hem in place, about a finger-width below the finished edge. Fold the hem back against the garment so the finished edge shows. Take a tiny stitch in the garment, catching only one or two threads. Take the next stitch in the hem allowance, a short distance along. Keep the thread loose. Repeat all around. Press the hem lightly, from the wrong side, with a pressing cloth.\nScene 12 \u2013 Step 9: Press the garment properly: Choose the heat from the fabric card, and test it on your scrap first. Put a pressing cloth (a thin cotton or muslin cloth) over delicate fabric. Press with the iron, lift, move, and press again. Press each seam from the wrong side, then open it up and press it flat. Press curves over a tailor's ham or a rolled towel. Press the garment from the wrong side first. If the right side needs it, use a cloth. Let the fabric cool and dry before you move it. Heat and steam set the shape only while the cloth cools.\nScene 13 \u2013 Step 10: Final check and thread trimming: Trim every loose thread inside and outside the garment. Check that every seam is closed and every button, hook or zip works smoothly. Try the garment on, or hang it on a form, and look for pulling, gaping, twisting or a hem that is not level. Check the measurements that the designer gave to the tailor against the finished garment. Make a final press and hang or fold the garment as it will be stored.\nScene 14 \u2013 Finishing and reveal: Give it a final press and a fitting. And here is the finished skirt.",
+    "tutorial_videos": [],
+    "notes": [
+      "About 5 minutes of finished video if each scene is filmed as planned.",
+      "Run Generate Tutorial (with tutorial search connected) to add real videos that show these steps."
+    ]
+  },
+  "legacy": {
+    "mode": "storyboard",
+    "provider_note": "No video generation provider is set up, so this is a storyboard and narration script you can film yourself or give to a video editor. Real tutorial videos for this design are listed below when tutorial search is connected.",
+    "title": "How to make Fixture skirt",
+    "scenes": [
+      {
+        "number": 1,
+        "title": "Introduction",
+        "shot": "Wide shot of the sketch or reference picture, then the maker at the table",
+        "action": "Show the design reference and the fabric.",
+        "narration": "Today we are making Fixture skirt: a skirt.",
+        "on_screen_text": "Fixture skirt",
+        "seconds": 10
+      },
+      {
+        "number": 2,
+        "title": "Measurements",
+        "shot": "Medium shot of measuring the wearer (or a dress form)",
+        "action": "Measure and write down each value.",
+        "narration": "Take these measurements first: Waist, Hip, Skirt length. Write each one down before cutting.",
+        "on_screen_text": "Measure before you cut",
+        "seconds": 20
+      },
+      {
+        "number": 3,
+        "title": "Cutting",
+        "shot": "Overhead shot of the fabric with pattern pieces placed",
+        "action": "Lay out the pieces along the grain and cut.",
+        "narration": "Lay the pattern pieces along the grain and cut carefully. Pre-wash or soak the fabric before cutting: natural fibres can shrink.",
+        "on_screen_text": "Grainline parallel to the selvedge",
+        "seconds": 25
+      },
+      {
+        "number": 4,
+        "title": "Step 1: Prepare the fabric",
+        "shot": "Close-up of hands at the machine",
+        "action": "Prepare the fabric",
+        "narration": "Check the care label or ask the seller how the fabric should be washed. Treat the fabric the way you will treat the finished garment. Wash, soak or steam the fabric as that care says, then dry it flat or on a line. Press it flat while it is still slightly damp, working along the lengthwise threads. Fold it in half along the length and check that both cut edges meet and the fabric lies flat. If it twists, tug it gently on the diagonal until it sits straight. Mark the right side with a small chalk cross or a safety pin if the two sides look alike.",
+        "on_screen_text": "Skirt: garment pieces",
+        "seconds": 25
+      },
+      {
+        "number": 5,
+        "title": "Step 2: Lay out and cut",
+        "shot": "Overhead shot of the work table",
+        "action": "Lay out and cut",
+        "narration": "Lay the fabric flat on a clean table, right sides together, with the lengthwise grain parallel to the table edge. Place each pattern piece so its grain line runs along the lengthwise threads. Measure from the grain line to the selvedge at both ends to be sure. Check that every piece fits before you cut anything, and that patterned or one-way fabric faces the same direction on every piece. Pin only inside the seam allowance, or use weights, so the fabric does not shift. Cut with long, steady strokes of sharp shears. Cut notches as small snips outward, not inward. Keep the cut pieces flat and label each with a pin or chalk: front, back, sleeve, facing.",
+        "on_screen_text": "Skirt: garment pieces",
+        "seconds": 25
+      },
+      {
+        "number": 6,
+        "title": "Step 3: Mark the pattern on the fabric",
+        "shot": "Medium shot at the ironing board",
+        "action": "Mark the pattern on the fabric",
+        "narration": "Mark every dart point, pleat line, pocket spot and zip stop from the pattern onto the wrong side of the fabric. Use tailor's chalk, a fading pen or tailor's tacks, whichever shows on your fabric but will not stain it. For tailor's tacks, make a loose double stitch through pattern and both layers, then cut the loop and gently part the layers. Match the notches of neighbouring pieces and number them with a pin or a clip so you can find pairs quickly.",
+        "on_screen_text": "Skirt: garment pieces",
+        "seconds": 25
+      },
+      {
+        "number": 7,
+        "title": "Step 4: Finish the raw edges",
+        "shot": "Close-up of hands at the machine",
+        "action": "Finish the raw edges",
+        "narration": "Decide the finish for each seam: overlock, zigzag, pinked edge or hand overcast. Fine fabric usually needs a narrow finish. Finish the edges of every piece that will have an open seam, such as side seams and shoulders, before you sew them together. Leave out the edges that will be enclosed, such as a seam that will be turned inside a French seam, or a hem that will be turned up. Trim loose threads as you go and check that the finish did not stretch or ripple the edge.",
+        "on_screen_text": "Skirt: garment pieces",
+        "seconds": 25
+      },
+      {
+        "number": 8,
+        "title": "Step 5: Sew a plain seam",
+        "shot": "Overhead shot of the work table",
+        "action": "Sew a plain seam",
+        "narration": "Place the two pieces right sides together, edges level, notches matching. Pin at right angles to the edge, with the pin heads toward the seam allowance so they can be pulled out as you sew. Sew with the seam allowance that the pattern gives, keeping the edge of the fabric against the guide on the needle plate. Backstitch a few stitches at the start and end, so the seam does not open. Press the seam flat as sewn, to set the stitches, then press it open from the wrong side.",
+        "on_screen_text": "Skirt: garment pieces",
+        "seconds": 25
+      },
+      {
+        "number": 9,
+        "title": "Step 6: Close the side seams",
+        "shot": "Medium shot at the ironing board",
+        "action": "Close the side seams",
+        "narration": "Place the matching front and back pieces right sides together. Match side notches, waist or hip marks and hem edges. If a zip sits in the side seam, start and stop where the zip tape ends and leave that part open. Pin the matching side-seam edges from the balance marks outward, leaving the pattern's openings free. Sew the indicated side seams in the same direction on both sides, retaining any opening required by the pattern. Try the garment on and check the fit. Take in or let out the seam as needed, then finish the edges. Press the seams open, and clip the allowance at the waist so it lies flat.",
+        "on_screen_text": "Skirt: garment pieces",
+        "seconds": 25
+      },
+      {
+        "number": 10,
+        "title": "Step 7: Attach the waistband",
+        "shot": "Close-up of hands at the machine",
+        "action": "Attach the waistband",
+        "narration": "Cut the waistband and interface one layer. Press the long edge of the other layer under by the seam allowance. Gather or pleat the garment waist edge to fit the waistband, with extra at the closure for the overlap. Sew the interfaced layer to the garment, right sides together, matching the centre marks and the side seams. Press the seam up toward the band. Fold the band over so the right sides are together and sew the short ends. Turn the band right side out, fold the pressed edge over the seam and pin it. Sew in the ditch (right in the seam) from the right side, or hand-stitch. Add the hook and eye, button or other closing at the end of the band.",
+        "on_screen_text": "Skirt: skirt or lower section",
+        "seconds": 25
+      },
+      {
+        "number": 11,
+        "title": "Step 8: Sew a blind hem",
+        "shot": "Overhead shot of the work table",
+        "action": "Sew a blind hem",
+        "narration": "Finish the raw edge of the hem allowance, then turn it up along the marked fold line and press. Pin or baste the hem in place, about a finger-width below the finished edge. Fold the hem back against the garment so the finished edge shows. Take a tiny stitch in the garment, catching only one or two threads. Take the next stitch in the hem allowance, a short distance along. Keep the thread loose. Repeat all around. Press the hem lightly, from the wrong side, with a pressing cloth.",
+        "on_screen_text": "Skirt: garment pieces",
+        "seconds": 25
+      },
+      {
+        "number": 12,
+        "title": "Step 9: Press the garment properly",
+        "shot": "Medium shot at the ironing board",
+        "action": "Press the garment properly",
+        "narration": "Choose the heat from the fabric card, and test it on your scrap first. Put a pressing cloth (a thin cotton or muslin cloth) over delicate fabric. Press with the iron, lift, move, and press again. Press each seam from the wrong side, then open it up and press it flat. Press curves over a tailor's ham or a rolled towel. Press the garment from the wrong side first. If the right side needs it, use a cloth. Let the fabric cool and dry before you move it. Heat and steam set the shape only while the cloth cools.",
+        "on_screen_text": "Skirt: garment pieces",
+        "seconds": 25
+      },
+      {
+        "number": 13,
+        "title": "Step 10: Final check and thread trimming",
+        "shot": "Close-up of hands at the machine",
+        "action": "Final check and thread trimming",
+        "narration": "Trim every loose thread inside and outside the garment. Check that every seam is closed and every button, hook or zip works smoothly. Try the garment on, or hang it on a form, and look for pulling, gaping, twisting or a hem that is not level. Check the measurements that the designer gave to the tailor against the finished garment. Make a final press and hang or fold the garment as it will be stored.",
+        "on_screen_text": "Skirt: garment pieces",
+        "seconds": 25
+      },
+      {
+        "number": 14,
+        "title": "Finishing and reveal",
+        "shot": "Slow pan of the finished garment on a dress form or the wearer",
+        "action": "Final press, trial fitting and reveal.",
+        "narration": "Give it a final press and a fitting. And here is the finished skirt.",
+        "on_screen_text": "Fixture skirt",
+        "seconds": 12
+      }
+    ],
+    "script": "Scene 1 \u2013 Introduction: Today we are making Fixture skirt: a skirt.\nScene 2 \u2013 Measurements: Take these measurements first: Waist, Hip, Skirt length. Write each one down before cutting.\nScene 3 \u2013 Cutting: Lay the pattern pieces along the grain and cut carefully. Pre-wash or soak the fabric before cutting: natural fibres can shrink.\nScene 4 \u2013 Step 1: Prepare the fabric: Check the care label or ask the seller how the fabric should be washed. Treat the fabric the way you will treat the finished garment. Wash, soak or steam the fabric as that care says, then dry it flat or on a line. Press it flat while it is still slightly damp, working along the lengthwise threads. Fold it in half along the length and check that both cut edges meet and the fabric lies flat. If it twists, tug it gently on the diagonal until it sits straight. Mark the right side with a small chalk cross or a safety pin if the two sides look alike.\nScene 5 \u2013 Step 2: Lay out and cut: Lay the fabric flat on a clean table, right sides together, with the lengthwise grain parallel to the table edge. Place each pattern piece so its grain line runs along the lengthwise threads. Measure from the grain line to the selvedge at both ends to be sure. Check that every piece fits before you cut anything, and that patterned or one-way fabric faces the same direction on every piece. Pin only inside the seam allowance, or use weights, so the fabric does not shift. Cut with long, steady strokes of sharp shears. Cut notches as small snips outward, not inward. Keep the cut pieces flat and label each with a pin or chalk: front, back, sleeve, facing.\nScene 6 \u2013 Step 3: Mark the pattern on the fabric: Mark every dart point, pleat line, pocket spot and zip stop from the pattern onto the wrong side of the fabric. Use tailor's chalk, a fading pen or tailor's tacks, whichever shows on your fabric but will not stain it. For tailor's tacks, make a loose double stitch through pattern and both layers, then cut the loop and gently part the layers. Match the notches of neighbouring pieces and number them with a pin or a clip so you can find pairs quickly.\nScene 7 \u2013 Step 4: Finish the raw edges: Decide the finish for each seam: overlock, zigzag, pinked edge or hand overcast. Fine fabric usually needs a narrow finish. Finish the edges of every piece that will have an open seam, such as side seams and shoulders, before you sew them together. Leave out the edges that will be enclosed, such as a seam that will be turned inside a French seam, or a hem that will be turned up. Trim loose threads as you go and check that the finish did not stretch or ripple the edge.\nScene 8 \u2013 Step 5: Sew a plain seam: Place the two pieces right sides together, edges level, notches matching. Pin at right angles to the edge, with the pin heads toward the seam allowance so they can be pulled out as you sew. Sew with the seam allowance that the pattern gives, keeping the edge of the fabric against the guide on the needle plate. Backstitch a few stitches at the start and end, so the seam does not open. Press the seam flat as sewn, to set the stitches, then press it open from the wrong side.\nScene 9 \u2013 Step 6: Close the side seams: Place the matching front and back pieces right sides together. Match side notches, waist or hip marks and hem edges. If a zip sits in the side seam, start and stop where the zip tape ends and leave that part open. Pin the matching side-seam edges from the balance marks outward, leaving the pattern's openings free. Sew the indicated side seams in the same direction on both sides, retaining any opening required by the pattern. Try the garment on and check the fit. Take in or let out the seam as needed, then finish the edges. Press the seams open, and clip the allowance at the waist so it lies flat.\nScene 10 \u2013 Step 7: Attach the waistband: Cut the waistband and interface one layer. Press the long edge of the other layer under by the seam allowance. Gather or pleat the garment waist edge to fit the waistband, with extra at the closure for the overlap. Sew the interfaced layer to the garment, right sides together, matching the centre marks and the side seams. Press the seam up toward the band. Fold the band over so the right sides are together and sew the short ends. Turn the band right side out, fold the pressed edge over the seam and pin it. Sew in the ditch (right in the seam) from the right side, or hand-stitch. Add the hook and eye, button or other closing at the end of the band.\nScene 11 \u2013 Step 8: Sew a blind hem: Finish the raw edge of the hem allowance, then turn it up along the marked fold line and press. Pin or baste the hem in place, about a finger-width below the finished edge. Fold the hem back against the garment so the finished edge shows. Take a tiny stitch in the garment, catching only one or two threads. Take the next stitch in the hem allowance, a short distance along. Keep the thread loose. Repeat all around. Press the hem lightly, from the wrong side, with a pressing cloth.\nScene 12 \u2013 Step 9: Press the garment properly: Choose the heat from the fabric card, and test it on your scrap first. Put a pressing cloth (a thin cotton or muslin cloth) over delicate fabric. Press with the iron, lift, move, and press again. Press each seam from the wrong side, then open it up and press it flat. Press curves over a tailor's ham or a rolled towel. Press the garment from the wrong side first. If the right side needs it, use a cloth. Let the fabric cool and dry before you move it. Heat and steam set the shape only while the cloth cools.\nScene 13 \u2013 Step 10: Final check and thread trimming: Trim every loose thread inside and outside the garment. Check that every seam is closed and every button, hook or zip works smoothly. Try the garment on, or hang it on a form, and look for pulling, gaping, twisting or a hem that is not level. Check the measurements that the designer gave to the tailor against the finished garment. Make a final press and hang or fold the garment as it will be stored.\nScene 14 \u2013 Finishing and reveal: Give it a final press and a fitting. And here is the finished skirt.",
+    "tutorial_videos": [],
+    "notes": [
+      "About 5 minutes of finished video if each scene is filmed as planned.",
+      "Run Generate Tutorial (with tutorial search connected) to add real videos that show these steps."
+    ]
+  },
+  "oldguide": {
+    "garment": {
+      "fabric_construction": "woven",
+      "garment_type": "Skirt",
+      "family": "skirt",
+      "bodice": "",
+      "neckline": "",
+      "neckline_finish": "",
+      "sleeves": "",
+      "skirt": "Straight skirt",
+      "closure": "",
+      "closure_position": "",
+      "length": "",
+      "fabric": "Linen",
+      "fabric_class": "linen",
+      "fabric_weight": "medium",
+      "lined": false,
+      "features": [
+        "base",
+        "fabric-linen",
+        "hem-blind",
+        "plain-seam",
+        "side-seams",
+        "skirt",
+        "waistband"
+      ],
+      "source": "spec",
+      "assumptions": [
+        "The spec has no closure, so no closure step was added."
+      ],
+      "photo_notes": []
+    },
+    "fabric_card": {
+      "fabric": "Linen",
+      "needle": "Sharp needle, size 80/12 to 90/14.",
+      "thread": "Strong cotton or polyester thread.",
+      "stitch_length": "Medium (about 2.5 to 3 mm).",
+      "seam_types": [
+        "Flat-fell seam",
+        "Plain seam with a zigzag or bound edge",
+        "French seam on fine linen"
+      ],
+      "pressing": "High heat with plenty of steam, pressed while still slightly damp.",
+      "notes": [
+        "Linen frays quickly and creases easily. Finish edges early.",
+        "Linen softens and shrinks with washing. Treat the fabric before cutting.",
+        "A lining stops linen from creasing too much at the seat or elbow."
+      ]
+    },
+    "phase_tips": {
+      "prep": [
+        "Linen frays quickly. Finish cut edges early and keep the pieces flat so they do not crease."
+      ],
+      "main_seams": [
+        "Choose seams that enclose the raw edge (flat-fell, French or bound): linen frays and wears at the seam."
+      ],
+      "openings": [
+        "Use interfacing of a similar weight, so stiff areas do not look out of place."
+      ],
+      "hem": [
+        "A deeper hem looks good on linen and keeps the edge from fraying."
+      ],
+      "pressing": [
+        "Press with plenty of steam while slightly damp. Press the right side through a cloth to avoid shine."
+      ]
+    },
+    "steps": [
+      {
+        "key": "prepare-fabric",
+        "number": 1,
+        "phase": "prep",
+        "phase_label": "Prep & cutting",
+        "title": "Prepare the fabric",
+        "module_slug": "prepare-fabric",
+        "module_title": "Prepare the fabric",
+        "why": "Every garment needs this step.",
+        "instructions": [
+          "Check the care label or ask the seller how the fabric should be washed. Treat the fabric the way you will treat the finished garment.",
+          "Wash, soak or steam the fabric as that care says, then dry it flat or on a line.",
+          "Press it flat while it is still slightly damp, working along the lengthwise threads.",
+          "Fold it in half along the length and check that both cut edges meet and the fabric lies flat. If it twists, tug it gently on the diagonal until it sits straight.",
+          "Mark the right side with a small chalk cross or a safety pin if the two sides look alike."
+        ],
+        "depends_on": [],
+        "preconditions": [],
+        "target_piece": "Skirt: garment pieces",
+        "source_hash": "95186a6a1c899f5fb48dcdbb8bcc190d9b969737766cc012477c2e694077591e",
+        "instruction_source": "library",
+        "tips": [
+          "A fabric that will only ever be dry-cleaned should be steamed, not washed.",
+          "Save a small scrap from this prepared fabric: it is your test piece for stitches and pressing."
+        ],
+        "fabric_tips": [
+          "Wash linen twice if you plan to wash the garment often. Press it before cutting."
+        ],
+        "video": null,
+        "more_videos": [],
+        "video_status": "not_connected",
+        "search_query": "how to prepare fabric before cutting and stitching pre-shrink straighten grain",
+        "search_url": "https://www.youtube.com/results?search_query=how+to+prepare+fabric+before+cutting+and+stitching+pre-shrink+straighten+grain"
+      },
+      {
+        "key": "layout-and-cutting",
+        "number": 2,
+        "phase": "prep",
+        "phase_label": "Prep & cutting",
+        "title": "Lay out and cut",
+        "module_slug": "layout-and-cutting",
+        "module_title": "Lay out and cut",
+        "why": "Every garment needs this step.",
+        "instructions": [
+          "Lay the fabric flat on a clean table, right sides together, with the lengthwise grain parallel to the table edge.",
+          "Place each pattern piece so its grain line runs along the lengthwise threads. Measure from the grain line to the selvedge at both ends to be sure.",
+          "Check that every piece fits before you cut anything, and that patterned or one-way fabric faces the same direction on every piece.",
+          "Pin only inside the seam allowance, or use weights, so the fabric does not shift.",
+          "Cut with long, steady strokes of sharp shears. Cut notches as small snips outward, not inward.",
+          "Keep the cut pieces flat and label each with a pin or chalk: front, back, sleeve, facing."
+        ],
+        "depends_on": [
+          "prepare-fabric"
+        ],
+        "preconditions": [
+          "Complete: Prepare the fabric"
+        ],
+        "target_piece": "Skirt: garment pieces",
+        "source_hash": "fb140046c877543d71a2a1a6c1801ec391797a8283404ea0c6c5654f8813891b",
+        "instruction_source": "library",
+        "tips": [
+          "Cut out curved edges slowly. A wobble in the cut line shows up in the finished seam.",
+          "Never cut anything that you have not checked against the measurements written for the tailor."
+        ],
+        "fabric_tips": [],
+        "video": null,
+        "more_videos": [],
+        "video_status": "not_connected",
+        "search_query": "how to lay out pattern and cut fabric grainline for beginners",
+        "search_url": "https://www.youtube.com/results?search_query=how+to+lay+out+pattern+and+cut+fabric+grainline+for+beginners"
+      },
+      {
+        "key": "marking-and-notches",
+        "number": 3,
+        "phase": "prep",
+        "phase_label": "Prep & cutting",
+        "title": "Mark the pattern on the fabric",
+        "module_slug": "marking-and-notches",
+        "module_title": "Mark the pattern on the fabric",
+        "why": "Every garment needs this step.",
+        "instructions": [
+          "Mark every dart point, pleat line, pocket spot and zip stop from the pattern onto the wrong side of the fabric.",
+          "Use tailor's chalk, a fading pen or tailor's tacks, whichever shows on your fabric but will not stain it.",
+          "For tailor's tacks, make a loose double stitch through pattern and both layers, then cut the loop and gently part the layers.",
+          "Match the notches of neighbouring pieces and number them with a pin or a clip so you can find pairs quickly."
+        ],
+        "depends_on": [
+          "layout-and-cutting"
+        ],
+        "preconditions": [
+          "Complete: Lay out and cut"
+        ],
+        "target_piece": "Skirt: garment pieces",
+        "source_hash": "af3af6cb40af349f41329749938cf7a6c63f0a1df756a8793d5091a26922852e",
+        "instruction_source": "library",
+        "tips": [
+          "Test a marking pen on a scrap first. Some pens leave marks on silk that never wash out.",
+          "On sheer fabric use small thread tacks, so no chalk shows through."
+        ],
+        "fabric_tips": [],
+        "video": null,
+        "more_videos": [],
+        "video_status": "not_connected",
+        "search_query": "how to mark darts and pattern marks on fabric tailor tacks chalk",
+        "search_url": "https://www.youtube.com/results?search_query=how+to+mark+darts+and+pattern+marks+on+fabric+tailor+tacks+chalk"
+      },
+      {
+        "key": "finish-raw-edges",
+        "number": 4,
+        "phase": "prep",
+        "phase_label": "Prep & cutting",
+        "title": "Finish the raw edges",
+        "module_slug": "finish-raw-edges",
+        "module_title": "Finish the raw edges",
+        "why": "Every garment needs this step.",
+        "instructions": [
+          "Decide the finish for each seam: overlock, zigzag, pinked edge or hand overcast. Fine fabric usually needs a narrow finish.",
+          "Finish the edges of every piece that will have an open seam, such as side seams and shoulders, before you sew them together.",
+          "Leave out the edges that will be enclosed, such as a seam that will be turned inside a French seam, or a hem that will be turned up.",
+          "Trim loose threads as you go and check that the finish did not stretch or ripple the edge."
+        ],
+        "depends_on": [
+          "marking-and-notches"
+        ],
+        "preconditions": [
+          "Complete: Mark the pattern on the fabric"
+        ],
+        "target_piece": "Skirt: garment pieces",
+        "source_hash": "116cd9af75f83a8455f1228ea7ac8bf482f758fd333b66bac66b314bb829ccc5",
+        "instruction_source": "library",
+        "tips": [
+          "On sheer fabric choose a French seam or a rolled finish rather than a thick overlock."
+        ],
+        "fabric_tips": [
+          "Finish all the cut edges soon after cutting, or linen will fray in your hands."
+        ],
+        "video": null,
+        "more_videos": [],
+        "video_status": "not_connected",
+        "search_query": "how to finish raw edges seam finishes zigzag overlock pinking shears",
+        "search_url": "https://www.youtube.com/results?search_query=how+to+finish+raw+edges+seam+finishes+zigzag+overlock+pinking+shears"
+      },
+      {
+        "key": "plain-seam",
+        "number": 5,
+        "phase": "main_seams",
+        "phase_label": "Main seams",
+        "title": "Sew a plain seam",
+        "module_slug": "plain-seam",
+        "module_title": "Sew a plain seam",
+        "why": "The main seams are plain seams.",
+        "instructions": [
+          "Place the two pieces right sides together, edges level, notches matching.",
+          "Pin at right angles to the edge, with the pin heads toward the seam allowance so they can be pulled out as you sew.",
+          "Sew with the seam allowance that the pattern gives, keeping the edge of the fabric against the guide on the needle plate.",
+          "Backstitch a few stitches at the start and end, so the seam does not open.",
+          "Press the seam flat as sewn, to set the stitches, then press it open from the wrong side."
+        ],
+        "depends_on": [
+          "marking-and-notches"
+        ],
+        "preconditions": [
+          "Complete: Mark the pattern on the fabric"
+        ],
+        "target_piece": "Skirt: garment pieces",
+        "source_hash": "a6adea52f5006da2c22c2ea7e1b9578f2a9f5117da3481046107beada38a870a",
+        "instruction_source": "library",
+        "tips": [
+          "Sew slowly across curves and at corners. A fast seam is a crooked seam.",
+          "Do not sew over pins. They bend needles and spoil the stitch."
+        ],
+        "fabric_tips": [],
+        "video": null,
+        "more_videos": [],
+        "video_status": "not_connected",
+        "search_query": "how to sew a straight seam on a sewing machine for beginners seam allowance backstitch",
+        "search_url": "https://www.youtube.com/results?search_query=how+to+sew+a+straight+seam+on+a+sewing+machine+for+beginners+seam+allowance+backstitch"
+      },
+      {
+        "key": "side-seams",
+        "number": 6,
+        "phase": "side_seams",
+        "phase_label": "Side seams",
+        "title": "Close the side seams",
+        "module_slug": "side-seams",
+        "module_title": "Close the side seams",
+        "why": "The garment closes with side seams.",
+        "instructions": [
+          "Place the matching front and back pieces right sides together. Match side notches, waist or hip marks and hem edges.",
+          "If a zip sits in the side seam, start and stop where the zip tape ends and leave that part open.",
+          "Pin the matching side-seam edges from the balance marks outward, leaving the pattern's openings free.",
+          "Sew the indicated side seams in the same direction on both sides, retaining any opening required by the pattern.",
+          "Try the garment on and check the fit. Take in or let out the seam as needed, then finish the edges.",
+          "Press the seams open, and clip the allowance at the waist so it lies flat."
+        ],
+        "depends_on": [
+          "marking-and-notches"
+        ],
+        "preconditions": [
+          "Complete: Mark the pattern on the fabric"
+        ],
+        "target_piece": "Skirt: garment pieces",
+        "source_hash": "4a7d0aad67bee2d1f6a1f20fba9da3f5fccee5dcebaf7e35df93f785be68ebd6",
+        "instruction_source": "library",
+        "tips": [
+          "Baste first and try on. It takes minutes, and a changed seam costs hours."
+        ],
+        "fabric_tips": [],
+        "video": null,
+        "more_videos": [],
+        "video_status": "not_connected",
+        "search_query": "how to sew side seams and check fit on a dress or kurta",
+        "search_url": "https://www.youtube.com/results?search_query=how+to+sew+side+seams+and+check+fit+on+a+dress+or+kurta"
+      },
+      {
+        "key": "waistband",
+        "number": 7,
+        "phase": "openings",
+        "phase_label": "Openings & finishes",
+        "title": "Attach the waistband",
+        "module_slug": "waistband",
+        "module_title": "Attach the waistband",
+        "why": "The design has a waistband.",
+        "instructions": [
+          "Cut the waistband and interface one layer. Press the long edge of the other layer under by the seam allowance.",
+          "Gather or pleat the garment waist edge to fit the waistband, with extra at the closure for the overlap.",
+          "Sew the interfaced layer to the garment, right sides together, matching the centre marks and the side seams.",
+          "Press the seam up toward the band. Fold the band over so the right sides are together and sew the short ends.",
+          "Turn the band right side out, fold the pressed edge over the seam and pin it. Sew in the ditch (right in the seam) from the right side, or hand-stitch.",
+          "Add the hook and eye, button or other closing at the end of the band."
+        ],
+        "depends_on": [
+          "marking-and-notches",
+          "side-seams"
+        ],
+        "preconditions": [
+          "Complete: Mark the pattern on the fabric",
+          "Complete: Close the side seams"
+        ],
+        "target_piece": "Skirt: skirt or lower section",
+        "source_hash": "49580e4e390e64c262f75c7220be3f1d2787e046698d80070fd07bd0cc68867d",
+        "instruction_source": "library",
+        "tips": [
+          "Use a stiff waistband interfacing for trousers, and a softer one for a gathered lehenga skirt.",
+          "A drawstring (nada) needs a channel and a flat hole at the centre."
+        ],
+        "fabric_tips": [],
+        "video": null,
+        "more_videos": [],
+        "video_status": "not_connected",
+        "search_query": "how to attach a waistband to a skirt or trousers tutorial",
+        "search_url": "https://www.youtube.com/results?search_query=how+to+attach+a+waistband+to+a+skirt+or+trousers+tutorial"
+      },
+      {
+        "key": "blind-hem",
+        "number": 8,
+        "phase": "hem",
+        "phase_label": "Hem",
+        "title": "Sew a blind hem",
+        "module_slug": "blind-hem",
+        "module_title": "Sew a blind hem",
+        "why": "The hem is a blind hem, for a clean finish.",
+        "instructions": [
+          "Finish the raw edge of the hem allowance, then turn it up along the marked fold line and press.",
+          "Pin or baste the hem in place, about a finger-width below the finished edge.",
+          "Fold the hem back against the garment so the finished edge shows. Take a tiny stitch in the garment, catching only one or two threads.",
+          "Take the next stitch in the hem allowance, a short distance along. Keep the thread loose. Repeat all around.",
+          "Press the hem lightly, from the wrong side, with a pressing cloth."
+        ],
+        "depends_on": [
+          "finish-raw-edges",
+          "layout-and-cutting",
+          "marking-and-notches",
+          "plain-seam",
+          "prepare-fabric",
+          "side-seams",
+          "waistband"
+        ],
+        "preconditions": [
+          "Complete: Finish the raw edges",
+          "Complete: Lay out and cut",
+          "Complete: Mark the pattern on the fabric",
+          "Complete: Sew a plain seam",
+          "Complete: Prepare the fabric",
+          "Complete: Close the side seams",
+          "Complete: Attach the waistband"
+        ],
+        "target_piece": "Skirt: garment pieces",
+        "source_hash": "a9c3d5e928d46a9c0377147e3c6fbf76748ca709418acc276b76e781d622fc1a",
+        "instruction_source": "library",
+        "tips": [
+          "A machine blind-hem foot works faster, but the hand method gives the softest result on silk.",
+          "Do not pull the thread tight. A tight stitch pulls a dimple into the right side."
+        ],
+        "fabric_tips": [],
+        "video": null,
+        "more_videos": [],
+        "video_status": "not_connected",
+        "search_query": "how to sew a blind hem by hand and by machine invisible hem",
+        "search_url": "https://www.youtube.com/results?search_query=how+to+sew+a+blind+hem+by+hand+and+by+machine+invisible+hem"
+      },
+      {
+        "key": "pressing-basics",
+        "number": 9,
+        "phase": "pressing",
+        "phase_label": "Pressing",
+        "title": "Press the garment properly",
+        "module_slug": "pressing-basics",
+        "module_title": "Press the garment properly",
+        "why": "Every garment needs this step.",
+        "instructions": [
+          "Choose the heat from the fabric card, and test it on your scrap first.",
+          "Put a pressing cloth (a thin cotton or muslin cloth) over delicate fabric. Press with the iron, lift, move, and press again.",
+          "Press each seam from the wrong side, then open it up and press it flat. Press curves over a tailor's ham or a rolled towel.",
+          "Press the garment from the wrong side first. If the right side needs it, use a cloth.",
+          "Let the fabric cool and dry before you move it. Heat and steam set the shape only while the cloth cools."
+        ],
+        "depends_on": [
+          "blind-hem",
+          "marking-and-notches"
+        ],
+        "preconditions": [
+          "Complete: Sew a blind hem",
+          "Complete: Mark the pattern on the fabric"
+        ],
+        "target_piece": "Skirt: garment pieces",
+        "source_hash": "508ec622e302cc4c44d51595bf69c7fff98d28b3810d44b37aac8501d7e404af",
+        "instruction_source": "library",
+        "tips": [
+          "Never press over pins with plastic heads, or over zip pulls and buttons. They melt or leave marks."
+        ],
+        "fabric_tips": [],
+        "video": null,
+        "more_videos": [],
+        "video_status": "not_connected",
+        "search_query": "how to press seams and darts when sewing pressing vs ironing tutorial",
+        "search_url": "https://www.youtube.com/results?search_query=how+to+press+seams+and+darts+when+sewing+pressing+vs+ironing+tutorial"
+      },
+      {
+        "key": "final-inspection",
+        "number": 10,
+        "phase": "pressing",
+        "phase_label": "Pressing",
+        "title": "Final check and thread trimming",
+        "module_slug": "final-inspection",
+        "module_title": "Final check and thread trimming",
+        "why": "Every garment needs this step.",
+        "instructions": [
+          "Trim every loose thread inside and outside the garment.",
+          "Check that every seam is closed and every button, hook or zip works smoothly.",
+          "Try the garment on, or hang it on a form, and look for pulling, gaping, twisting or a hem that is not level.",
+          "Check the measurements that the designer gave to the tailor against the finished garment.",
+          "Make a final press and hang or fold the garment as it will be stored."
+        ],
+        "depends_on": [
+          "marking-and-notches",
+          "pressing-basics"
+        ],
+        "preconditions": [
+          "Complete: Mark the pattern on the fabric",
+          "Complete: Press the garment properly"
+        ],
+        "target_piece": "Skirt: garment pieces",
+        "source_hash": "53eee672e3a511c0987e1143e2d2d33c390cdfde65cbf3f9718b26962ca0204c",
+        "instruction_source": "library",
+        "tips": [
+          "Keep the tailor sheet next to the garment. The final check is easier with the list in front of you."
+        ],
+        "fabric_tips": [],
+        "video": null,
+        "more_videos": [],
+        "video_status": "not_connected",
+        "search_query": "how to finish a sewn garment finishing touches trimming threads final check",
+        "search_url": "https://www.youtube.com/results?search_query=how+to+finish+a+sewn+garment+finishing+touches+trimming+threads+final+check"
+      }
+    ],
+    "knowledge_source": "built-in library",
+    "video_source": "not connected",
+    "video_connected": false,
+    "video_language": "any",
+    "notes": [
+      "Draft construction plan: confirm the proposed choices before using these steps to sew.",
+      "The settings on the fabric card are starting points. Always sew a test seam on a scrap of your real fabric.",
+      "This guide explains the order and the methods. It has no cutting measurements: those come from the tailor sheet.",
+      "Technique instructions are original application content and still need professional tailoring review."
+    ]
+  },
+  "mediaguide": {
+    "garment": {
+      "fabric_construction": "woven",
+      "garment_type": "Skirt",
+      "family": "skirt",
+      "bodice": "",
+      "neckline": "",
+      "neckline_finish": "",
+      "sleeves": "",
+      "skirt": "Straight skirt",
+      "closure": "",
+      "closure_position": "",
+      "length": "",
+      "fabric": "Linen",
+      "fabric_class": "linen",
+      "fabric_weight": "medium",
+      "lined": false,
+      "features": [
+        "base",
+        "fabric-linen",
+        "hem-blind",
+        "plain-seam",
+        "side-seams",
+        "skirt",
+        "waistband"
+      ],
+      "source": "spec",
+      "assumptions": [
+        "The spec has no closure, so no closure step was added."
+      ],
+      "photo_notes": []
+    },
+    "fabric_card": {
+      "fabric": "Linen",
+      "needle": "Sharp needle, size 80/12 to 90/14.",
+      "thread": "Strong cotton or polyester thread.",
+      "stitch_length": "Medium (about 2.5 to 3 mm).",
+      "seam_types": [
+        "Flat-fell seam",
+        "Plain seam with a zigzag or bound edge",
+        "French seam on fine linen"
+      ],
+      "pressing": "High heat with plenty of steam, pressed while still slightly damp.",
+      "notes": [
+        "Linen frays quickly and creases easily. Finish edges early.",
+        "Linen softens and shrinks with washing. Treat the fabric before cutting.",
+        "A lining stops linen from creasing too much at the seat or elbow."
+      ]
+    },
+    "phase_tips": {
+      "prep": [
+        "Linen frays quickly. Finish cut edges early and keep the pieces flat so they do not crease."
+      ],
+      "main_seams": [
+        "Choose seams that enclose the raw edge (flat-fell, French or bound): linen frays and wears at the seam."
+      ],
+      "openings": [
+        "Use interfacing of a similar weight, so stiff areas do not look out of place."
+      ],
+      "hem": [
+        "A deeper hem looks good on linen and keeps the edge from fraying."
+      ],
+      "pressing": [
+        "Press with plenty of steam while slightly damp. Press the right side through a cloth to avoid shine."
+      ]
+    },
+    "steps": [
+      {
+        "key": "prepare-fabric",
+        "number": 1,
+        "phase": "prep",
+        "phase_label": "Prep & cutting",
+        "title": "Prepare the fabric",
+        "module_slug": "prepare-fabric",
+        "module_title": "Prepare the fabric",
+        "why": "Every garment needs this step.",
+        "instructions": [
+          "Check the care label or ask the seller how the fabric should be washed. Treat the fabric the way you will treat the finished garment.",
+          "Wash, soak or steam the fabric as that care says, then dry it flat or on a line.",
+          "Press it flat while it is still slightly damp, working along the lengthwise threads.",
+          "Fold it in half along the length and check that both cut edges meet and the fabric lies flat. If it twists, tug it gently on the diagonal until it sits straight.",
+          "Mark the right side with a small chalk cross or a safety pin if the two sides look alike."
+        ],
+        "depends_on": [],
+        "preconditions": [],
+        "target_piece": "Skirt: garment pieces",
+        "source_hash": "95186a6a1c899f5fb48dcdbb8bcc190d9b969737766cc012477c2e694077591e",
+        "instruction_source": "library",
+        "tips": [
+          "A fabric that will only ever be dry-cleaned should be steamed, not washed.",
+          "Save a small scrap from this prepared fabric: it is your test piece for stitches and pressing."
+        ],
+        "fabric_tips": [
+          "Wash linen twice if you plan to wash the garment often. Press it before cutting."
+        ],
+        "video": {
+          "video_id": "AAAAAAAAAAA",
+          "title": "Fixture playback only",
+          "channel": "Fixture",
+          "url": "https://media.invalid/attribution",
+          "thumbnail_url": "",
+          "duration": "",
+          "start_seconds": 10,
+          "end_seconds": 30,
+          "timing": "whole_video",
+          "source": "youtube",
+          "evidence": "candidate",
+          "media_url": null,
+          "reviewed_by": "",
+          "license_note": "Test fixture, not a real tutorial",
+          "chapter_title": "",
+          "relevance": []
+        },
+        "more_videos": [],
+        "video_status": "found",
+        "search_query": "how to prepare fabric before cutting and stitching pre-shrink straighten grain",
+        "search_url": "https://www.youtube.com/results?search_query=how+to+prepare+fabric+before+cutting+and+stitching+pre-shrink+straighten+grain"
+      },
+      {
+        "key": "layout-and-cutting",
+        "number": 2,
+        "phase": "prep",
+        "phase_label": "Prep & cutting",
+        "title": "Lay out and cut",
+        "module_slug": "layout-and-cutting",
+        "module_title": "Lay out and cut",
+        "why": "Every garment needs this step.",
+        "instructions": [
+          "Lay the fabric flat on a clean table, right sides together, with the lengthwise grain parallel to the table edge.",
+          "Place each pattern piece so its grain line runs along the lengthwise threads. Measure from the grain line to the selvedge at both ends to be sure.",
+          "Check that every piece fits before you cut anything, and that patterned or one-way fabric faces the same direction on every piece.",
+          "Pin only inside the seam allowance, or use weights, so the fabric does not shift.",
+          "Cut with long, steady strokes of sharp shears. Cut notches as small snips outward, not inward.",
+          "Keep the cut pieces flat and label each with a pin or chalk: front, back, sleeve, facing."
+        ],
+        "depends_on": [
+          "prepare-fabric"
+        ],
+        "preconditions": [
+          "Complete: Prepare the fabric"
+        ],
+        "target_piece": "Skirt: garment pieces",
+        "source_hash": "fb140046c877543d71a2a1a6c1801ec391797a8283404ea0c6c5654f8813891b",
+        "instruction_source": "library",
+        "tips": [
+          "Cut out curved edges slowly. A wobble in the cut line shows up in the finished seam.",
+          "Never cut anything that you have not checked against the measurements written for the tailor."
+        ],
+        "fabric_tips": [],
+        "video": {
+          "video_id": "",
+          "title": "Fixture playback only",
+          "channel": "Fixture",
+          "url": "https://media.invalid/attribution",
+          "thumbnail_url": "",
+          "duration": "",
+          "start_seconds": 10,
+          "end_seconds": 30,
+          "timing": "indexed",
+          "source": "hosted",
+          "evidence": "reviewed",
+          "media_url": "https://media.invalid/fixture.webm",
+          "reviewed_by": "Fixture reviewer",
+          "license_note": "Test fixture, not a real tutorial",
+          "chapter_title": "",
+          "relevance": []
+        },
+        "more_videos": [],
+        "video_status": "found",
+        "search_query": "how to lay out pattern and cut fabric grainline for beginners",
+        "search_url": "https://www.youtube.com/results?search_query=how+to+lay+out+pattern+and+cut+fabric+grainline+for+beginners"
+      }
+    ],
+    "knowledge_source": "built-in library",
+    "video_source": "not connected",
+    "video_connected": false,
+    "video_language": "any",
+    "notes": [
+      "Draft construction plan: confirm the proposed choices before using these steps to sew.",
+      "The settings on the fabric card are starting points. Always sew a test seam on a scrap of your real fabric.",
+      "This guide explains the order and the methods. It has no cutting measurements: those come from the tailor sheet.",
+      "Technique instructions are original application content and still need professional tailoring review."
+    ]
+  }
+}

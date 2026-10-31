@@ -84,4 +84,8 @@ def fabric_words(spec: DesignSpec) -> str:
 def handling_for(spec: DesignSpec) -> list[Handling]:
     """The handling advice that matches the fabrics chosen in the spec."""
     words = fabric_words(spec)
+    if spec.construction.fabric_construction == "knit" or (
+        spec.construction.fabric_construction != "woven" and any(k in words for k in ("jersey", "knit", "lycra", "stretch"))
+    ):
+        return [h for h in HANDLING if h.label == "Knit or stretch fabric"]
     return [h for h in HANDLING if any(k in words for k in h.keywords)]

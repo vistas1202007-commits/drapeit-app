@@ -1,5 +1,7 @@
 # Architecture notes
 
+
+The current stitching/video pipeline, dependency planner, construction confirmation and reviewed media catalog are documented in [STITCHING_PIPELINE.md](STITCHING_PIPELINE.md). Earlier phase descriptions below retain their historical context.
 ## The big picture
 
 ```

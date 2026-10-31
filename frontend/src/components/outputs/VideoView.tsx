@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { Notice } from "@/components/ui/Notice";
 import type { GenerationJob, VideoOutput } from "@/lib/types";
 import { VideoCard } from "./VideoCard";
+import { StitchingGuideView } from "./StitchingGuideView";
 
 export function VideoView({ job }: { job: GenerationJob }) {
   const out = job.output as unknown as VideoOutput;
@@ -18,6 +19,21 @@ export function VideoView({ job }: { job: GenerationJob }) {
     } catch {
       setCopied(false);
     }
+  }
+
+  if (out.stitching_guide) {
+    return (
+      <div className="space-y-4 text-sm">
+        <p className="font-display text-lg">Personalized stitching video guide</p>
+        <StitchingGuideView job={{ ...job, output: out.stitching_guide as unknown as Record<string, unknown> }} />
+        <details className="rounded-lg border border-line p-3">
+          <summary className="cursor-pointer font-medium">Optional filming storyboard and narration</summary>
+          <p className="mt-2 text-xs text-muted">This script is a filming plan. The demonstrations above use existing footage.</p>
+          <pre className="mt-2 whitespace-pre-wrap font-sans text-xs">{out.script}</pre>
+          <Button size="sm" className="mt-2" onClick={copyScript}>{copied ? "Copied" : "Copy script"}</Button>
+        </details>
+      </div>
+    );
   }
 
   return (

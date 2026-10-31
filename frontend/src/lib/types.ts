@@ -29,7 +29,24 @@ export interface TailorNotes {
   references: TailorReference[];
 }
 
+export interface ConstructionChoices {
+  bodice?: "" | "darted" | "princess" | "unfitted";
+  neckline_finish?: "" | "facing" | "binding" | "collar";
+  closure_type?: "" | "none" | "invisible_zip" | "lapped_zip" | "buttons" | "hooks";
+  closure_position?: "" | "front" | "back" | "side" | "none";
+  fabric_construction?: "" | "woven" | "knit";
+  fabric_weight?: "" | "light" | "medium" | "heavy";
+  seam_finish?: "" | "plain" | "french" | "flat_fell" | "stretch";
+}
+export interface ConstructionDecision {
+  key: keyof ConstructionChoices;
+  label: string;
+  value: string;
+  source: "specified" | "observed" | "proposed" | "unknown";
+  needs_confirmation: boolean;
+}
 export interface DesignSpec {
+  construction?: ConstructionChoices;
   title: string;
   idea: string;
   garment_category: string;
@@ -383,6 +400,8 @@ export interface TutorialOutput {
 export type GuidePhase = "prep" | "shaping" | "main_seams" | "openings" | "side_seams" | "hem" | "pressing";
 
 export interface GarmentComponents {
+  decisions?: ConstructionDecision[];
+  fabric_construction?: "woven" | "knit" | "unknown";
   garment_type: string;
   family: string;
   bodice: string;
@@ -404,6 +423,11 @@ export interface GarmentComponents {
 }
 
 export interface GuideVideo {
+  source?: "youtube" | "hosted";
+  media_url?: string | null;
+  evidence?: "candidate" | "chapter" | "indexed" | "reviewed";
+  reviewed_by?: string;
+  license_note?: string;
   video_id: string;
   title: string;
   channel: string;
@@ -418,6 +442,11 @@ export interface GuideVideo {
 }
 
 export interface GuideStep {
+  depends_on?: string[];
+  preconditions?: string[];
+  target_piece?: string;
+  source_hash?: string;
+  instruction_source?: string;
   key: string;
   number: number;
   phase: GuidePhase;
@@ -447,6 +476,9 @@ export interface FabricCard {
 }
 
 export interface StitchingGuideOutput {
+  plan_version?: string;
+  requires_confirmation?: boolean;
+  media_policy?: string;
   garment: GarmentComponents;
   fabric_card: FabricCard | null;
   /** Advice for the main fabric that covers a whole phase, shown under that phase's heading. */
@@ -536,6 +568,7 @@ export interface PatternOutput {
 }
 
 export interface VideoOutput {
+  stitching_guide?: StitchingGuideOutput | null;
   mode: "generated" | "storyboard";
   provider_note: string;
   title: string;

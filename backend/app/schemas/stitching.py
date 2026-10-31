@@ -42,9 +42,19 @@ class PhotoHints(BaseModel):
     notes: list[str] = Field(default_factory=list)
 
 
+class ConstructionDecision(BaseModel):
+    key: str
+    label: str
+    value: str = ""
+    source: Literal["specified", "observed", "proposed", "unknown"] = "unknown"
+    needs_confirmation: bool = True
+
+
 class GarmentComponents(BaseModel):
     """The garment taken apart into the pieces a tailor thinks in."""
 
+    decisions: list[ConstructionDecision] = Field(default_factory=list)
+    fabric_construction: Literal["woven", "knit", "unknown"] = "unknown"
     garment_type: str
     family: str = Field(description="Broad group used to pick techniques: dress, lehenga, kurta, blouse, skirt...")
     bodice: str = ""
@@ -69,7 +79,12 @@ class GarmentComponents(BaseModel):
 class GuideVideo(BaseModel):
     """A video the search really returned. `start_seconds` says where to begin playing it."""
 
-    video_id: str
+    source: Literal["youtube", "hosted"] = "youtube"
+    media_url: str | None = None
+    evidence: Literal["candidate", "chapter", "indexed", "reviewed"] = "candidate"
+    reviewed_by: str = ""
+    license_note: str = ""
+    video_id: str = ""
     title: str
     channel: str
     url: str
@@ -93,6 +108,11 @@ class GuideStep(BaseModel):
     module_title: str
     why: str = Field(description="Why this step is in the guide, in terms of the design.")
     instructions: list[str]
+    depends_on: list[str] = Field(default_factory=list)
+    preconditions: list[str] = Field(default_factory=list)
+    target_piece: str = ""
+    source_hash: str = ""
+    instruction_source: str = "library"
     tips: list[str] = Field(default_factory=list)
     fabric_tips: list[str] = Field(default_factory=list)
     video: GuideVideo | None = None
@@ -116,6 +136,9 @@ class FabricCard(BaseModel):
 
 class StitchingGuideOutput(BaseModel):
     garment: GarmentComponents
+    plan_version: str = ""
+    requires_confirmation: bool = False
+    media_policy: str = "Technique demonstrations on example pieces, linked to this garment's steps."
     fabric_card: FabricCard | None = None
     # Advice for the main fabric that covers a whole phase (shown under the phase heading), by phase.
     phase_tips: dict[Phase, list[str]] = Field(default_factory=dict)

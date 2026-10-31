@@ -37,6 +37,10 @@ videos switch on when you add keys (see [Optional keys](#optional-keys)).
    step, and tick steps off. The guide shows **Stale** if you change the design afterwards.
 10. **Publish** a design to share it, and choose who can see it.
 
+The stitching and video actions now share a garment-specific plan. Confirm proposed construction details,
+then update the guide. Reviewed clips can be added without a YouTube key; existing tutorial search remains
+available. Setup, media curation and compatibility details are in [the stitching pipeline guide](docs/STITCHING_PIPELINE.md).
+
 ## Run it on your computer
 
 You need Node.js 20+, Python 3.11+ and a free [Supabase](https://supabase.com) project (database and sign-in). Create the

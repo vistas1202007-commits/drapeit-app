@@ -25,7 +25,7 @@ def old_client(database_url, supabase):
     with psycopg.connect(url, autocommit=True) as conn:
         conn.execute(pg_harness.SHIM.read_text(encoding="utf-8"))
         for path in pg_harness.migration_files():
-            if not path.name.startswith("0012"):
+            if path.name < "0012":
                 conn.execute(path.read_text(encoding="utf-8"))
         conn.execute("INSERT INTO auth.users (id, email) VALUES (%s, %s)", (USER_A, "a@example.com"))
     db = Database(url, max_size=3)

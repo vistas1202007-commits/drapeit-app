@@ -146,7 +146,7 @@ async function send(path: string, init: RequestInit = {}): Promise<Response> {
   try {
     res = await fetch(`${API_URL}${path}`, { ...init, headers: { ...headers, ...(init.headers as Record<string, string>) } });
   } catch {
-    throw new ApiError(`Cannot reach the server at ${API_URL}. Check your internet connection; if the server was asleep it can take up to a minute to wake up.`, 0);
+    throw new ApiError("Cannot reach the server right now. Check your internet connection; if the server was asleep it can take up to a minute to wake up.", 0);
   }
   if (!res.ok) {
     let message = statusMessage(res.status);

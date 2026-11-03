@@ -22,7 +22,7 @@ export function BackendStatus() {
     };
   }, []);
 
-  if (!offline) return null;
+  if (!offline || (/localhost|127\.0\.0\.1/.test(API_URL) && !/localhost|127\.0\.0\.1/.test(window.location.hostname))) return null;
   const local = /localhost|127\.0\.0\.1/.test(API_URL);
   return (
     <div role="alert" className="no-print border-b border-err/25 bg-err-soft px-4 py-2.5 text-sm text-ink sm:px-8">

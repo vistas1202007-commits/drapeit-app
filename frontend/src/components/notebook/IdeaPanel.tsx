@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- images are served by our own API */
 "use client";
 
 import { useState } from "react";
@@ -10,6 +11,7 @@ import { inputClass } from "@/components/ui/fields";
 import { api } from "@/lib/api";
 import { formatDateTime } from "@/lib/format";
 import type { DesignConceptOutput } from "@/lib/types";
+import { REFERENCE_MAX_MB, REFERENCE_TYPES, useReferenceUpload } from "./useReferenceUpload";
 
 type Entry =
   | { kind: "note"; id: string; at: string; content: string }
@@ -20,7 +22,10 @@ export function IdeaPanel({ draft, onDraft }: { draft: string; onDraft: (v: stri
   const { confirm, dialog } = useConfirm();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { input: referenceInput, uploading: referenceUploading, error: referenceError, upload: uploadReference } = useReferenceUpload();
   if (!detail) return null;
+  // The user's own pictures (generated ones live in the image library).
+  const references = detail.assets.filter((a) => a.kind !== "generated");
 
   // Show the user's notes and the (mock) assistant's design results as one timeline.
   const entries: Entry[] = [
@@ -130,6 +135,23 @@ export function IdeaPanel({ draft, onDraft }: { draft: string; onDraft: (v: stri
             {error} Your text is still here.
           </p>
         )}
+        {referenceError && (
+          <p role="alert" className="mt-1 text-xs text-err">
+            {referenceError}
+          </p>
+        )}
+        {references.length > 0 && (
+          <ul className="mt-2 flex items-center gap-1.5" aria-label="Reference pictures">
+            {references.slice(-4).map((a) => (
+              <li key={a.id} className="overflow-hidden rounded-md border border-line bg-canvas">
+                <a href={api.assetUrl(a.id)} target="_blank" rel="noreferrer">
+                  <img src={api.assetUrl(a.id)} alt={a.filename} className="h-10 w-10 object-cover" />
+                </a>
+              </li>
+            ))}
+            {references.length > 4 && <li className="text-xs text-muted">+{references.length - 4} more</li>}
+          </ul>
+        )}
         <div className="mt-2 flex flex-wrap items-center gap-2">
           <Button variant="primary" size="sm" onClick={() => saveNote(true)} loading={saving || running.design} disabled={!draft.trim()}>
             <Icon name="sparkle" className="h-3.5 w-3.5" /> Save & generate design
@@ -137,6 +159,15 @@ export function IdeaPanel({ draft, onDraft }: { draft: string; onDraft: (v: stri
           <Button size="sm" onClick={() => saveNote(false)} disabled={!draft.trim() || saving}>
             Save note
           </Button>
+          <Button
+            size="sm"
+            onClick={() => referenceInput.current?.click()}
+            loading={referenceUploading}
+            title={`Add a photo or sketch for inspiration (PNG, JPEG, WebP · max ${REFERENCE_MAX_MB} MB)`}
+          >
+            <Icon name="image" className="h-3.5 w-3.5" /> Add reference image
+          </Button>
+          <input ref={referenceInput} type="file" accept={REFERENCE_TYPES.join(",")} multiple className="hidden" aria-label="Choose reference images" onChange={(e) => uploadReference(e.target.files)} />
           <Button size="sm" variant="ghost" disabled title="Voice input is planned for a later phase" aria-label="Voice input (not available yet)">
             <Icon name="mic" className="h-3.5 w-3.5" /> Voice · later
           </Button>

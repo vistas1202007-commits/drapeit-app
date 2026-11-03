@@ -178,7 +178,7 @@ export function ExploreView() {
         <input
           type="search"
           aria-label="Search people, posts and tags"
-          className="w-full bg-transparent py-2 text-sm outline-none placeholder:text-faint"
+          className="own-clear-search w-full bg-transparent py-2 text-sm outline-none placeholder:text-faint"
           placeholder="Search people, posts and tags"
           value={query}
           maxLength={60}

@@ -160,7 +160,7 @@
 - [x] Group 1: BUG-01, 02, 04, 05, 06, 12 fixed and tested (2026-10-25); also BUG-22 found and fixed
 - [ ] Speed: make opening a design faster (about 6 s from India)
 - [ ] Group 2: launch safety (BUG-03 email/SMTP, BUG-08 headers, BUG-13 rate limits, BUG-14–18, BUG-21)
-- [ ] Group 3: polish (BUG-07 translations, BUG-09, BUG-10, BUG-11, BUG-19, BUG-20)
+- [ ] Group 3: polish (BUG-07 translations, BUG-09, BUG-10, BUG-11); BUG-19 and BUG-20 are fixed
 
 ## Docker
 - [x] `frontend/Dockerfile`, `docker-compose.yml` and README "Run with Docker" (runtime files tested without Docker)

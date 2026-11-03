@@ -385,15 +385,15 @@ export function ChatView({ id }: { id: string }) {
         {other ? (
           <Link href={`/u/${other.username}`} className="flex min-w-0 flex-1 items-center gap-3">
             <Avatar person={other} size="sm" />
-            <span className="min-w-0">
-              <span className="block truncate text-sm font-medium hover:text-wine">
+            <div className="min-w-0">
+              <h1 className="truncate text-sm font-medium hover:text-wine">
                 {name} <VerifiedBadge person={other} />
-              </span>
+              </h1>
               <span className="block truncate text-xs text-muted">@{other.username}</span>
-            </span>
+            </div>
           </Link>
         ) : (
-          <span className="min-w-0 flex-1 truncate text-sm font-medium">{chat ? name : "Loading…"}</span>
+          <h1 className="min-w-0 flex-1 truncate text-sm font-medium">{chat ? name : "Loading…"}</h1>
         )}
         {chat && <MoreMenu label="Chat actions" items={items} />}
       </header>

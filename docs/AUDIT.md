@@ -67,7 +67,7 @@ Status: **Done** · **Partly done** · **Missing** · **Broken** (works, but a b
 | Hashtags | Partly done | Shown as chips but not clickable; no tag page (Explore search finds them) | `PostCard.tsx` lines ~248–256 |
 | Repost with credit | Done | | `routers/social.py` (`/repost`) |
 | Explore grid, filters, Trending | Done | Only public posts from public accounts appear (checked) | `components/social/Explore.tsx` |
-| Search people, posts, tags; search history | Done | Two clear (×) buttons in the box (BUG-19) | `routers/community.py` (`/search`) |
+| Search people, posts, tags; search history | Done | One clear (×) button in the box (BUG-19, fixed) | `routers/community.py` (`/search`) |
 | Link previews when sharing (Open Graph) / public post page for signed-out people | Missing | Every post needs sign-in; shared links show a generic preview | `app/p/[id]/page.tsx` |
 
 ### Social safety
@@ -302,10 +302,13 @@ already explains the free setup), or answer 200 with `connected: false`.
 ### BUG-19 · Low · Two clear (×) buttons in the Explore search box
 The browser's own clear button shows next to the app's. **Fix:** hide the native one (`appearance: none` on
 `input[type=search]::-webkit-search-cancel-button`) or use `type="text"`.
+**Fixed:** the Explore box hides the browser's × (class `own-clear-search` in `globals.css`). The other search boxes
+(Settings, My Designs) are unchanged.
 
 ### BUG-20 · Low · Page titles that are not headings
 "Page not found" (`app/not-found.tsx`) and the chat header are styled text, not headings, so screen readers cannot
 jump to them. **Fix:** use `<h1>`.
+**Fixed:** "Page not found" and the name in the chat header are `<h1>` now.
 
 ### BUG-21 · Low · Development tools have security advisories
 `npm audit`: `vitest` / `tinypool` (2 critical, 1 moderate). They are only used for tests on your computer, never in

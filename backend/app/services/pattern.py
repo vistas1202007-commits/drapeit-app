@@ -185,7 +185,10 @@ def build_pattern(spec: DesignSpec) -> PatternOutput:
     required = required_measurements(spec)
     rows, missing = [], []
     for name in required:
-        given = next((m for m in spec.measurements if _matches(name, m.name)), None)
+        # An exact name wins, so "Neck depth (back)" is not read from the "Neck depth (front)" row.
+        given = next((m for m in spec.measurements if m.name.strip().lower() == name.lower()), None) or next(
+            (m for m in spec.measurements if _matches(name, m.name)), None
+        )
         if given is None:
             missing.append(name)
             rows.append({"name": name, "value": "—", "status": MISSING})

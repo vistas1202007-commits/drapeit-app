@@ -83,7 +83,7 @@ key or put it on GitHub; `.env` is not uploaded.
 | --- | --- | --- |
 | none | everything, with MOCK placeholders instead of real AI | free |
 | `YOUTUBE_API_KEY` ([Google Cloud](https://console.cloud.google.com), enable *YouTube Data API v3*) | real tutorial videos in the Stitching Guide, Tutorials and Learning Library | free (about 100 searches a day) |
-| `ANTHROPIC_API_KEY` + `ANTHROPIC_MODEL` ([console.anthropic.com](https://console.anthropic.com)) | real AI design plans, fabric and materials lists, reading a reference photo, stitching steps worded for your design | paid per use |
+| `LANGUAGE_API_KEY` + `LANGUAGE_MODEL` (from your AI provider's console) | real AI design plans, fabric and materials lists, reading a reference photo, stitching steps worded for your design | paid per use |
 | `GEMINI_API_KEY` ([aistudio.google.com](https://aistudio.google.com)) | real sketches and previews, and reading a reference photo | paid per use |
 | `OPENAI_API_KEY` ([platform.openai.com](https://platform.openai.com)) | real sketches and previews (alternative to Gemini) | paid per use |
 

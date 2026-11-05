@@ -1,7 +1,7 @@
 """MOCK design ideas: variations, moodboard and embroidery / print concepts.
 
 Hand-written tables and simple rules, NOT AI. They let the whole Phase 4
-workflow run for free; the Anthropic API replaces them when ANTHROPIC_API_KEY is set.
+workflow run for free; the AI provider replaces them when LANGUAGE_API_KEY is set.
 """
 
 from __future__ import annotations

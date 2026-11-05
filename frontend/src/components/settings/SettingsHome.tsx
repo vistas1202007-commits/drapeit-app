@@ -119,7 +119,7 @@ export const SECTIONS: Section[] = [
     desc: "settings.aiDesc",
     icon: "plug",
     href: "/settings/ai-providers",
-    items: [{ title: "settings.ai", desc: "settings.aiDesc", href: "/settings/ai-providers", keywords: "ai providers api keys cost spending anthropic gemini openai" }],
+    items: [{ title: "settings.ai", desc: "settings.aiDesc", href: "/settings/ai-providers", keywords: "ai providers api keys cost spending gemini openai" }],
   },
 ];
 

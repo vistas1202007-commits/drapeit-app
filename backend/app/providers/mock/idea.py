@@ -3,7 +3,7 @@
 This is NOT artificial intelligence. It looks for known words in the idea
 (like "anarkali", "wine", "embroidered") and fills in the design spec. It lets
 us build and test the whole workflow for free. In Phase 2 a real language
-model (the Anthropic API) will replace it behind the same interface.
+model (the AI provider) will replace it behind the same interface.
 """
 
 from __future__ import annotations

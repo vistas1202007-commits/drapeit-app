@@ -8,9 +8,9 @@ from types import SimpleNamespace
 import pytest
 
 from app.config import Settings
-from app.providers.anthropic_provider import (
-    AnthropicClient,
-    AnthropicIdeaProvider,
+from app.providers.language_provider import (
+    LanguageClient,
+    LanguageIdeaProvider,
     DesignAnswer,
     SpecFields,
 )
@@ -59,19 +59,19 @@ def test_auto_without_keys_uses_mocks(tmp_path):
 def test_auto_with_keys_uses_real_providers(tmp_path):
     p = build_providers(settings(
         tmp_path, language_provider="auto", image_provider="auto",
-        anthropic_api_key="sk-ant-test", anthropic_model="test-opus-5-5",
+        language_api_key="sk-test", language_model="test-opus-5-5",
         gemini_api_key="g-test", openai_api_key="o-test",
     ))
-    assert p.idea.info.name == "anthropic (test-opus-5-5)" and p.idea.info.paid
+    assert p.idea.info.name == "ai (test-opus-5-5)" and p.idea.info.paid
     assert p.fabric.info.paid and p.materials.info.paid
     assert not p.builtin_materials.info.paid  # tailor sheet stays free
     assert p.image.info.name.startswith("gemini")  # Gemini wins when both image keys are set
 
 
 def test_key_without_model_name_keeps_the_mock_with_warning(tmp_path):
-    p = build_providers(settings(tmp_path, language_provider="auto", anthropic_api_key="sk-ant-test"))
+    p = build_providers(settings(tmp_path, language_provider="auto", language_api_key="sk-test"))
     assert p.idea.info.is_mock and p.fabric.info.is_mock
-    assert any("ANTHROPIC_MODEL" in w for w in p.warnings)
+    assert any("LANGUAGE_MODEL" in w for w in p.warnings)
 
 
 def test_openai_chosen_when_only_openai_key(tmp_path):
@@ -80,7 +80,7 @@ def test_openai_chosen_when_only_openai_key(tmp_path):
 
 
 def test_explicit_provider_without_key_falls_back_with_warning(tmp_path):
-    p = build_providers(settings(tmp_path, language_provider="anthropic", image_provider="gemini"))
+    p = build_providers(settings(tmp_path, language_provider="ai", image_provider="gemini"))
     assert p.idea.info.is_mock and p.image.info.is_mock
     assert len(p.warnings) == 2
 
@@ -92,12 +92,12 @@ def test_invalid_provider_name_is_rejected(tmp_path):
 
 def test_providers_endpoint_never_returns_keys(client):
     body = client.get("/api/providers").json()
-    assert body["keys"] == {"ANTHROPIC_API_KEY": False, "GEMINI_API_KEY": False, "OPENAI_API_KEY": False,
+    assert body["keys"] == {"LANGUAGE_API_KEY": False, "GEMINI_API_KEY": False, "OPENAI_API_KEY": False,
                            "YOUTUBE_API_KEY": False}
     assert any(s["service"].startswith("Image generation") for s in body["services"])
 
 
-# ---------- Anthropic provider (fake API client) ----------
+# ---------- Language provider (fake API client) ----------
 
 
 class FakeMessages:
@@ -111,7 +111,7 @@ class FakeMessages:
 
 
 def fake_client(response, model="test-opus-5-5"):
-    client = AnthropicClient(api_key="sk-ant-test", model=model)
+    client = LanguageClient(api_key="sk-test", model=model)
     fake = FakeMessages(response)
     client.client = SimpleNamespace(beta=SimpleNamespace(messages=fake))
     return client, fake
@@ -144,11 +144,11 @@ def design_answer(**spec_overrides):
     )
 
 
-def test_anthropic_design_maps_answer_into_spec_and_keeps_user_data():
+def test_language_design_maps_answer_into_spec_and_keeps_user_data():
     client, fake = fake_client(api_response(design_answer(title="T" * 500)))
     current = DesignSpec(measurements=[Measurement(name="Bust", value=86, verified=True)])
     meter = UsageMeter()
-    out = AnthropicIdeaProvider(client).analyse_idea("wine anarkali", current, meter)
+    out = LanguageIdeaProvider(client).analyse_idea("wine anarkali", current, meter)
 
     spec = out.proposed_spec
     assert spec.garment_category == "Anarkali" and spec.idea == "wine anarkali"
@@ -165,9 +165,9 @@ def test_anthropic_design_maps_answer_into_spec_and_keeps_user_data():
     assert call["fallbacks"] == "default" and call["betas"] == ["server-side-fallback-2026-07-01"]
 
 
-def test_anthropic_fallbacks_only_on_models_that_support_them():
+def test_language_fallbacks_only_on_models_that_support_them():
     client, fake = fake_client(api_response(design_answer()), model="test-haiku-5-5")
-    AnthropicIdeaProvider(client).analyse_idea("idea", DesignSpec(), UsageMeter())
+    LanguageIdeaProvider(client).analyse_idea("idea", DesignSpec(), UsageMeter())
     assert "fallbacks" not in fake.calls[0]
 
 
@@ -176,11 +176,11 @@ def test_anthropic_fallbacks_only_on_models_that_support_them():
     ("max_tokens", None, "cut off"),
     ("end_turn", None, "expected format"),
 ])
-def test_anthropic_bad_answers_become_friendly_errors(stop_reason, parsed, message):
+def test_language_bad_answers_become_friendly_errors(stop_reason, parsed, message):
     client, _ = fake_client(api_response(parsed, stop_reason))
     meter = UsageMeter()
     with pytest.raises(ProviderError, match=message):
-        AnthropicIdeaProvider(client).analyse_idea("idea", DesignSpec(), meter)
+        LanguageIdeaProvider(client).analyse_idea("idea", DesignSpec(), meter)
     assert meter.cost_usd > 0  # a failed call can still cost money, so it is recorded
 
 

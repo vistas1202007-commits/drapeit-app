@@ -10,7 +10,7 @@ import httpx
 import pytest
 
 from app.config import Settings
-from app.providers.anthropic_provider import AnthropicClient, AnthropicIdeasProvider
+from app.providers.language_provider import LanguageClient, LanguageIdeasProvider
 from app.providers.base import ProviderError, UsageMeter, VideoResult
 from app.providers.mock.ideas import MockIdeasProvider
 from app.providers.registry import ProviderConfigError, build_providers
@@ -329,10 +329,10 @@ def test_video_falls_back_to_storyboard(client, project):
     assert rows["Tutorial search"]["configured"] and rows["Tutorial search"]["provider"] == "fake-search"
 
 
-# ---------- Anthropic ideas provider (fake API client) ----------
+# ---------- Language ideas provider (fake API client) ----------
 
 
-def test_anthropic_ideas_provider_asks_for_the_right_shapes():
+def test_language_ideas_provider_asks_for_the_right_shapes():
     moodboard = MoodboardOutput(title="t", story="s", mood_words=["a"], palette=[], textures=[], motifs=[],
                                 references=[], image_asset_ids=["made-up-id"])
     answers = iter([VariationsOutput(base_summary="b", variations=[], notes=[]), moodboard,
@@ -344,9 +344,9 @@ def test_anthropic_ideas_provider_asks_for_the_right_shapes():
         return SimpleNamespace(parsed_output=next(answers), stop_reason="end_turn", model="test-opus-5-5",
                                _request_id="r", usage=SimpleNamespace(input_tokens=100, output_tokens=100))
 
-    client = AnthropicClient(api_key="sk-ant-test", model="test-opus-5-5")
+    client = LanguageClient(api_key="sk-test", model="test-opus-5-5")
     client.client = SimpleNamespace(beta=SimpleNamespace(messages=SimpleNamespace(parse=parse)))
-    ideas = AnthropicIdeasProvider(client)
+    ideas = LanguageIdeasProvider(client)
     assert ideas.info.paid
     ideas.variations(anarkali(), UsageMeter())
     assert ideas.moodboard(anarkali(), UsageMeter()).image_asset_ids == []  # never trust ids from the model

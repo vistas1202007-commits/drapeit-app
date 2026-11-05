@@ -31,9 +31,9 @@ services:
         value: "0"
       - key: DAILY_BUDGET_USD
         value: "1.0"
-      - key: ANTHROPIC_API_KEY
+      - key: LANGUAGE_API_KEY
         sync: false
-      - key: ANTHROPIC_MODEL
+      - key: LANGUAGE_MODEL
         sync: false
       - key: GEMINI_API_KEY
         sync: false

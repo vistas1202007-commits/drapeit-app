@@ -1,7 +1,7 @@
 """Provider interfaces.
 
 A *service* is a job the app needs done (understand an idea, draw a sketch,
-recommend fabrics). A *provider* is who actually does it: a mock, the Anthropic API, an
+recommend fabrics). A *provider* is who actually does it: a mock, the AI provider, an
 image API, and so on.
 
 Generators only talk to these interfaces, never to a specific company's SDK.

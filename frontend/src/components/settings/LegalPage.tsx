@@ -92,7 +92,7 @@ function Privacy() {
         items={[
           "Supabase: database, sign-in and file storage.",
           "Our hosting providers for the website and the server.",
-          "AI providers (Anthropic, Google or OpenAI) only when real AI is switched on, and only the design details needed for the task you asked for.",
+          "AI providers (such as Google or OpenAI) only when real AI is switched on, and only the design details needed for the task you asked for.",
           "YouTube (Google) for tutorial search, which receives the search words, not your account.",
         ]}
       />

@@ -60,16 +60,16 @@ class Settings:
     media_token_ttl_s: int = 2 * 60 * 60
 
     frontend_origins: list[str] = field(default_factory=list)
-    # "mock", "anthropic" or "auto" (auto = the Anthropic API if a key is set, else mock).
+    # "mock", "ai" or "auto" (auto = the AI provider if a key is set, else mock).
     language_provider: str = "mock"
     # "mock", "gemini", "openai" or "auto" (auto = whichever image key is set, else mock).
     image_provider: str = "mock"
     # API keys are read from the environment / .env only. They are kept in
     # memory and are never written to the database, logs or API responses.
-    anthropic_api_key: str | None = field(default=None, repr=False)
-    # The model name from the Anthropic console. No default: real AI needs both the key and the model.
-    anthropic_model: str = ""
-    anthropic_effort: str = "medium"
+    language_api_key: str | None = field(default=None, repr=False)
+    # The model name from your AI provider's model list. No default: real AI needs both the key and the model.
+    language_model: str = ""
+    language_effort: str = "medium"
     gemini_api_key: str | None = field(default=None, repr=False)
     gemini_image_model: str = "gemini-nano-banana-2.1"
     # Gemini also reads reference photos, searches the sewing library by meaning and (if you ask) watches
@@ -152,9 +152,9 @@ def load_settings() -> Settings:
         frontend_origins=[o.strip().rstrip("/") for o in origins.split(",") if o.strip()],
         language_provider=os.environ.get("LANGUAGE_PROVIDER", "auto").strip().lower(),
         image_provider=os.environ.get("IMAGE_PROVIDER", "auto").strip().lower(),
-        anthropic_api_key=_secret("ANTHROPIC_API_KEY"),
-        anthropic_model=os.environ.get("ANTHROPIC_MODEL", "").strip(),
-        anthropic_effort=os.environ.get("ANTHROPIC_EFFORT", "medium").strip().lower(),
+        language_api_key=_secret("LANGUAGE_API_KEY"),
+        language_model=os.environ.get("LANGUAGE_MODEL", "").strip(),
+        language_effort=os.environ.get("LANGUAGE_EFFORT", "medium").strip().lower(),
         gemini_api_key=_secret("GEMINI_API_KEY"),
         gemini_image_model=os.environ.get("GEMINI_IMAGE_MODEL", "gemini-nano-banana-2.1").strip(),
         gemini_text_model=os.environ.get("GEMINI_TEXT_MODEL", "gemini-flash-latest").strip(),

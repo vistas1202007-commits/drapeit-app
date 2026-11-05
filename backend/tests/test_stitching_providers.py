@@ -1,6 +1,6 @@
 """Stitching Guide: the optional readers behind the guide (reference photo, embeddings, video index).
 
-No internet and no keys are used: the Anthropic and Gemini libraries are replaced by small fakes."""
+No internet and no keys are used: the language-model and Gemini libraries are replaced by small fakes."""
 
 from types import SimpleNamespace
 
@@ -8,7 +8,7 @@ import pytest
 
 from app.config import Settings
 from app.providers import gemini_tools
-from app.providers.anthropic_provider import AnthropicClient, AnthropicPhotoProvider
+from app.providers.language_provider import LanguageClient, LanguagePhotoProvider
 from app.providers.base import ProviderError, UsageMeter
 from app.providers.photo import PhotoAnswer
 from app.providers.registry import build_providers
@@ -33,7 +33,7 @@ def test_a_gemini_key_turns_on_photo_reading_embeddings_and_video_indexing():
     assert p.photo.info.paid and not p.embedder.info.paid
 
 
-def test_the_anthropic_reader_sends_the_picture_and_returns_hints():
+def test_the_language_reader_sends_the_picture_and_returns_hints():
     seen = {}
 
     class FakeMessages:
@@ -45,10 +45,10 @@ def test_the_anthropic_reader_sends_the_picture_and_returns_hints():
             usage = SimpleNamespace(input_tokens=1500, output_tokens=200)
             return SimpleNamespace(usage=usage, model="m", _request_id="r", stop_reason="end_turn", parsed_output=answer)
 
-    client = AnthropicClient("sk-test", "x-sonnet-5-5")
+    client = LanguageClient("sk-test", "x-sonnet-5-5")
     client.client = SimpleNamespace(beta=SimpleNamespace(messages=FakeMessages()))
     meter = UsageMeter()
-    hints = AnthropicPhotoProvider(client).read_photo(b"\x89PNG\r\n\x1a\nxx", "image/png", DesignSpec(), meter)
+    hints = LanguagePhotoProvider(client).read_photo(b"\x89PNG\r\n\x1a\nxx", "image/png", DesignSpec(), meter)
     assert hints.neckline == "Round" and hints.features == ["pleats"]
     blocks = seen["messages"][0]["content"]
     assert blocks[0]["type"] == "image" and blocks[0]["source"]["media_type"] == "image/png"

@@ -60,7 +60,7 @@ def test_fabric_notes_name_real_fabrics_and_steps_are_not_empty():
 
 
 def test_the_text_is_original_plain_writing_without_brand_or_ai_words():
-    banned = re.compile(r"anthropic|chatgpt|openai|gemini|simplicity|butterick|vogue|mccall|burda|©", re.IGNORECASE)
+    banned = re.compile(r"chatgpt|openai|gemini|simplicity|butterick|vogue|mccall|burda|©", re.IGNORECASE)
     for m in all_modules():
         blob = " ".join([m.title, m.summary, *m.steps, *m.tips, *m.fabric_notes.values(), m.video_query])
         assert not banned.search(blob), m.slug

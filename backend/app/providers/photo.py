@@ -1,6 +1,6 @@
 """What we ask an image-reading provider about a reference photo, and the shape of its answer.
 
-Kept apart from any one company's code so the Anthropic and Gemini readers ask exactly the same thing.
+Kept apart from any one company's code so the language-model and Gemini readers ask exactly the same thing.
 """
 
 from __future__ import annotations

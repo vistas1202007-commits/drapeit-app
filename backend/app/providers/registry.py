@@ -1,9 +1,9 @@
 """Chooses which provider each service uses, based on settings.
 
 LANGUAGE_PROVIDER (design planning, fabrics, materials):
-    "auto"      -> the Anthropic API if ANTHROPIC_API_KEY is set, otherwise the free mock
-    "anthropic" -> the Anthropic API (falls back to the mock, with a warning, if no key)
-    The Anthropic API also needs ANTHROPIC_MODEL; without it the mock is used, with a warning.
+    "auto"      -> the AI provider if LANGUAGE_API_KEY is set, otherwise the free mock
+    "ai"        -> the AI provider (falls back to the mock, with a warning, if no key)
+    The AI provider also needs LANGUAGE_MODEL; without it the mock is used, with a warning.
     "mock"      -> always the free mock
 
 IMAGE_PROVIDER (sketches and visual previews):
@@ -18,7 +18,7 @@ TUTORIAL_PROVIDER (Generate Tutorial and the Learning Library):
 Design ideas (variations, moodboard, embroidery) follow LANGUAGE_PROVIDER.
 
 Stitching Guide extras (all optional; the guide works without them):
-    reference photo reading -> the Anthropic API if it is set up, else Gemini if GEMINI_API_KEY is set
+    reference photo reading -> the AI provider if it is set up, else Gemini if GEMINI_API_KEY is set
     library search by meaning and "find where a step starts in a video" -> Gemini
 Instructional videos have no provider yet: the generator makes a storyboard instead.
 """
@@ -49,7 +49,7 @@ from app.providers.youtube import NoTutorialSearch
 
 log = logging.getLogger(__name__)
 
-LANGUAGE_CHOICES = {"auto", "mock", "anthropic"}
+LANGUAGE_CHOICES = {"auto", "mock", "ai"}
 IMAGE_CHOICES = {"auto", "mock", "gemini", "openai"}
 TUTORIAL_CHOICES = {"auto", "mock", "youtube"}
 
@@ -72,10 +72,10 @@ class Providers:
     # Problems with the setup worth showing on the AI Providers page.
     warnings: list[str] = field(default_factory=list)
     # Stitching Guide extras. None means "not connected": the guide still works without them.
-    photo: GarmentPhotoProvider | None = None  # reads a reference photo (Anthropic API or Gemini)
+    photo: GarmentPhotoProvider | None = None  # reads a reference photo (AI provider or Gemini)
     embedder: EmbeddingProvider | None = None  # searches the sewing library by meaning (Gemini)
     video_index: VideoIndexProvider | None = None  # finds where a step starts inside a video (Gemini)
-    guide: StitchingGuideProvider | None = None  # words the guide steps for the design (Anthropic API); None = library text as is
+    guide: StitchingGuideProvider | None = None  # words the guide steps for the design (AI provider); None = library text as is
 
 
 def build_providers(settings: Settings) -> Providers:
@@ -105,32 +105,32 @@ def build_providers(settings: Settings) -> Providers:
         warnings=warnings,
     )
 
-    # ----- language (Anthropic API) -----
-    want_anthropic = settings.language_provider == "anthropic" or (
-        settings.language_provider == "auto" and settings.anthropic_api_key
+    # ----- language (AI provider) -----
+    want_ai = settings.language_provider == "ai" or (
+        settings.language_provider == "auto" and settings.language_api_key
     )
-    if want_anthropic and not settings.anthropic_api_key:
-        warnings.append("LANGUAGE_PROVIDER is 'anthropic' but ANTHROPIC_API_KEY is empty, so the mock is used.")
-    elif want_anthropic and not settings.anthropic_model:
-        warnings.append("ANTHROPIC_API_KEY is set but ANTHROPIC_MODEL is empty, so the mock is used.")
-    elif want_anthropic:
-        from app.providers.anthropic_provider import (
-            AnthropicClient,
-            AnthropicFabricProvider,
-            AnthropicGuideProvider,
-            AnthropicIdeaProvider,
-            AnthropicIdeasProvider,
-            AnthropicMaterialsProvider,
-            AnthropicPhotoProvider,
+    if want_ai and not settings.language_api_key:
+        warnings.append("LANGUAGE_PROVIDER is 'ai' but LANGUAGE_API_KEY is empty, so the mock is used.")
+    elif want_ai and not settings.language_model:
+        warnings.append("LANGUAGE_API_KEY is set but LANGUAGE_MODEL is empty, so the mock is used.")
+    elif want_ai:
+        from app.providers.language_provider import (
+            LanguageClient,
+            LanguageFabricProvider,
+            LanguageGuideProvider,
+            LanguageIdeaProvider,
+            LanguageIdeasProvider,
+            LanguageMaterialsProvider,
+            LanguagePhotoProvider,
         )
 
-        client = AnthropicClient(settings.anthropic_api_key or "", settings.anthropic_model, settings.anthropic_effort)
-        providers.idea = AnthropicIdeaProvider(client)
-        providers.fabric = AnthropicFabricProvider(client)
-        providers.materials = AnthropicMaterialsProvider(client)
-        providers.ideas = AnthropicIdeasProvider(client)
-        providers.photo = AnthropicPhotoProvider(client)
-        providers.guide = AnthropicGuideProvider(client)
+        client = LanguageClient(settings.language_api_key or "", settings.language_model, settings.language_effort)
+        providers.idea = LanguageIdeaProvider(client)
+        providers.fabric = LanguageFabricProvider(client)
+        providers.materials = LanguageMaterialsProvider(client)
+        providers.ideas = LanguageIdeasProvider(client)
+        providers.photo = LanguagePhotoProvider(client)
+        providers.guide = LanguageGuideProvider(client)
 
     # ----- tutorial search (free quota, no billing) -----
     if settings.tutorial_provider != "mock" and settings.youtube_api_key:

@@ -24,7 +24,7 @@ Browser (Next.js) ──sign in──▶ Supabase Auth
 | Design spec | The structured description of one garment (`DesignSpec` in `app/schemas/design_spec.py`). Every generator reads the same spec. |
 | Version | A saved copy of the spec. Saving never edits an old version; it adds a new one. |
 | Generator | One "Generate …" button. Defined in `app/generators/registry.py`. |
-| Provider | Who does the work behind a generator (mock, the Anthropic API, an image API…). |
+| Provider | Who does the work behind a generator (mock, the AI provider, an image API…). |
 | Job | One run of a generator: which version it used, which provider, mock or not, output or error. |
 | Stale / out of date | A job whose inputs changed. Each generator lists the spec fields it `depends_on`; if any of those changed since the job's version, the output is flagged. Only that output needs regenerating. |
 | Mock | A free stand-in that follows simple rules. Always labelled in the UI. |
@@ -33,16 +33,16 @@ Browser (Next.js) ──sign in──▶ Supabase Auth
 
 | id | Service | Provider now | Depends on (spec fields) |
 | --- | --- | --- | --- |
-| design | idea_understanding | Anthropic API or `mock-keywords` | idea |
+| design | idea_understanding | AI provider or `mock-keywords` | idea |
 | sketch | image_generation | Gemini / OpenAI or `mock-svg` | garment, silhouette, neckline, sleeves, length, colours, embellishments, title, visual description |
 | visual_preview | image_generation | Gemini / OpenAI or `mock-svg` | as sketch, plus fit, closures, occasion |
-| fabric | fabric_recommendation | Anthropic API or `mock-fabric-rules` | garment, occasion, silhouette, climate, embellishments, skill, budget |
-| materials | tools_materials | Anthropic API or `mock-materials-rules` | garment, silhouette, neckline, sleeves, closures, embellishments, preferred fabrics, fabric requirements, idea |
+| fabric | fabric_recommendation | AI provider or `mock-fabric-rules` | garment, occasion, silhouette, climate, embellishments, skill, budget |
+| materials | tools_materials | AI provider or `mock-materials-rules` | garment, silhouette, neckline, sleeves, closures, embellishments, preferred fabrics, fabric requirements, idea |
 | tailor_sheet | export | `built-in` (plain code, no AI) | almost everything, including `tailor` (notes and references) |
 | cost | cost_calculation | `built-in` (plain code, no AI) | garment, preferred fabrics, embellishments, closures, budget |
-| variations | design_ideas | Anthropic API or `mock-ideas-rules` | garment, occasion, silhouette, neckline, sleeves, embellishments, colours |
-| moodboard | design_ideas | Anthropic API or `mock-ideas-rules` | garment, occasion, climate, colours, embellishments, fabrics, visual description |
-| embroidery | design_ideas | Anthropic API or `mock-ideas-rules` | garment, occasion, neckline, sleeves, embellishments, colours, fabrics, skill |
+| variations | design_ideas | AI provider or `mock-ideas-rules` | garment, occasion, silhouette, neckline, sleeves, embellishments, colours |
+| moodboard | design_ideas | AI provider or `mock-ideas-rules` | garment, occasion, climate, colours, embellishments, fabrics, visual description |
+| embroidery | design_ideas | AI provider or `mock-ideas-rules` | garment, occasion, neckline, sleeves, embellishments, colours, fabrics, skill |
 | pattern | pattern_assistance | `built-in` (plain code, conceptual) | garment, silhouette, fit, neckline, sleeves, length, closures, measurements, unit, fabrics |
 | tutorial | tutorial_search | `youtube-data-api` or `not connected` | garment, neckline, embellishments, closures, fabrics, skill |
 | video | video_generation | `built-in` storyboard (no video provider) | garment, title, neckline, sleeves, length, embellishments, fabrics |
@@ -58,10 +58,10 @@ Unavailable generators are reported as *skipped* with the reason. One failure do
 3. Write a `run` function and add a `GeneratorDefinition` to `GENERATORS` in `app/generators/registry.py`.
 4. Add a renderer in `frontend/src/components/outputs/` and a case in `renderOutput` (`OutputCard.tsx`).
 
-### Adding a real provider (Phase 2 example: the Anthropic API for "Generate Design")
+### Adding a real provider (Phase 2 example: the AI provider for "Generate Design")
 
-1. Create `app/providers/anthropic_idea.py` with a class that has `info` and `analyse_idea(...)` returning `DesignConceptOutput`. Use structured output so the result validates against the schema.
-2. In `app/providers/registry.py`, return it when `LANGUAGE_PROVIDER=anthropic`; read the key from `ANTHROPIC_API_KEY` in `backend/.env`.
+1. Create `app/providers/language_idea.py` with a class that has `info` and `analyse_idea(...)` returning `DesignConceptOutput`. Use structured output so the result validates against the schema.
+2. In `app/providers/registry.py`, return it when `LANGUAGE_PROVIDER=ai`; read the key from `LANGUAGE_API_KEY` in `backend/.env`.
 3. Set `info.is_mock = False`. The UI then stops showing the MOCK badge automatically.
 4. Record estimated cost in `record_usage`.
 
@@ -112,7 +112,7 @@ The version-specific Next.js docs are in `frontend/node_modules/next/dist/docs/`
 ```
 generator (registry.py) ──> provider interface (providers/base.py)
                               ├─ mock/            free, labelled MOCK
-                              ├─ anthropic_provider.py   Anthropic API: design plan, fabric, materials
+                              ├─ language_provider.py   AI provider: design plan, fabric, materials
                               └─ image_providers.py      Gemini or OpenAI: sketches, previews
 ```
 
@@ -161,7 +161,7 @@ spec ─> services/tutorials.build_topics ─> TutorialSearchProvider.search (Yo
                                           └─> score_video (reasons from the video's own title/description)
                                           └─> TutorialOutput (steps + real videos + search links)
 
-spec ─> DesignIdeasProvider (Anthropic API or mock) ─> variations / moodboard / embroidery
+spec ─> DesignIdeasProvider (AI provider or mock) ─> variations / moodboard / embroidery
 spec ─> services/pattern.build_pattern (conceptual, built-in)
 spec + saved materials/plan/tutorial ─> services/storyboard.build_storyboard (built-in)
 ```
@@ -444,7 +444,7 @@ design spec (+ newest uploaded photo, if a picture-reading provider is set up)
                                          design notes (pgvector similarity if embeddings exist, plain words if not)
                                       2 order: phase (prep, shaping, main_seams, openings, side_seams, hem, pressing)
                                          then the module's place in the phase - always code, never the AI
-                                      3 write: provider.compose() rewords each step for the design (Anthropic API), or the
+                                      3 write: provider.compose() rewords each step for the design (AI provider), or the
                                          library text is used as it is; the AI cannot add, drop or reorder steps
    -> services/guide_videos.py        one YouTube search per step (cache table, 14 days, shared), chapter parsing and
                                       matching, optional Gemini "watch once" index (video_index_runs, video_segments)

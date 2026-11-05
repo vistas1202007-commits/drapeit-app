@@ -12,9 +12,9 @@
 - [x] README, env examples, architecture notes, log
 
 ## Phase 2 – First real AI workflow ✅ (code done; live keys pending your go-ahead)
-- [x] Explain Anthropic API and image API account setup and cost
-- [x] Anthropic provider with structured output: Generate Design now returns a full design plan
-- [x] The Anthropic provider also powers fabric recommendations and the tools & materials checklist
+- [x] Explain AI provider and image API account setup and cost
+- [x] Language AI provider with structured output: Generate Design now returns a full design plan
+- [x] The language AI provider also powers fabric recommendations and the tools & materials checklist
 - [x] Image providers: Google Gemini and OpenAI GPT Image (pick with IMAGE_PROVIDER)
 - [x] Real sketch generation in 6 styles + new Generate Visual Preview
 - [x] Every generated picture saved as an asset linked to its job and design version (image library)
@@ -174,5 +174,5 @@
 - [x] Optional: Gemini watches a video once and saves start / end times
 - [x] Notebook section: checklist saved per design version, player under each step, Stale badge, phone layout
 - [ ] Run `0012_stitching_guide.sql` in Supabase, then `python scripts/seed_sewing_library.py` (needs you)
-- [ ] Add `YOUTUBE_API_KEY` for videos (free); optional Anthropic / Gemini keys
+- [ ] Add `YOUTUBE_API_KEY` for videos (free); optional language AI / Gemini keys
 

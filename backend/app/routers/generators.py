@@ -83,7 +83,7 @@ def list_providers(ctx: Context) -> Any:
     )
     extras = (
         ("Stitching Guide: reading a reference photo", p.photo,
-         "Not connected. Set up the Anthropic API, or add a GEMINI_API_KEY, to read your reference photo."),
+         "Not connected. Set up the AI provider, or add a GEMINI_API_KEY, to read your reference photo."),
         ("Stitching Guide: finding where a step starts in a video", p.video_index,
          "Not connected. Video chapters are still used. Add a GEMINI_API_KEY to let it watch videos once."),
         ("Stitching Guide: searching the sewing library by meaning", p.embedder,
@@ -99,7 +99,7 @@ def list_providers(ctx: Context) -> Any:
         services=statuses,
         warnings=p.warnings,
         keys={
-            "ANTHROPIC_API_KEY": bool(settings.anthropic_api_key),
+            "LANGUAGE_API_KEY": bool(settings.language_api_key),
             "GEMINI_API_KEY": bool(settings.gemini_api_key),
             "OPENAI_API_KEY": bool(settings.openai_api_key),
             "YOUTUBE_API_KEY": bool(settings.youtube_api_key),

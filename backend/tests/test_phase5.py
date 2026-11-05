@@ -239,8 +239,8 @@ def test_logs_hide_media_tokens_and_keys():
 
 def test_secrets_are_not_in_settings_repr():
     text = repr(Settings(database_url="postgresql://u:pw@h/db", supabase_secret_key="sb_secret_x",
-                         media_token_secret="m" * 40, supabase_jwt_secret="jwt", anthropic_api_key="sk-ant"))
-    for secret in ("pw@h", "sb_secret_x", "m" * 40, "sk-ant"):
+                         media_token_secret="m" * 40, supabase_jwt_secret="jwt", language_api_key="sk-secret"))
+    for secret in ("pw@h", "sb_secret_x", "m" * 40, "sk-secret"):
         assert secret not in text
 
 

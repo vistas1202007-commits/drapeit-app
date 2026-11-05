@@ -38,7 +38,7 @@
 **Decisions**
 - Brand in the UI is now "Drapeit by Vistas Atelier".
 - Providers are picked by `LANGUAGE_PROVIDER` / `IMAGE_PROVIDER` (default `auto`): a real provider is used only when its key is in `backend/.env`, otherwise the labelled mock. A wrong provider name stops the backend at startup with a clear message.
-- The Anthropic model (set with `ANTHROPIC_MODEL`, effort `medium`) answers in an exact JSON shape (structured outputs via `client.beta.messages.parse`), with the server-side refusal fallback turned on for models that support it. Answers are trimmed to the spec's size limits, so a long answer can never break saving. The user's measurements, references and budget are kept.
+- The language model (set with `LANGUAGE_MODEL`, effort `medium`) answers in an exact JSON shape (structured outputs via `client.beta.messages.parse`), with the server-side refusal fallback turned on for models that support it. Answers are trimmed to the spec's size limits, so a long answer can never break saving. The user's measurements, references and budget are kept.
 - The model is told never to invent measurements, prices or fabric quantities; fabric `approximate_cost` is forced to empty after the call.
 - New spec field `visual_description` (written by Generate Design, editable) keeps every sketch and preview of a version describing the same garment. The exact image prompt is saved with each output.
 - Images: Gemini (`gemini-nano-banana-2.1`, ~$0.035/image) or OpenAI (`gpt-image-2`, quality `medium`, ~$0.08/portrait image). Both return PNG/JPEG, checked by magic bytes, saved under `data/uploads/<project>/` as `generated` assets with job id, generator, provider and design version.
@@ -48,7 +48,7 @@
 - Generated SVGs are served with a sandboxing Content-Security-Policy.
 
 **Checks actually run**
-- `pytest`: 38 passed (21 new). Real providers are tested with fake API clients, so no money is spent and no internet is used. **No call to the real Anthropic, Gemini or OpenAI APIs has been made yet**, because there are no keys.
+- `pytest`: 38 passed (21 new). Real providers are tested with fake API clients, so no money is spent and no internet is used. **No call to any real AI provider API has been made yet**, because there are no keys.
 - `eslint`, `tsc --noEmit`, `vitest` (5), `next build`: clean.
 - Playwright walkthrough in mock mode: create → Generate Design (plan shows) → apply → watercolour sketch → visual preview → image library → history → place preview in Studio → settings page. No console errors.
 
@@ -79,7 +79,7 @@
 - No database migration: everything new lives in existing JSON columns.
 
 **Checks actually run**
-- `pytest`: 58 passed (20 new in `tests/test_phase3.py`). No real Anthropic, Gemini or OpenAI call was
+- `pytest`: 58 passed (20 new in `tests/test_phase3.py`). No real AI provider call was
   made (fake API clients only).
 - `npm run typecheck`, `npm run lint`: clean. `npm test` (vitest): 8 passed (3 new cost helper tests).
 - `npm run build`: succeeded; new route `/projects/[id]/cost`.
@@ -116,8 +116,8 @@
   video's own title and description (topic words, other design words, "beginner", very short clips).
 - Without a key the tutorial generator still returns the learning steps with YouTube search-page links,
   zero videos and a clear "not connected" note (badged MOCK).
-- Variations, moodboard and embroidery share a new `DesignIdeasProvider` (the Anthropic API when
-  `ANTHROPIC_API_KEY` is set, else `mock-ideas-rules`). The model's moodboard image ids are cleared;
+- Variations, moodboard and embroidery share a new `DesignIdeasProvider` (the AI provider when
+  `LANGUAGE_API_KEY` is set, else `mock-ideas-rules`). The model's moodboard image ids are cleared;
   the app adds the project's own pictures.
 - Pattern assistance and the instructional-video storyboard are built-in code. Pattern output is
   always `conceptual` with a disclaimer and a NOT TO SCALE layout; drafting steps use only
@@ -132,7 +132,7 @@
 
 **Checks actually run**
 - `pytest`: 83 passed (25 new in `tests/test_phase4.py`). YouTube is tested with a fake HTTP server
-  (`httpx.MockTransport`) and the Anthropic API with a fake client. **No real YouTube or Anthropic call was made**
+  (`httpx.MockTransport`) and the AI provider with a fake client. **No real YouTube or AI provider call was made**
   (no keys).
 - `npm run typecheck`, `npm run lint`: clean. `npm test`: 10 passed (2 new for variations).
 - `npm run build`: succeeded.
@@ -507,13 +507,13 @@
 
 ## 2026-10-24 · AI model name moved to settings
 
-- `ANTHROPIC_MODEL` no longer has a default in the code: real AI needs both the key and the model name in
+- `LANGUAGE_MODEL` no longer has a default in the code: real AI needs both the key and the model name in
   `backend/.env` (or under *Environment* on Render, where `render.yaml` now asks for it). With a key but no model
   name the free mock is used and the backend prints a warning.
 - The price and fallback tables are keyed by model family and version (for example `opus-5-5`), so any model name
   with that ending gets the right cost estimate.
-- Provider classes renamed (`AnthropicClient`, `DesignAnswer`, `SpecFields`, `FabricAnswer`); provider name shown in
-  the app is `anthropic (<model>)`.
+- Provider classes renamed (`LanguageClient`, `DesignAnswer`, `SpecFields`, `FabricAnswer`); provider name shown in
+  the app is `ai (<model>)`.
 - Checks: `pytest` **192 passed** (1 new: a key without a model name keeps the mock); `npm run lint`,
   `npm run typecheck` clean; `npm test` **52 passed**.
 

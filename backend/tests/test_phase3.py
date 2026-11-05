@@ -7,7 +7,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from app.providers.anthropic_provider import AnthropicClient, AnthropicFabricProvider, FabricAnswer
+from app.providers.language_provider import LanguageClient, LanguageFabricProvider, FabricAnswer
 from app.providers.base import UsageMeter
 from app.providers.mock.fabric import MockFabricProvider, MockMaterialsProvider
 from app.schemas.design_spec import Budget, DesignSpec, Measurement, TailorNotes, TailorReference
@@ -98,7 +98,7 @@ def test_fabric_outputs_saved_before_phase3_still_load():
     assert out.recommendations[0].comfort == "medium" and out.lining_options == []
 
 
-def test_anthropic_fabric_answer_is_converted_and_prices_removed():
+def test_language_fabric_answer_is_converted_and_prices_removed():
     rec = FabricRecommendation(
         name="Velvet", swatch_colour="#4a1426", texture="pile", suitability="Warm", properties=[], advantages=[],
         limitations=[], care="Dry clean", drape="medium", breathability="low", approximate_cost="₹900/m", score=90,
@@ -109,13 +109,13 @@ def test_anthropic_fabric_answer_is_converted_and_prices_removed():
         embellishment_options=[Suggestion(name="Zardozi", reason="Shows on pile")],
         complementary_materials=["Thread"], considerations=["Heavy"],
     )
-    client = AnthropicClient(api_key="sk-ant-test", model="test-opus-5-5")
+    client = LanguageClient(api_key="sk-test", model="test-opus-5-5")
     response = SimpleNamespace(parsed_output=answer, stop_reason="end_turn", model="test-opus-5-5",
                                _request_id="r", usage=SimpleNamespace(input_tokens=10, output_tokens=10))
     calls = []
     client.client = SimpleNamespace(beta=SimpleNamespace(messages=SimpleNamespace(
         parse=lambda **kw: calls.append(kw) or response)))
-    out = AnthropicFabricProvider(client).recommend_fabrics(wedding_spec(), UsageMeter())
+    out = LanguageFabricProvider(client).recommend_fabrics(wedding_spec(), UsageMeter())
     assert out.recommendations[0].approximate_cost is None
     assert out.lining == ["Satin"] and out.embellishment_options[0].name == "Zardozi"
     assert calls[0]["output_format"] is FabricAnswer
